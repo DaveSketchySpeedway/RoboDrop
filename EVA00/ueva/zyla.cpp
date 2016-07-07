@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with uEva. If not, see <http://www.gnu.org/licenses/>
 */
 
-
-
 #include "zyla.h"
 
 ZylaSettings::ZylaSettings()
@@ -64,9 +62,9 @@ ZylaSettings::ZylaSettings()
 	enumMap[L"AOIBinning"] = L"4x4"; // binning, intensity vs resolution
 	//enumMap[L"AOILayout"] = L"Image"; // Kinetics, TDI, Multitrack
 	//enumMap[L"SensorReadoutMode"] = L"Bottom Up Sequential";
-	enumMap[L"SimplePreAmpGainControl"] = L"12-bit (high well capacity)";
+	enumMap[L"SimplePreAmpGainControl"] = L"16-bit (low noise & high well capacity)";
 	enumMap[L"PixelEncoding"] = L"Mono12Packed"; // Mono12 Mono16 Mono32
-	enumMap[L"BitDepth"] = L"12Bit";
+	enumMap[L"BitDepth"] = L"16 Bit";
 
 	collapse();
 }
@@ -218,19 +216,35 @@ void ZylaSettings::expand()
 	}
 }
 
+
+
+
+
+
 Zyla::Zyla(int i) : cameraIndex(i)
 {
 	//// libraries
 	returnCode = AT_InitialiseLibrary();
 	if (returnCode != AT_SUCCESS)
 	{
-		cout << "FAIL: zyla can not initialise library, return " << 
+		cout << "FAIL: zyla can not initialise library, return " <<
 			returnCode << endl;
 		return;
 	}
 	else
 	{
 		cout << "zyla initialized library" << endl;
+	}
+	returnCode = AT_InitialiseUtilityLibrary();
+	if (returnCode != AT_SUCCESS)
+	{
+		cout << "FAIL: zyla can not initialise utility library, return " << 
+			returnCode << endl;
+		return;
+	}
+	else
+	{
+		cout << "zyla initialized utility library" << endl;
 	}
 	//// handle
 	returnCode = AT_Open(cameraIndex, &handle);
@@ -270,6 +284,18 @@ Zyla::~Zyla()
 	else
 	{
 		cout << "zyla finalized library" << endl;
+	}
+	cout << endl;
+	//// utility library
+	returnCode = AT_FinaliseUtilityLibrary();
+	if (returnCode != AT_SUCCESS)
+	{
+		cout << "FAIL: zyla can not finalise utility library, return " <<
+			returnCode << endl;
+	}
+	else
+	{
+		cout << "zyla finalized utility library" << endl;
 	}
 	cout << endl;
 }
@@ -592,14 +618,93 @@ void Zyla::set(ZylaSettings &s)
 	cout << endl;
 }
 
-void Zyla::start()
+void Zyla::start(const int &Ts, QImage &image)
 {
-	//deleteme
+	//// flush queue and wait buffers
+	returnCode = AT_Flush(handle);
+	//// get info
+	samplePeriod = Ts;
+	returnCode = AT_GetInt(handle, L"ImageSizeBytes", &imageSizeBytes);
+	bufferSize = (int)(imageSizeBytes);
+	returnCode = AT_GetFloat(handle, L"FrameRate", &frameRate);
+	queueLength = (int)(frameRate * samplePeriod + 1); // min length = 1;
+	returnCode = AT_GetInt(handle, L"AOIStride", &imageStride);
+	returnCode = AT_GetInt(handle, L"AOIWidth", &imageWidth);
+	returnCode = AT_GetInt(handle, L"AOIHeight", &imageHeight);
+	int index = 0;
+	AT_WC *str = new AT_WC[256];	
+	returnCode = AT_GetEnumIndex(handle, L"Pixel Encoding", &index);
+	returnCode = AT_GetEnumStringByIndex(handle, L"Pixel Encoding", index, str, 256);
+	imageEncode = str;
+	//// initialize image
+	image = QImage(imageWidth, imageHeight, QImage::Format_RGB32);
+	//// allocate buffer
+	buffers = new unsigned char*[queueLength];
+	alignedBuffers = new unsigned char*[queueLength];
+	for (int i = 0; i < queueLength; i++)
+	{
+		buffers[i] = new unsigned char[bufferSize + 7];
+		alignedBuffers[i] = reinterpret_cast<unsigned char*>
+			((reinterpret_cast<unsigned	long>(buffers[i% queueLength]) + 7) & ~7);
+	}
+	//// pass buffers to queue
+	for (int i = 0; i < queueLength; i++)
+	{
+		returnCode = AT_QueueBuffer(handle, alignedBuffers[i], bufferSize);
+	}
+	//// start acquisition
+	returnCode = AT_Command(handle, L"AcquisitionStart");
+	accumNumFrames = 0;
 }
 
-void Zyla::end()
+void Zyla::process(QImage &image)
 {
+	//// grab buffer
+	unsigned char* pointer;
+	int size;
+	returnCode = AT_WaitBuffer(handle, &pointer, &size, 0); // timeout = 0, only get existing frames
+	cerr << "zyla process wait buffer returns " << returnCode << endl;
+	if (returnCode == 0)
+	{
+		//// re-queue buffer
+		returnCode = AT_QueueBuffer(handle, alignedBuffers[accumNumFrames % queueLength], bufferSize);
+		cerr << "re-queue returns " << returnCode << endl;
+		accumNumFrames++;
+		//// clean up buffer
+		unsigned short *image16 = new unsigned short[imageWidth * imageHeight];
+		returnCode = AT_ConvertBuffer(pointer, reinterpret_cast<unsigned char*>(image16),
+			imageWidth, imageHeight, imageStride, imageEncode, L"Mono16");
+		cerr << "convert returns " << returnCode << endl;
+		//// write to image
+		for (int r = 0; r < imageHeight; r++)
+		{
+			for (int c = 0; c < imageWidth; c++)
+			{
+				unsigned char pixelValue = (unsigned char)
+					(image16[r * imageWidth + c] / 65535.0 * 255.0);
+				image.setPixelColor(c, r, QColor::fromRgb(pixelValue, pixelValue, pixelValue));
+			}
+		}
+		delete[] image16;
+	}
+	else
+	{
+		return;
+	}
+}
 
+void Zyla::stop()
+{
+	//// stop acquisition
+	returnCode = AT_Command(handle, L"AcquisitionStop");
+	returnCode = AT_Flush(handle);
+	//// free buffer
+	for (int i = 0; i < queueLength; i++)
+	{
+		delete[] buffers[i];
+	}
+	delete[] buffers;
+	delete[] alignedBuffers;
 }
 
 

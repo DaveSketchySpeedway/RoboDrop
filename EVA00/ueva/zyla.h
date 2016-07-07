@@ -23,9 +23,11 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 
 
 #include "atcore.h"
+#include "atutility.h"
 #include <QtGui>
 #include <iostream>
 #include <map>
+#include <vector>
 #include <string>
 using namespace std;
 
@@ -59,8 +61,9 @@ public:
 
 	void get(ZylaSettings &s);
 	void set(ZylaSettings &s);
-	void start();
-	void end();
+	void start(const int &Ts, QImage &image);
+	void process(QImage &image);
+	void stop();
 
 
 protected:
@@ -72,6 +75,19 @@ private:
 	int cameraIndex;
 	int returnCode;
 	AT_H handle;
+	AT_64 imageSizeBytes;
+	AT_64 imageStride;
+	AT_64 imageWidth;
+	AT_64 imageHeight;
+	AT_WC *imageEncode;
+	int bufferSize;
+	double frameRate;
+	int samplePeriod;
+	int queueLength;
+
+	AT_64 accumNumFrames; // should last 1.8e17 seconds before overflow
+	unsigned char** buffers;
+	unsigned char** alignedBuffers;
 
 };
 

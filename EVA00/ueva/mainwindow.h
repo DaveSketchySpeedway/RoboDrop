@@ -106,7 +106,7 @@ private:
 	//// MEMBER
 	QString currentFile;
 
-	int timerInterval;
+	int timerInterval; // sampling period right here
 	int timerId;
 
 	QTime engineLastTime;
@@ -142,6 +142,7 @@ private:
 		RECORD_DATA = 32,
 		RECORD_RAW = 64,
 		RECORD_DISPLAY = 128,
+		CAMERA_ON = 256,
 	};
 	int guiFlag;
 

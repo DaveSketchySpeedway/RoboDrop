@@ -35,11 +35,14 @@ public:
 	CameraThread(QObject *parent = 0);
 	~CameraThread();
 
+	void getCurrentImage(QImage &image);
 	void addCamera();
 	void deleteCamera();
 	QMap<QString, QString> defaultSettings();
 	QMap<QString, QString> getSettings();
 	void setSettings(QMap<QString, QString> &s);
+	void startCamera(const int &Ts);
+	void stopCamera();
 
 signals:
 
@@ -49,8 +52,10 @@ protected:
 private:
 	Zyla *camera;
 	ZylaSettings settings;
-	int hasCamera;
+	int cameraConnected;
+	int cameraAcquiring;
 	QMutex mutex;
+	QImage currentImage;
 
 	private slots:
 

@@ -26,11 +26,6 @@ MainWindow::MainWindow()
 	settings = UevaSettings();
 	dataId = qRegisterMetaType<UevaData>();
 	buffer = UevaBuffer();
-	QColor color = Qt::blue;
-	imageFromCamera = QImage(800, 600, QImage::Format_ARGB32);
-	imageFromCamera.fill(color);
-	imageToSave = QImage(800, 600, QImage::Format_ARGB32);
-	imageToSave.fill(color);
 	guiFlag = DRAW_DEFAULT | DRAW_PLOT;
 
 	//// INITIALIZE GUI
@@ -70,10 +65,14 @@ void MainWindow::cameraOnOff()
 	if (dashboard->cameraButton->isChecked())
 	{
 		dashboard->cameraButton->setText(tr("Off"));
+		guiFlag |= CAMERA_ON;
+		cameraThread->startCamera( (int)(timerInterval/1000) );
 	}
 	else
 	{
 		dashboard->cameraButton->setText(tr("On"));
+		guiFlag ^= CAMERA_ON;
+		cameraThread->stopCamera();
 	}
 }
 
@@ -302,6 +301,12 @@ void MainWindow::timerEvent(QTimerEvent *event)
 		QTime now = QTime::currentTime();
 		pingTimeStamps.enqueue(now);
 		
+		//// INTERUPT CAMERA THREAD
+		if (guiFlag & CAMERA_ON)
+		{
+			cameraThread->getCurrentImage(imageFromCamera);
+		}
+
 		//// WAKE ENGINE THREAD
 		UevaData data = UevaData();
 		data.rawImage = imageFromCamera;
@@ -603,8 +608,7 @@ void MainWindow::clear()
 {
 	if (noUnsavedFile())
 	{
-		QColor color = Qt::black;
-		imageFromCamera.fill(color);
+		imageFromCamera = QImage(0, 0, QImage::Format_Grayscale8);
 		setCurrentFile("");
 	}
 }

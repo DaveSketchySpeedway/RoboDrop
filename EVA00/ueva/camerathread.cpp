@@ -24,7 +24,10 @@ CameraThread::CameraThread(QObject *parent)
 {
 	mutex.lock();
 	settings = ZylaSettings();
-	hasCamera = 0;
+	cameraConnected = 0;
+	cameraAcquiring = 0;
+	currentImage = QImage(800, 600, QImage::Format_RGB32);
+	currentImage.fill(0);
 	mutex.unlock();
 }
 
@@ -35,23 +38,18 @@ CameraThread::~CameraThread()
 	mutex.unlock();
 }
 
-void CameraThread::run()
+void CameraThread::getCurrentImage(QImage &image)
 {
-	forever
-	{
-
-		mutex.lock();
-		//qDebug() << QThread::currentThreadId << "run";
-		mutex.unlock();
-
-	}
+	mutex.lock();
+	image = currentImage;
+	mutex.unlock();
 }
 
 void CameraThread::addCamera()
 {
 	mutex.lock();
 	camera = new Zyla(0);
-	hasCamera = 1;
+	cameraConnected = 1;
 	mutex.unlock();
 }
 
@@ -59,7 +57,7 @@ void CameraThread::deleteCamera()
 {
 	mutex.lock();
 	delete camera;
-	hasCamera = 0;
+	cameraConnected = 0;
 	mutex.unlock();	
 }
 
@@ -74,7 +72,7 @@ QMap<QString, QString> CameraThread::defaultSettings()
 QMap<QString, QString> CameraThread::getSettings()
 {
 	mutex.lock();
-	if (hasCamera)
+	if (cameraConnected)
 	{
 		camera->get(settings);
 		settings.collapse();
@@ -86,7 +84,7 @@ QMap<QString, QString> CameraThread::getSettings()
 void CameraThread::setSettings(QMap<QString, QString> &s)
 {
 	mutex.lock();
-	if (hasCamera)
+	if (cameraConnected)
 	{
 		settings.allMap = s;
 		settings.expand();
@@ -94,4 +92,35 @@ void CameraThread::setSettings(QMap<QString, QString> &s)
 		camera->set(settings);
 	}
 	mutex.unlock();
+}
+
+void CameraThread::startCamera(const int &Ts)
+{
+	mutex.lock();
+	camera->start(Ts, currentImage);
+	cameraAcquiring = 1;
+	mutex.unlock();
+}
+
+void CameraThread::stopCamera()
+{
+	mutex.lock();
+	camera->stop();
+	cameraAcquiring = 0;
+	currentImage = QImage(800, 600, QImage::Format_RGB32);
+	currentImage.fill(0);
+	mutex.unlock();
+}
+
+void CameraThread::run()
+{
+	forever
+	{
+		mutex.lock();
+		if (cameraAcquiring)
+		{
+			camera->process(currentImage);
+		}
+		mutex.unlock();
+	}
 }
