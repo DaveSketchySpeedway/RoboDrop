@@ -1,7 +1,7 @@
 /*
 Copyright 2016 David Wong
 
-This file is part of uEVA. https://github.com/DaveSketchySpeedway/uEva
+This file is part of uEVA. https://github.com/DaveSketchySpeedway/uEVA
 
 uEVA is free software : you can redistribute it and / or modify
 it under the terms of the GNU General Public License as published by
@@ -655,6 +655,7 @@ void MainWindow::about()
 		tr("About"),
 		tr("<h2> uEVA-01</h2>"
 		"<p>Microfluidics Enhanced Vison-based Automation"
+		" https://github.com/DaveSketchySpeedway/uEVA"
 		"<p>Copyright &copy; 2016 David Wong"
 		"<p>This program is free software: you can redistribute it and/or modify"
 		"it under the terms of the GNU General Public License as published by"

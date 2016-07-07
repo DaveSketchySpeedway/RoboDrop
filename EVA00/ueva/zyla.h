@@ -1,7 +1,7 @@
 /*
 Copyright 2016 David Wong
 
-This file is part of uEVA. https://github.com/DaveSketchySpeedway/uEva
+This file is part of uEVA. https://github.com/DaveSketchySpeedway/uEVA
 
 uEVA is free software : you can redistribute it and / or modify
 it under the terms of the GNU General Public License as published by
