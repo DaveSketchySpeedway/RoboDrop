@@ -108,7 +108,6 @@ void CameraThread::stopCamera()
 	camera->stop();
 	cameraAcquiring = 0;
 	currentImage = QImage(800, 600, QImage::Format_RGB32);
-	currentImage.fill(0);
 	mutex.unlock();
 }
 

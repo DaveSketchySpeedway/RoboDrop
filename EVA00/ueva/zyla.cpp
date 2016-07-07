@@ -682,7 +682,7 @@ void Zyla::process(QImage &image)
 			{
 				unsigned char pixelValue = (unsigned char)
 					(image16[r * imageWidth + c] / 65535.0 * 255.0);
-				image.setPixelColor(c, r, QColor::fromRgb(pixelValue, pixelValue, pixelValue));
+				//image.setPixelColor(c, r, QColor::fromRgb(pixelValue, pixelValue, pixelValue));
 			}
 		}
 		delete[] image16;
