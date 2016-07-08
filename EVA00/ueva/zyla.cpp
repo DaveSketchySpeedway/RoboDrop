@@ -46,7 +46,7 @@ ZylaSettings::ZylaSettings()
 	intMap[L"TimeStampClock"] = 0;
 	intMap[L"TimeStampClockFrequency"] = 0;
 
-	floatMap[L"ExposureTime"] = 0.001; // seconds
+	floatMap[L"ExposureTime"] = 0.004; // seconds
 	floatMap[L"FrameRate"] = 40; // Hz
 	floatMap[L"ReadoutTime"] = 0;
 	floatMap[L"RowReadTime"] = 0;
@@ -59,11 +59,11 @@ ZylaSettings::ZylaSettings()
 	enumMap[L"ElectronicShutteringMode"] = L"Rolling"; // rolling or global
 	enumMap[L"PixelReadoutRate"] = L"280 MHz"; // 100MHz
 	enumMap[L"TemperatureStatus"] = L"Stabilized";
-	enumMap[L"AOIBinning"] = L"4x4"; // binning, intensity vs resolution
+	enumMap[L"AOIBinning"] = L"2x2"; // binning, intensity vs resolution
 	//enumMap[L"AOILayout"] = L"Image"; // Kinetics, TDI, Multitrack
 	//enumMap[L"SensorReadoutMode"] = L"Bottom Up Sequential";
 	enumMap[L"SimplePreAmpGainControl"] = L"16-bit (low noise & high well capacity)";
-	enumMap[L"PixelEncoding"] = L"Mono12Packed"; // Mono12 Mono16 Mono32
+	enumMap[L"PixelEncoding"] = L"Mono16"; // Mono12 Mono16 Mono32
 	enumMap[L"BitDepth"] = L"16 Bit";
 
 	collapse();

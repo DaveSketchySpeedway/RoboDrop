@@ -41,7 +41,7 @@ void CameraThread::getCurrentImage(Mat &image)
 {
 	mutex.lock();
 	//// make 8 bit clone out of 16 bit 
-	currentImage.convertTo(image, CV_8UC1);
+	currentImage.convertTo(image, CV_8UC1, 0.00390625); // alpha = 1 / (2^16 / 2^8)
 	//currentImage = Mat(0, 0, CV_16UC1); // test if converTo does cloning
 	//image = currentImage.clone(); // test speed 16 bit vs 8 bit
 	mutex.unlock();

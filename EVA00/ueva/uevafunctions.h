@@ -10,9 +10,9 @@
 using namespace std;
 using namespace cv;
 
-QImage cvMat2qImage(Mat &cvMat);
+QImage cvMat2qImage(const Mat &cvMat);
 
-Mat qImage2cvMat(QImage &qImage);
+Mat qImage2cvMat(const QImage &qImage);
 
 
 

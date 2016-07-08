@@ -74,7 +74,6 @@ void MainWindow::cameraOnOff()
 		dashboard->cameraButton->setText(tr("On"));
 		guiFlag ^= CAMERA_ON;
 		cameraThread->stopCamera();
-		// qImage to cvMat
 	}
 }
 
@@ -307,11 +306,15 @@ void MainWindow::timerEvent(QTimerEvent *event)
 		if (guiFlag & CAMERA_ON)
 		{
 			cameraThread->getCurrentImage(cvMat);
-			qDebug() << cvMat.total() << " " <<
-				cvMat.type() << " " << // 0 means CV_8U
-				cvMat.rows << " " <<
-				cvMat.cols << " " <<
-				cvMat.isContinuous() << endl;;
+			//qDebug() << cvMat.total() << " " <<
+			//	cvMat.type() << " " << // 0 means CV_8U
+			//	cvMat.rows << " " <<
+			//	cvMat.cols << " " <<
+			//	cvMat.isContinuous() << endl;;
+		}
+		else
+		{
+			cvMat = qImage2cvMat(qImage);
 		}
 
 		//// WAKE ENGINE THREAD
@@ -755,7 +758,7 @@ void MainWindow::engineSlot(const UevaData &data)
 	pumpThread->wake();
 
 	//// UPDATE DISPLAY
-	// data.rawImage to qImage
+	qImage = cvMat2qImage(data.rawImage);
 	display->setImage(qImage);
 	// display set data
 	display->update();

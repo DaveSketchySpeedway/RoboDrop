@@ -20,6 +20,7 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include "uevastructures.h"
 
 
+
 UevaSettings::UevaSettings()
 {
 	flag = 0;

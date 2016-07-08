@@ -50,6 +50,7 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include "s2enginethread.h"
 #include "pumpthread.h"
 #include "uevastructures.h"
+#include "uevafunctions.h"
 
 using namespace std;
 using namespace cv;
