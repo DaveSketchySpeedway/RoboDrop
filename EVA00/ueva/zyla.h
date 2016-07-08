@@ -24,12 +24,14 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 
 #include "atcore.h"
 #include "atutility.h"
+#include "opencv2/core.hpp"
 #include <QtGui>
 #include <iostream>
 #include <map>
 #include <vector>
 #include <string>
 using namespace std;
+using namespace cv;
 
 struct ZylaSettings
 {
