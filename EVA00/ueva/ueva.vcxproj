@@ -248,10 +248,12 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="s2enginethread.cpp" />
+    <ClCompile Include="uevafunctions.cpp" />
     <ClCompile Include="uevastructures.cpp" />
     <ClCompile Include="zyla.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="uevafunctions.h" />
     <ClInclude Include="zyla.h" />
     <CustomBuild Include="addpumpdialog.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

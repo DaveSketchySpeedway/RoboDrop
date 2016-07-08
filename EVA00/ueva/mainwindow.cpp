@@ -307,16 +307,17 @@ void MainWindow::timerEvent(QTimerEvent *event)
 		if (guiFlag & CAMERA_ON)
 		{
 			cameraThread->getCurrentImage(cvMat);
-			//cerr << cvMat.total() << " " <<
-			//	cvMat.depth() << " " <<
-			//	cvMat.rows << " " <<
-			//	cvMat.cols << " " <<
-			//	cvMat.isContinuous() << endl;;
+			qDebug() << cvMat.total() << " " <<
+				cvMat.type() << " " << // 0 means CV_8U
+				cvMat.rows << " " <<
+				cvMat.cols << " " <<
+				cvMat.isContinuous() << endl;;
 		}
 
 		//// WAKE ENGINE THREAD
 		UevaData data = UevaData();
-		data.rawImage = cvMat.clone();
+		//data.rawImage = cvMat.clone(); // deep copy, cost 7ms seconds for 1x1
+		data.rawImage = cvMat; // shallow copy, screwed if engine last more than interval
 		engineThread->setSettings(settings); 
 		engineThread->setData(data);
 		engineThread->wake();
@@ -759,7 +760,6 @@ void MainWindow::engineSlot(const UevaData &data)
 	// display set data
 	display->update();
 	
-
 	//// PUMP THREAD FPS
 	now = QTime::currentTime();
 	pumpFps = 1000.0 / pumpLastTime.msecsTo(now);

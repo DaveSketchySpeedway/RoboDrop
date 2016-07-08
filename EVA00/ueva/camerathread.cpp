@@ -40,7 +40,10 @@ CameraThread::~CameraThread()
 void CameraThread::getCurrentImage(Mat &image)
 {
 	mutex.lock();
-	image = currentImage.clone();
+	//// make 8 bit clone out of 16 bit 
+	currentImage.convertTo(image, CV_8UC1);
+	//currentImage = Mat(0, 0, CV_16UC1); // test if converTo does cloning
+	//image = currentImage.clone(); // test speed 16 bit vs 8 bit
 	mutex.unlock();
 }
 
@@ -118,8 +121,9 @@ void CameraThread::run()
 		if (cameraAcquiring)
 		{
 			camera->process(currentImage);
-			//cerr << currentImage.total() << " " <<
-			//	currentImage.depth() << " " <<
+			//qDebug() << QThread::currentThreadId <<
+			//	currentImage.total() << " " <<
+			//	currentImage.type() << " " << // 0 means CV_8U
 			//	currentImage.rows << " " <<
 			//	currentImage.cols << " " <<
 			//	currentImage.isContinuous() << endl;;

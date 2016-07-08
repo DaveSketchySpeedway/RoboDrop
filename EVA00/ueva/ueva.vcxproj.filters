@@ -149,6 +149,9 @@
     <ClCompile Include="uevastructures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="uevafunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ueva.qrc">
@@ -226,6 +229,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="uevastructures.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="uevafunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
