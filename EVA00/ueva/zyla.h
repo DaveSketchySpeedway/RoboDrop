@@ -25,11 +25,12 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include "atcore.h"
 #include "atutility.h"
 #include "opencv2/core.hpp"
-#include <QtGui>
 #include <iostream>
+#include <QtGui>
 #include <map>
 #include <vector>
 #include <string>
+
 using namespace std;
 using namespace cv;
 
@@ -63,9 +64,9 @@ public:
 
 	void get(ZylaSettings &s);
 	void set(ZylaSettings &s);
-	void start(const int &Ts, QImage &image);
-	void process(QImage &image);
+	void start(const int &Ts);
 	void stop();
+	void process(Mat &image);
 
 
 protected:

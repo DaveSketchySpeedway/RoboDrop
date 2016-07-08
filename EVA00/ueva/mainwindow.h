@@ -38,6 +38,9 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include <QThread >
 #include <QMutex >
 #include <QPainter >
+#include <algorithm>
+#include <fstream>
+#include "opencv2/core.hpp"
 
 #include "setup.h"
 #include "dashboard.h"
@@ -46,12 +49,10 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include "camerathread.h"
 #include "s2enginethread.h"
 #include "pumpthread.h"
-#include "structures.h"
+#include "uevastructures.h"
 
-#include <algorithm>
-#include <fstream>
 using namespace std;
-
+using namespace cv;
 
 class MainWindow : public QMainWindow
 {
@@ -129,8 +130,8 @@ private:
 	int dataId;
 	UevaBuffer buffer;
 
-	QImage imageFromCamera;
-	QImage imageToSave;
+	Mat cvMat;
+	QImage qImage;
 
 	enum FlagValues
 	{

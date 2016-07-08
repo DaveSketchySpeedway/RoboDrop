@@ -24,8 +24,15 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include <QImage > 
 #include <QThread >
 #include <QMutex >
-#include "structures.h"
+#include "opencv2/core.hpp"
+#include "opencv2/core/utility.hpp"
+#include "opencv2/imgproc.hpp"
+#include "opencv2/imgcodecs.hpp"
 
+#include "uevastructures.h"
+
+using namespace std;
+using namespace cv;
 
 
 class S2EngineThread : public QThread

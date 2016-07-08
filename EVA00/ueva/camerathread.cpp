@@ -26,8 +26,7 @@ CameraThread::CameraThread(QObject *parent)
 	settings = ZylaSettings();
 	cameraConnected = 0;
 	cameraAcquiring = 0;
-	currentImage = QImage(800, 600, QImage::Format_RGB32);
-	currentImage.fill(0);
+	currentImage = Mat(0, 0, CV_16UC1);
 	mutex.unlock();
 }
 
@@ -38,10 +37,10 @@ CameraThread::~CameraThread()
 	mutex.unlock();
 }
 
-void CameraThread::getCurrentImage(QImage &image)
+void CameraThread::getCurrentImage(Mat &image)
 {
 	mutex.lock();
-	image = currentImage;
+	image = currentImage.clone();
 	mutex.unlock();
 }
 
@@ -97,7 +96,7 @@ void CameraThread::setSettings(QMap<QString, QString> &s)
 void CameraThread::startCamera(const int &Ts)
 {
 	mutex.lock();
-	camera->start(Ts, currentImage);
+	camera->start(Ts);
 	cameraAcquiring = 1;
 	mutex.unlock();
 }
@@ -107,7 +106,7 @@ void CameraThread::stopCamera()
 	mutex.lock();
 	camera->stop();
 	cameraAcquiring = 0;
-	currentImage = QImage(800, 600, QImage::Format_RGB32);
+	currentImage = Mat(0, 0, CV_16UC1);
 	mutex.unlock();
 }
 
@@ -119,6 +118,11 @@ void CameraThread::run()
 		if (cameraAcquiring)
 		{
 			camera->process(currentImage);
+			//cerr << currentImage.total() << " " <<
+			//	currentImage.depth() << " " <<
+			//	currentImage.rows << " " <<
+			//	currentImage.cols << " " <<
+			//	currentImage.isContinuous() << endl;;
 		}
 		mutex.unlock();
 	}

@@ -27,6 +27,7 @@ MainWindow::MainWindow()
 	dataId = qRegisterMetaType<UevaData>();
 	buffer = UevaBuffer();
 	guiFlag = DRAW_DEFAULT | DRAW_PLOT;
+	qImage = QImage(0, 0, QImage::Format_Indexed8);
 
 	//// INITIALIZE GUI
 	setWindowIcon(QIcon("icon/eva_icon.png"));
@@ -73,6 +74,7 @@ void MainWindow::cameraOnOff()
 		dashboard->cameraButton->setText(tr("On"));
 		guiFlag ^= CAMERA_ON;
 		cameraThread->stopCamera();
+		// qImage to cvMat
 	}
 }
 
@@ -304,12 +306,17 @@ void MainWindow::timerEvent(QTimerEvent *event)
 		//// INTERUPT CAMERA THREAD
 		if (guiFlag & CAMERA_ON)
 		{
-			cameraThread->getCurrentImage(imageFromCamera);
+			cameraThread->getCurrentImage(cvMat);
+			//cerr << cvMat.total() << " " <<
+			//	cvMat.depth() << " " <<
+			//	cvMat.rows << " " <<
+			//	cvMat.cols << " " <<
+			//	cvMat.isContinuous() << endl;;
 		}
 
 		//// WAKE ENGINE THREAD
 		UevaData data = UevaData();
-		data.rawImage = imageFromCamera;
+		data.rawImage = cvMat.clone();
 		engineThread->setSettings(settings); 
 		engineThread->setData(data);
 		engineThread->wake();
@@ -554,7 +561,7 @@ bool MainWindow::noUnsavedFile()
 bool MainWindow::loadFile(const QString &fileName)
 {
 
-	if (!imageFromCamera.load(fileName)) 
+	if (!qImage.load(fileName)) 
 	{
 		statusBar()->showMessage(tr("Loading canceled"), 2000);
 		return false;
@@ -566,7 +573,7 @@ bool MainWindow::loadFile(const QString &fileName)
 
 bool MainWindow::saveFile(const QString &fileName)
 {
-	if (!imageToSave.save(fileName))
+	if (!qImage.save(fileName))
 	{
 		statusBar()->showMessage(tr("Saving canceled"), 2000);
 		return false;
@@ -608,7 +615,7 @@ void MainWindow::clear()
 {
 	if (noUnsavedFile())
 	{
-		imageFromCamera = QImage(0, 0, QImage::Format_Grayscale8);
+		qImage = QImage(0, 0, QImage::Format_Indexed8);
 		setCurrentFile("");
 	}
 }
@@ -747,9 +754,11 @@ void MainWindow::engineSlot(const UevaData &data)
 	pumpThread->wake();
 
 	//// UPDATE DISPLAY
-	display->setImage(data.drawImage);
+	// data.rawImage to qImage
+	display->setImage(qImage);
+	// display set data
 	display->update();
-	imageToSave = data.drawImage;
+	
 
 	//// PUMP THREAD FPS
 	now = QTime::currentTime();

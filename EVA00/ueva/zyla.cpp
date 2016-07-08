@@ -618,10 +618,11 @@ void Zyla::set(ZylaSettings &s)
 	cout << endl;
 }
 
-void Zyla::start(const int &Ts, QImage &image)
+void Zyla::start(const int &Ts)
 {
-	//// flush queue and wait buffers
+	//// flush queue and wait buffers;
 	returnCode = AT_Flush(handle);
+
 	//// get info
 	samplePeriod = Ts;
 	returnCode = AT_GetInt(handle, L"ImageSizeBytes", &imageSizeBytes);
@@ -636,8 +637,7 @@ void Zyla::start(const int &Ts, QImage &image)
 	returnCode = AT_GetEnumIndex(handle, L"Pixel Encoding", &index);
 	returnCode = AT_GetEnumStringByIndex(handle, L"Pixel Encoding", index, str, 256);
 	imageEncode = str;
-	//// initialize image
-	image = QImage(imageWidth, imageHeight, QImage::Format_RGB32);
+
 	//// allocate buffer
 	buffers = new unsigned char*[queueLength];
 	alignedBuffers = new unsigned char*[queueLength];
@@ -657,42 +657,6 @@ void Zyla::start(const int &Ts, QImage &image)
 	accumNumFrames = 0;
 }
 
-void Zyla::process(QImage &image)
-{
-	//// grab buffer
-	unsigned char* pointer;
-	int size;
-	returnCode = AT_WaitBuffer(handle, &pointer, &size, 0); // timeout = 0, only get existing frames
-	cerr << "zyla process wait buffer returns " << returnCode << endl;
-	if (returnCode == 0)
-	{
-		//// re-queue buffer
-		returnCode = AT_QueueBuffer(handle, alignedBuffers[accumNumFrames % queueLength], bufferSize);
-		cerr << "re-queue returns " << returnCode << endl;
-		accumNumFrames++;
-		//// clean up buffer
-		unsigned short *image16 = new unsigned short[imageWidth * imageHeight];
-		returnCode = AT_ConvertBuffer(pointer, reinterpret_cast<unsigned char*>(image16),
-			imageWidth, imageHeight, imageStride, imageEncode, L"Mono16");
-		cerr << "convert returns " << returnCode << endl;
-		//// write to image
-		for (int r = 0; r < imageHeight; r++)
-		{
-			for (int c = 0; c < imageWidth; c++)
-			{
-				unsigned char pixelValue = (unsigned char)
-					(image16[r * imageWidth + c] / 65535.0 * 255.0);
-				//image.setPixelColor(c, r, QColor::fromRgb(pixelValue, pixelValue, pixelValue));
-			}
-		}
-		delete[] image16;
-	}
-	else
-	{
-		return;
-	}
-}
-
 void Zyla::stop()
 {
 	//// stop acquisition
@@ -706,6 +670,33 @@ void Zyla::stop()
 	delete[] buffers;
 	delete[] alignedBuffers;
 }
+
+void Zyla::process(Mat &image)
+{
+	//// grab buffer
+	unsigned char* pointer;
+	int size;
+	returnCode = AT_WaitBuffer(handle, &pointer, &size, 0); // timeout = 0, only get existing frames
+	cerr << "zyla process wait buffer returns " << returnCode << endl;
+	if (returnCode == 0)
+	{
+		//// re-queue buffer
+		returnCode = AT_QueueBuffer(handle, alignedBuffers[accumNumFrames % queueLength], bufferSize);
+		cerr << "re-queue returns " << returnCode << endl;
+		accumNumFrames++;
+		//// clean up buffer
+		image = Mat(imageHeight, imageWidth, CV_16UC1);
+		returnCode = AT_ConvertBuffer(pointer, reinterpret_cast<unsigned char*>(image.data),
+			imageWidth, imageHeight, imageStride, imageEncode, L"Mono16");
+		cerr << "convert returns " << returnCode << endl;
+	}
+	else
+	{
+		return;
+	}
+}
+
+
 
 
 

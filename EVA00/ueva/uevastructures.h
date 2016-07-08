@@ -17,12 +17,15 @@ You should have received a copy of the GNU General Public License
 along with uEva. If not, see <http://www.gnu.org/licenses/>
 */
 
-#ifndef STRUCTURES_H
-#define STRUCTURES_H
+#ifndef UEVASTRUCTURES_H
+#define UEVASTRUCTURES_H
 
 #include <QtGui >
 #include <fstream>
+#include "opencv2/core.hpp"
+
 using namespace std;
+using namespace cv;
 
 
 
@@ -55,8 +58,7 @@ struct UevaData
 	static ofstream fileStream;
 	static QTime startTime;
 
-	QImage rawImage;
-	QImage drawImage;
+	Mat rawImage;
 	QMap<QString, QVector<qreal>> map;
 };
 

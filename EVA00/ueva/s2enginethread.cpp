@@ -63,7 +63,6 @@ void S2EngineThread::run()
 		{
 			mutex.lock();
 
-			data.drawImage = data.rawImage;
 			data.map["inletWrite"] = settings.inletRequests;
 
 			if (settings.flag & UevaSettings::IMGPROC_ON)
