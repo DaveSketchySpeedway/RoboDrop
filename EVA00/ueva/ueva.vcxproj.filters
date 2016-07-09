@@ -234,5 +234,14 @@
     <ClInclude Include="uevafunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ueva.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\deployment\2016_07_09_all_lib\icon\eva_icon.ico" />
   </ItemGroup>
 </Project>
