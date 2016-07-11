@@ -137,7 +137,7 @@ private:
 	enum FlagValues
 	{
 		DRAW_DEFAULT = 1,
-		DRAW_PLOT = 2,
+		DRAW_CHANNEL = 2,
 		DRAW_CONTOUR = 4,
 		DRAW_NECK = 8,
 		DRAW_MARKER = 16,
@@ -180,6 +180,7 @@ private:
 	QAction *setupAction;
 	QAction *dashboardAction;
 	QAction *plotterAction;
+	QAction *channelAction;
 	QAction *contourAction;
 	QAction *neckAction;
 	QAction *markerAction;
@@ -197,6 +198,7 @@ private:
 	void showAndHideSetup();
 	void showAndHideDashboard();
 	void showAndHidePlotter();
+	void showAndHideChannel();
 	void showAndHideContour();
 	void showAndHideNeck();
 	void showAndHideMarker();

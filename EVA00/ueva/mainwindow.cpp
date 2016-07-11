@@ -26,7 +26,7 @@ MainWindow::MainWindow()
 	settings = UevaSettings();
 	dataId = qRegisterMetaType<UevaData>();
 	buffer = UevaBuffer();
-	guiFlag = DRAW_DEFAULT | DRAW_PLOT;
+	guiFlag = DRAW_DEFAULT | DRAW_CHANNEL | DRAW_CONTOUR | DRAW_NECK | DRAW_MARKER;
 	qImage = QImage(0, 0, QImage::Format_Indexed8);
 
 	//// INITIALIZE GUI
@@ -74,6 +74,7 @@ void MainWindow::cameraOnOff()
 		dashboard->cameraButton->setText(tr("On"));
 		guiFlag ^= CAMERA_ON;
 		cameraThread->stopCamera();
+		qImage = QImage(0, 0, QImage::Format_Indexed8);
 	}
 }
 
@@ -320,7 +321,7 @@ void MainWindow::timerEvent(QTimerEvent *event)
 		//// WAKE ENGINE THREAD
 		UevaData data = UevaData();
 		//data.rawImage = cvMat.clone(); // deep copy, cost 7ms seconds for 1x1
-		data.rawImage = cvMat; // shallow copy, screwed if engine last more than interval
+		data.image = cvMat; // shallow copy, screwed if engine last more than interval
 		engineThread->setSettings(settings); 
 		engineThread->setData(data);
 		engineThread->wake();
@@ -413,6 +414,13 @@ void MainWindow::createActions()
 	connect(plotterAction, SIGNAL(triggered()),
 		this, SLOT(showAndHidePlotter()));
 
+	channelAction = new QAction(tr("draw Cha&nnel"), this);
+	//channelAction->setIcon(QIcon("icon/channel.png"));
+	channelAction->setStatusTip(tr("Draw all channels"));
+	channelAction->setCheckable(true);
+	channelAction->setChecked(false);
+	connect(channelAction, SIGNAL(triggered()),
+		this, SLOT(showAndHideChannel()));
 
 	contourAction = new QAction(tr("draw &Contour"), this);
 	//contourAction->setIcon(QIcon("icon/contour.png"));
@@ -479,6 +487,7 @@ void MainWindow::createContextMenu()
 void MainWindow::createToolBars()
 {
 	visibilityToolBar = addToolBar(tr("&Visibility"));	
+	visibilityToolBar->addAction(channelAction);
 	visibilityToolBar->addAction(contourAction);
 	visibilityToolBar->addAction(neckAction);
 	visibilityToolBar->addAction(markerAction);
@@ -629,7 +638,7 @@ void MainWindow::open()
 	if (noUnsavedFile())
 	{
 		QString fileName = QFileDialog::getOpenFileName(this,
-			tr("Open Image"), ".",
+			tr("Open Image"), "./image",
 			tr("png (*.png)\n"
 			"jpeg (*.jpg)\n"
 			"all files (*.*)"));
@@ -654,7 +663,7 @@ bool MainWindow::save()
 bool MainWindow::saveAs()
 {
 	QString fileName = QFileDialog::getSaveFileName(this,
-		tr("Save"), ".",
+		tr("Save"), "./image",
 		tr("png (*.png)\n"
 		"jpeg (*.jpg)\n"
 		"all files (*.*)"));
@@ -721,6 +730,14 @@ void MainWindow::showAndHidePlotter()
 	plotter->activateWindow();
 }
 
+void MainWindow::showAndHideChannel()
+{
+	if (channelAction->isChecked())
+		guiFlag |= DRAW_CHANNEL;
+	else
+		guiFlag ^= DRAW_CHANNEL;
+}
+
 void MainWindow::showAndHideContour()
 {
 	if (contourAction->isChecked())
@@ -758,9 +775,10 @@ void MainWindow::engineSlot(const UevaData &data)
 	pumpThread->wake();
 
 	//// UPDATE DISPLAY
-	qImage = cvMat2qImage(data.rawImage);
+	qImage = cvMat2qImage(data.image);
 	display->setImage(qImage);
-	// display set data
+	// pass data to display
+	// pass flag to display --> record, draw
 	display->update();
 	
 	//// PUMP THREAD FPS

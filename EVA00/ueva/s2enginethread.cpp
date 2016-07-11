@@ -91,6 +91,12 @@ void S2EngineThread::run()
 				//	"channel cutting";
 			}
 
+			if (settings.flag & UevaSettings::HIGHLIGHTING)
+			{
+				//qDebug() << QThread::currentThreadId() <<
+				//	"highlighting";
+			}
+
 			emit engineSignal(data);
 			idle = true;
 			mutex.unlock();

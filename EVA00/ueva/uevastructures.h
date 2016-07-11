@@ -39,9 +39,10 @@ struct UevaSettings
 	{
 		MASK_MAKING = 1,
 		CHANNEL_CUTTING = 2,
-		PUMP_ON = 4,
-		IMGPROC_ON = 8,
-		CTRL_ON = 16,
+		HIGHLIGHTING = 4,
+		PUMP_ON = 8,
+		IMGPROC_ON = 16,
+		CTRL_ON = 32,
 	};
 	int flag;
 };
@@ -58,7 +59,7 @@ struct UevaData
 	static ofstream fileStream;
 	static QTime startTime;
 
-	Mat rawImage;
+	Mat image;
 	QMap<QString, QVector<qreal>> map;
 };
 
