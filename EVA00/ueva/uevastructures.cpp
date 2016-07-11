@@ -159,3 +159,17 @@ void UevaBuffer::write(const UevaData &data)
 		index = 0;
 	}
 }
+
+
+
+
+
+UevaCtrl::UevaCtrl()
+{
+
+}
+
+int UevaCtrl::numPlantState = 0;
+int UevaCtrl::numPlantInput = 0;
+int UevaCtrl::numPlantOutput = 0;
+double UevaCtrl::samplePeriod = 0;

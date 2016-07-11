@@ -78,8 +78,32 @@ struct UevaBuffer
 
 
 
+struct UevaCtrl
+{
+	UevaCtrl();
+
+	static int numPlantState;
+	static int numPlantInput;
+	static int numPlantOutput;
+	static double samplePeriod;
+
+	int uncoUnob;
+	Mat outputIdx;
+	Mat stateIdx;
+	Mat A;
+	Mat B;
+	Mat C;
+	Mat D;
+	Mat K1; 
+	Mat K2;
+	Mat H;
+};
+
+
+
 Q_DECLARE_METATYPE(UevaSettings)
 Q_DECLARE_METATYPE(UevaData)
 Q_DECLARE_METATYPE(UevaBuffer)
+Q_DECLARE_METATYPE(UevaCtrl)
 
 #endif

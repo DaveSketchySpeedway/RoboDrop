@@ -69,15 +69,16 @@ public:
 	void recordDataOnOff();
 	void recordRawOnOff();
 	void recordDisplayOnOff();
-	void pumpOnOff();
 	void connectCamera();
 	void getCamera();
 	void setCamera();
+	void pumpOnOff();
 	void getPump();
 	void setPump();
 	void receiveInletRequests(const QVector<qreal> &values);
 	void imgprocOnOff();
 	void ctrlOnOff();
+	void loadCtrl();
 
 signals:
 	

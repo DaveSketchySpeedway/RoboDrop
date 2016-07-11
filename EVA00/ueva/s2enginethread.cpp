@@ -55,6 +55,54 @@ void S2EngineThread::wake()
 	mutex.unlock();
 }
 
+void S2EngineThread::loadCtrl(string fileName,
+	int *numState, int *numIn, int *numOut, int *numCtrl)
+{
+	FileStorage fs(fileName, FileStorage::READ);
+	*numCtrl = (int)fs["numCtrl"];
+	*numState = (int)fs["numPlantState"];
+	*numIn = (int)fs["numPlantInput"];
+	*numOut = (int)fs["numPlantOutput"];
+	UevaCtrl::samplePeriod = (double)fs["samplePeriod"];
+	UevaCtrl::numPlantState = (int)fs["numPlantState"];
+	UevaCtrl::numPlantInput = (int)fs["numPlantInput"];
+	UevaCtrl::numPlantOutput = (int)fs["numPlantOutput"];
+
+	for (int i = 0; i < *numCtrl; i++)
+	{	
+		string ctrlName = "ctrl" + to_string(i);
+		FileNode c = fs[ctrlName];
+		UevaCtrl ctrl;
+
+		ctrl.uncoUnob = (int)c["uncoUnob"];
+		c["outputIdx"] >> ctrl.outputIdx;
+		c["stateIdx"] >> ctrl.stateIdx;
+		c["A"] >> ctrl.A;
+		c["B"] >> ctrl.B;
+		c["C"] >> ctrl.C;
+		c["D"] >> ctrl.D;
+		c["K1"] >> ctrl.K1;
+		c["K2"] >> ctrl.K2;
+		c["H"] >> ctrl.H;
+
+		cerr << "controller " << ctrlName << endl;
+		cerr << "unco unob " << ctrl.uncoUnob << endl;
+		cerr << "output index " << ctrl.outputIdx << endl;
+		cerr << "state index " << ctrl.stateIdx << endl;
+		//cerr << "A " << ctrl.A << endl;
+		//cerr << "B " << ctrl.B << endl;
+		//cerr << "C " << ctrl.C << endl;
+		//cerr << "D " << ctrl.D << endl;
+		//cerr << "K1 " << ctrl.K1 << endl;
+		//cerr << "K2 " << ctrl.K2 << endl;
+		//cerr << "H " << ctrl.H << endl;
+		cerr << endl;
+	}
+
+
+	fs.release();
+}
+
 void S2EngineThread::run()
 {
 	forever

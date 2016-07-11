@@ -121,20 +121,6 @@ void MainWindow::recordDisplayOnOff()
 	}
 }
 
-void MainWindow::pumpOnOff()
-{
-	if (dashboard->pumpButton->isChecked())
-	{
-		dashboard->pumpButton->setText(tr("Off"));
-		settings.flag |= UevaSettings::PUMP_ON;
-	}
-	else
-	{
-		dashboard->pumpButton->setText(tr("On"));
-		settings.flag ^= UevaSettings::PUMP_ON;
-	}
-}
-
 void MainWindow::connectCamera()
 {
 	if (setup->connectCameraButton->isChecked())
@@ -206,6 +192,20 @@ void MainWindow::setCamera()
 	}
 	//// set settings
 	cameraThread->setSettings(s);
+}
+
+void MainWindow::pumpOnOff()
+{
+	if (dashboard->pumpButton->isChecked())
+	{
+		dashboard->pumpButton->setText(tr("Off"));
+		settings.flag |= UevaSettings::PUMP_ON;
+	}
+	else
+	{
+		dashboard->pumpButton->setText(tr("On"));
+		settings.flag ^= UevaSettings::PUMP_ON;
+	}
 }
 
 void MainWindow::getPump()
@@ -291,6 +291,28 @@ void MainWindow::ctrlOnOff()
 	{
 		dashboard->ctrlButton->setText(tr("On"));
 		settings.flag ^= UevaSettings::CTRL_ON;
+	}
+}
+
+void MainWindow::loadCtrl()
+{
+	QString fileName = QFileDialog::getOpenFileName(setup,
+		tr("Load Controller"), "./config",
+		tr("YAML (*.yaml)\n"
+		"all files (*.*)"));
+	// set parent so file dialog appear at center
+	if (!fileName.isEmpty())
+	{
+		int numOut;
+		int numIn;
+		int numState;
+		int numCtrl;
+		engineThread->loadCtrl(fileName.toStdString(),
+			&numState, &numIn, &numOut, &numCtrl);
+		setup->numInLabel->setText(QString::number(numIn));
+		setup->numOutLabel->setText(QString::number(numOut));
+		setup->numStateLabel->setText(QString::number(numState));
+		setup->numCtrlLabel->setText(QString::number(numCtrl));
 	}
 }
 

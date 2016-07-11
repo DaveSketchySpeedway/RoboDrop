@@ -58,12 +58,13 @@ Setup::Setup(QWidget *parent)
 		tr("Inlet Index") <<
 		tr("Limit (mbar)"));
 
-	
 
 
 	//// IMGPROC
 
 	//// CTRL
+	connect(loadCtrlButton, SIGNAL(clicked()),
+		parent, SLOT(loadCtrl()));
 }
 
 Setup::~Setup()
