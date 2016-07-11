@@ -16,6 +16,7 @@
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QTabWidget>
@@ -51,6 +52,17 @@ public:
     QPushButton *setPumpButton;
     QWidget *imgprocTab;
     QWidget *ctrlTab;
+    QWidget *layoutWidget;
+    QGridLayout *gridLayout_4;
+    QLabel *label_7;
+    QLabel *numInLabel;
+    QLabel *label;
+    QLabel *numOutLabel;
+    QLabel *label_5;
+    QLabel *numCtrlLabel;
+    QPushButton *loadCtrlButton;
+    QLabel *label_3;
+    QLabel *numStateLabel;
 
     void setupUi(QWidget *Setup)
     {
@@ -168,6 +180,59 @@ public:
         tabWidget->addTab(imgprocTab, QString());
         ctrlTab = new QWidget();
         ctrlTab->setObjectName(QStringLiteral("ctrlTab"));
+        layoutWidget = new QWidget(ctrlTab);
+        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
+        layoutWidget->setGeometry(QRect(53, 82, 481, 120));
+        gridLayout_4 = new QGridLayout(layoutWidget);
+        gridLayout_4->setSpacing(6);
+        gridLayout_4->setContentsMargins(11, 11, 11, 11);
+        gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
+        gridLayout_4->setContentsMargins(0, 0, 0, 0);
+        label_7 = new QLabel(layoutWidget);
+        label_7->setObjectName(QStringLiteral("label_7"));
+
+        gridLayout_4->addWidget(label_7, 1, 0, 1, 1);
+
+        numInLabel = new QLabel(layoutWidget);
+        numInLabel->setObjectName(QStringLiteral("numInLabel"));
+
+        gridLayout_4->addWidget(numInLabel, 1, 1, 1, 1);
+
+        label = new QLabel(layoutWidget);
+        label->setObjectName(QStringLiteral("label"));
+
+        gridLayout_4->addWidget(label, 2, 0, 1, 1);
+
+        numOutLabel = new QLabel(layoutWidget);
+        numOutLabel->setObjectName(QStringLiteral("numOutLabel"));
+
+        gridLayout_4->addWidget(numOutLabel, 2, 1, 1, 1);
+
+        label_5 = new QLabel(layoutWidget);
+        label_5->setObjectName(QStringLiteral("label_5"));
+
+        gridLayout_4->addWidget(label_5, 4, 0, 1, 1);
+
+        numCtrlLabel = new QLabel(layoutWidget);
+        numCtrlLabel->setObjectName(QStringLiteral("numCtrlLabel"));
+
+        gridLayout_4->addWidget(numCtrlLabel, 4, 1, 1, 1);
+
+        loadCtrlButton = new QPushButton(layoutWidget);
+        loadCtrlButton->setObjectName(QStringLiteral("loadCtrlButton"));
+
+        gridLayout_4->addWidget(loadCtrlButton, 5, 1, 1, 1);
+
+        label_3 = new QLabel(layoutWidget);
+        label_3->setObjectName(QStringLiteral("label_3"));
+
+        gridLayout_4->addWidget(label_3, 0, 0, 1, 1);
+
+        numStateLabel = new QLabel(layoutWidget);
+        numStateLabel->setObjectName(QStringLiteral("numStateLabel"));
+
+        gridLayout_4->addWidget(numStateLabel, 0, 1, 1, 1);
+
         tabWidget->addTab(ctrlTab, QString());
 
         gridLayout->addWidget(tabWidget, 0, 0, 1, 1);
@@ -175,7 +240,7 @@ public:
 
         retranslateUi(Setup);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(Setup);
@@ -194,6 +259,15 @@ public:
         setPumpButton->setText(QApplication::translate("Setup", "Set Pump", 0));
         tabWidget->setTabText(tabWidget->indexOf(pumpTab), QApplication::translate("Setup", "Pump", 0));
         tabWidget->setTabText(tabWidget->indexOf(imgprocTab), QApplication::translate("Setup", "Image Processing", 0));
+        label_7->setText(QApplication::translate("Setup", "Number of Plant Inputs (inlets):", 0));
+        numInLabel->setText(QApplication::translate("Setup", "0", 0));
+        label->setText(QApplication::translate("Setup", "Number of Plant Outputs (channels):", 0));
+        numOutLabel->setText(QApplication::translate("Setup", "0", 0));
+        label_5->setText(QApplication::translate("Setup", "Number of Controllers", 0));
+        numCtrlLabel->setText(QApplication::translate("Setup", "0", 0));
+        loadCtrlButton->setText(QApplication::translate("Setup", "Load Controllers", 0));
+        label_3->setText(QApplication::translate("Setup", "Number of Plant States:", 0));
+        numStateLabel->setText(QApplication::translate("Setup", "0", 0));
         tabWidget->setTabText(tabWidget->indexOf(ctrlTab), QApplication::translate("Setup", "Controller", 0));
     } // retranslateUi
 

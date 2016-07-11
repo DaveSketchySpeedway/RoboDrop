@@ -20,12 +20,21 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #ifndef S2ENGINETHREAD_H
 #define S2ENGINETHREAD_H
 
+#include <string>
+#include <iostream>
 #include <QtGui >
 #include <QImage > 
 #include <QThread >
 #include <QMutex >
-#include "structures.h"
+#include "opencv2/core.hpp"
+#include "opencv2/core/utility.hpp"
+#include "opencv2/imgproc.hpp"
+#include "opencv2/imgcodecs.hpp"
 
+#include "uevastructures.h"
+
+using namespace std;
+using namespace cv;
 
 
 class S2EngineThread : public QThread
@@ -39,6 +48,8 @@ public:
 	void setSettings(const UevaSettings &s);
 	void setData(const UevaData &d);
 	void wake();
+	void loadCtrl(string fileName,
+		int *numState, int *numIn, int *numOut, int *numCtrl);
 
 signals:
 	void engineSignal(const UevaData &d);
@@ -47,10 +58,14 @@ protected:
 	void run();
 
 private:
-	UevaSettings settings;
-	UevaData data;
 	bool idle;
 	QMutex mutex;
+
+	UevaSettings settings;
+	UevaData data;
+
+	QVector<UevaCtrl> ctrls;
+
 
 	private slots:
 

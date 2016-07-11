@@ -23,11 +23,16 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 
 
 #include "atcore.h"
-#include <QtGui>
+#include "atutility.h"
+#include "opencv2/core.hpp"
 #include <iostream>
+#include <QtGui>
 #include <map>
+#include <vector>
 #include <string>
+
 using namespace std;
+using namespace cv;
 
 struct ZylaSettings
 {
@@ -59,8 +64,9 @@ public:
 
 	void get(ZylaSettings &s);
 	void set(ZylaSettings &s);
-	void start();
-	void end();
+	void start(const int &Ts);
+	void stop();
+	void process(Mat &image);
 
 
 protected:
@@ -72,6 +78,19 @@ private:
 	int cameraIndex;
 	int returnCode;
 	AT_H handle;
+	AT_64 imageSizeBytes;
+	AT_64 imageStride;
+	AT_64 imageWidth;
+	AT_64 imageHeight;
+	AT_WC *imageEncode;
+	int bufferSize;
+	double frameRate;
+	int samplePeriod;
+	int queueLength;
+
+	AT_64 accumNumFrames; // should last 1.8e17 seconds before overflow
+	unsigned char** buffers;
+	unsigned char** alignedBuffers;
 
 };
 

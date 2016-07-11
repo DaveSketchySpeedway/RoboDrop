@@ -17,12 +17,15 @@ You should have received a copy of the GNU General Public License
 along with uEva. If not, see <http://www.gnu.org/licenses/>
 */
 
-#ifndef STRUCTURES_H
-#define STRUCTURES_H
+#ifndef UEVASTRUCTURES_H
+#define UEVASTRUCTURES_H
 
 #include <QtGui >
 #include <fstream>
+#include "opencv2/core.hpp"
+
 using namespace std;
+using namespace cv;
 
 
 
@@ -36,9 +39,10 @@ struct UevaSettings
 	{
 		MASK_MAKING = 1,
 		CHANNEL_CUTTING = 2,
-		PUMP_ON = 4,
-		IMGPROC_ON = 8,
-		CTRL_ON = 16,
+		HIGHLIGHTING = 4,
+		PUMP_ON = 8,
+		IMGPROC_ON = 16,
+		CTRL_ON = 32,
 	};
 	int flag;
 };
@@ -55,8 +59,7 @@ struct UevaData
 	static ofstream fileStream;
 	static QTime startTime;
 
-	QImage rawImage;
-	QImage drawImage;
+	Mat image;
 	QMap<QString, QVector<qreal>> map;
 };
 
@@ -75,8 +78,32 @@ struct UevaBuffer
 
 
 
+struct UevaCtrl
+{
+	UevaCtrl();
+
+	static int numPlantState;
+	static int numPlantInput;
+	static int numPlantOutput;
+	static double samplePeriod;
+
+	int uncoUnob;
+	Mat outputIdx;
+	Mat stateIdx;
+	Mat A;
+	Mat B;
+	Mat C;
+	Mat D;
+	Mat K1; 
+	Mat K2;
+	Mat H;
+};
+
+
+
 Q_DECLARE_METATYPE(UevaSettings)
 Q_DECLARE_METATYPE(UevaData)
 Q_DECLARE_METATYPE(UevaBuffer)
+Q_DECLARE_METATYPE(UevaCtrl)
 
 #endif

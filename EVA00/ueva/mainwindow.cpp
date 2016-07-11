@@ -26,12 +26,8 @@ MainWindow::MainWindow()
 	settings = UevaSettings();
 	dataId = qRegisterMetaType<UevaData>();
 	buffer = UevaBuffer();
-	QColor color = Qt::blue;
-	imageFromCamera = QImage(800, 600, QImage::Format_ARGB32);
-	imageFromCamera.fill(color);
-	imageToSave = QImage(800, 600, QImage::Format_ARGB32);
-	imageToSave.fill(color);
-	guiFlag = DRAW_DEFAULT | DRAW_PLOT;
+	guiFlag = DRAW_DEFAULT | DRAW_CHANNEL | DRAW_CONTOUR | DRAW_NECK | DRAW_MARKER;
+	qImage = QImage(0, 0, QImage::Format_Indexed8);
 
 	//// INITIALIZE GUI
 	setWindowIcon(QIcon("icon/eva_icon.png"));
@@ -70,10 +66,15 @@ void MainWindow::cameraOnOff()
 	if (dashboard->cameraButton->isChecked())
 	{
 		dashboard->cameraButton->setText(tr("Off"));
+		guiFlag |= CAMERA_ON;
+		cameraThread->startCamera( (int)(timerInterval/1000) );
 	}
 	else
 	{
 		dashboard->cameraButton->setText(tr("On"));
+		guiFlag ^= CAMERA_ON;
+		cameraThread->stopCamera();
+		qImage = QImage(0, 0, QImage::Format_Indexed8);
 	}
 }
 
@@ -117,20 +118,6 @@ void MainWindow::recordDisplayOnOff()
 	{
 		dashboard->recordDisplayButton->setText(tr("On"));
 		guiFlag ^= RECORD_DISPLAY;
-	}
-}
-
-void MainWindow::pumpOnOff()
-{
-	if (dashboard->pumpButton->isChecked())
-	{
-		dashboard->pumpButton->setText(tr("Off"));
-		settings.flag |= UevaSettings::PUMP_ON;
-	}
-	else
-	{
-		dashboard->pumpButton->setText(tr("On"));
-		settings.flag ^= UevaSettings::PUMP_ON;
 	}
 }
 
@@ -205,6 +192,20 @@ void MainWindow::setCamera()
 	}
 	//// set settings
 	cameraThread->setSettings(s);
+}
+
+void MainWindow::pumpOnOff()
+{
+	if (dashboard->pumpButton->isChecked())
+	{
+		dashboard->pumpButton->setText(tr("Off"));
+		settings.flag |= UevaSettings::PUMP_ON;
+	}
+	else
+	{
+		dashboard->pumpButton->setText(tr("On"));
+		settings.flag ^= UevaSettings::PUMP_ON;
+	}
 }
 
 void MainWindow::getPump()
@@ -293,6 +294,28 @@ void MainWindow::ctrlOnOff()
 	}
 }
 
+void MainWindow::loadCtrl()
+{
+	QString fileName = QFileDialog::getOpenFileName(setup,
+		tr("Load Controller"), "./config",
+		tr("YAML (*.yaml)\n"
+		"all files (*.*)"));
+	// set parent so file dialog appear at center
+	if (!fileName.isEmpty())
+	{
+		int numOut;
+		int numIn;
+		int numState;
+		int numCtrl;
+		engineThread->loadCtrl(fileName.toStdString(),
+			&numState, &numIn, &numOut, &numCtrl);
+		setup->numInLabel->setText(QString::number(numIn));
+		setup->numOutLabel->setText(QString::number(numOut));
+		setup->numStateLabel->setText(QString::number(numState));
+		setup->numCtrlLabel->setText(QString::number(numCtrl));
+	}
+}
+
 void MainWindow::timerEvent(QTimerEvent *event)
 {
 	
@@ -302,9 +325,25 @@ void MainWindow::timerEvent(QTimerEvent *event)
 		QTime now = QTime::currentTime();
 		pingTimeStamps.enqueue(now);
 		
+		//// INTERUPT CAMERA THREAD
+		if (guiFlag & CAMERA_ON)
+		{
+			cameraThread->getCurrentImage(cvMat);
+			//qDebug() << cvMat.total() << " " <<
+			//	cvMat.type() << " " << // 0 means CV_8U
+			//	cvMat.rows << " " <<
+			//	cvMat.cols << " " <<
+			//	cvMat.isContinuous() << endl;;
+		}
+		else
+		{
+			cvMat = qImage2cvMat(qImage);
+		}
+
 		//// WAKE ENGINE THREAD
 		UevaData data = UevaData();
-		data.rawImage = imageFromCamera;
+		//data.rawImage = cvMat.clone(); // deep copy, cost 7ms seconds for 1x1
+		data.image = cvMat; // shallow copy, screwed if engine last more than interval
 		engineThread->setSettings(settings); 
 		engineThread->setData(data);
 		engineThread->wake();
@@ -397,6 +436,13 @@ void MainWindow::createActions()
 	connect(plotterAction, SIGNAL(triggered()),
 		this, SLOT(showAndHidePlotter()));
 
+	channelAction = new QAction(tr("draw Cha&nnel"), this);
+	//channelAction->setIcon(QIcon("icon/channel.png"));
+	channelAction->setStatusTip(tr("Draw all channels"));
+	channelAction->setCheckable(true);
+	channelAction->setChecked(false);
+	connect(channelAction, SIGNAL(triggered()),
+		this, SLOT(showAndHideChannel()));
 
 	contourAction = new QAction(tr("draw &Contour"), this);
 	//contourAction->setIcon(QIcon("icon/contour.png"));
@@ -463,6 +509,7 @@ void MainWindow::createContextMenu()
 void MainWindow::createToolBars()
 {
 	visibilityToolBar = addToolBar(tr("&Visibility"));	
+	visibilityToolBar->addAction(channelAction);
 	visibilityToolBar->addAction(contourAction);
 	visibilityToolBar->addAction(neckAction);
 	visibilityToolBar->addAction(markerAction);
@@ -549,7 +596,7 @@ bool MainWindow::noUnsavedFile()
 bool MainWindow::loadFile(const QString &fileName)
 {
 
-	if (!imageFromCamera.load(fileName)) 
+	if (!qImage.load(fileName)) 
 	{
 		statusBar()->showMessage(tr("Loading canceled"), 2000);
 		return false;
@@ -561,7 +608,7 @@ bool MainWindow::loadFile(const QString &fileName)
 
 bool MainWindow::saveFile(const QString &fileName)
 {
-	if (!imageToSave.save(fileName))
+	if (!qImage.save(fileName))
 	{
 		statusBar()->showMessage(tr("Saving canceled"), 2000);
 		return false;
@@ -603,8 +650,7 @@ void MainWindow::clear()
 {
 	if (noUnsavedFile())
 	{
-		QColor color = Qt::black;
-		imageFromCamera.fill(color);
+		qImage = QImage(0, 0, QImage::Format_Indexed8);
 		setCurrentFile("");
 	}
 }
@@ -614,7 +660,7 @@ void MainWindow::open()
 	if (noUnsavedFile())
 	{
 		QString fileName = QFileDialog::getOpenFileName(this,
-			tr("Open Image"), ".",
+			tr("Open Image"), "./image",
 			tr("png (*.png)\n"
 			"jpeg (*.jpg)\n"
 			"all files (*.*)"));
@@ -639,7 +685,7 @@ bool MainWindow::save()
 bool MainWindow::saveAs()
 {
 	QString fileName = QFileDialog::getSaveFileName(this,
-		tr("Save"), ".",
+		tr("Save"), "./image",
 		tr("png (*.png)\n"
 		"jpeg (*.jpg)\n"
 		"all files (*.*)"));
@@ -706,6 +752,14 @@ void MainWindow::showAndHidePlotter()
 	plotter->activateWindow();
 }
 
+void MainWindow::showAndHideChannel()
+{
+	if (channelAction->isChecked())
+		guiFlag |= DRAW_CHANNEL;
+	else
+		guiFlag ^= DRAW_CHANNEL;
+}
+
 void MainWindow::showAndHideContour()
 {
 	if (contourAction->isChecked())
@@ -743,10 +797,12 @@ void MainWindow::engineSlot(const UevaData &data)
 	pumpThread->wake();
 
 	//// UPDATE DISPLAY
-	display->setImage(data.drawImage);
+	qImage = cvMat2qImage(data.image);
+	display->setImage(qImage);
+	// pass data to display
+	// pass flag to display --> record, draw
 	display->update();
-	imageToSave = data.drawImage;
-
+	
 	//// PUMP THREAD FPS
 	now = QTime::currentTime();
 	pumpFps = 1000.0 / pumpLastTime.msecsTo(now);

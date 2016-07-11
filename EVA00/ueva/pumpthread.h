@@ -24,7 +24,7 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include <QImage > 
 #include <QThread >
 #include <QMutex >
-#include "structures.h"
+#include "uevastructures.h"
 #include "mfcs.h"
 
 class PumpThread : public QThread

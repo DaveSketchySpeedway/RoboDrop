@@ -21,11 +21,17 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #ifndef CAMERATHREAD_H
 #define CAMERATHREAD_h
 
+#include "opencv2/core.hpp"
+#include <iostream>
 #include <QtGui >
 #include <QImage > 
 #include <QThread >
 #include <QMutex >
+
 #include "zyla.h"
+
+using namespace std;
+using namespace cv;
 
 class CameraThread : public QThread
 {
@@ -35,11 +41,14 @@ public:
 	CameraThread(QObject *parent = 0);
 	~CameraThread();
 
+	void getCurrentImage(Mat &image);
 	void addCamera();
 	void deleteCamera();
 	QMap<QString, QString> defaultSettings();
 	QMap<QString, QString> getSettings();
 	void setSettings(QMap<QString, QString> &s);
+	void startCamera(const int &Ts);
+	void stopCamera();
 
 signals:
 
@@ -49,8 +58,10 @@ protected:
 private:
 	Zyla *camera;
 	ZylaSettings settings;
-	int hasCamera;
+	int cameraConnected;
+	int cameraAcquiring;
 	QMutex mutex;
+	Mat currentImage;
 
 	private slots:
 

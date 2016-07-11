@@ -26,7 +26,7 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include <time.h>
 
 #include "ui_plotter.h"
-#include "structures.h"
+#include "uevastructures.h"
 
 class Plotter : public QWidget, public Ui_Plotter
 {

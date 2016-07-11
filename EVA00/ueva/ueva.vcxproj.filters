@@ -95,9 +95,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_plot.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="structures.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="addpumpdialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -147,6 +144,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zyla.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="uevastructures.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="uevafunctions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -213,9 +216,6 @@
     <ClInclude Include="GeneratedFiles\ui_plotter.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="structures.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_addpumpdialog.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
@@ -228,5 +228,20 @@
     <ClInclude Include="zyla.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="uevastructures.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="uevafunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ueva.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\deployment\2016_07_09_all_lib\icon\eva_icon.ico" />
   </ItemGroup>
 </Project>

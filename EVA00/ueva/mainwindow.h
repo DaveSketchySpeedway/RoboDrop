@@ -38,6 +38,9 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include <QThread >
 #include <QMutex >
 #include <QPainter >
+#include <algorithm>
+#include <fstream>
+#include "opencv2/core.hpp"
 
 #include "setup.h"
 #include "dashboard.h"
@@ -46,12 +49,11 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include "camerathread.h"
 #include "s2enginethread.h"
 #include "pumpthread.h"
-#include "structures.h"
+#include "uevastructures.h"
+#include "uevafunctions.h"
 
-#include <algorithm>
-#include <fstream>
 using namespace std;
-
+using namespace cv;
 
 class MainWindow : public QMainWindow
 {
@@ -67,15 +69,16 @@ public:
 	void recordDataOnOff();
 	void recordRawOnOff();
 	void recordDisplayOnOff();
-	void pumpOnOff();
 	void connectCamera();
 	void getCamera();
 	void setCamera();
+	void pumpOnOff();
 	void getPump();
 	void setPump();
 	void receiveInletRequests(const QVector<qreal> &values);
 	void imgprocOnOff();
 	void ctrlOnOff();
+	void loadCtrl();
 
 signals:
 	
@@ -106,7 +109,7 @@ private:
 	//// MEMBER
 	QString currentFile;
 
-	int timerInterval;
+	int timerInterval; // sampling period right here
 	int timerId;
 
 	QTime engineLastTime;
@@ -129,19 +132,20 @@ private:
 	int dataId;
 	UevaBuffer buffer;
 
-	QImage imageFromCamera;
-	QImage imageToSave;
+	Mat cvMat;
+	QImage qImage;
 
 	enum FlagValues
 	{
 		DRAW_DEFAULT = 1,
-		DRAW_PLOT = 2,
+		DRAW_CHANNEL = 2,
 		DRAW_CONTOUR = 4,
 		DRAW_NECK = 8,
 		DRAW_MARKER = 16,
 		RECORD_DATA = 32,
 		RECORD_RAW = 64,
 		RECORD_DISPLAY = 128,
+		CAMERA_ON = 256,
 	};
 	int guiFlag;
 
@@ -177,6 +181,7 @@ private:
 	QAction *setupAction;
 	QAction *dashboardAction;
 	QAction *plotterAction;
+	QAction *channelAction;
 	QAction *contourAction;
 	QAction *neckAction;
 	QAction *markerAction;
@@ -194,6 +199,7 @@ private:
 	void showAndHideSetup();
 	void showAndHideDashboard();
 	void showAndHidePlotter();
+	void showAndHideChannel();
 	void showAndHideContour();
 	void showAndHideNeck();
 	void showAndHideMarker();
