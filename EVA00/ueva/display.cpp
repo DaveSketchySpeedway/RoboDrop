@@ -74,6 +74,7 @@ void Display::mousePressEvent(QMouseEvent *event)
 	{
 		linePoint1 = event->pos();
 		mousePressed = true;
+		update();
 	}
 }
 
@@ -85,6 +86,7 @@ void Display::mouseMoveEvent(QMouseEvent *event)
 	{
 	linePoint2 = event->pos();
 	mousePressed = true;
+	// update(); // call update() everytime mouse move will cost up to 30 ping
 	}
 }
 
@@ -98,6 +100,7 @@ void Display::mouseReleaseEvent(QMouseEvent *event)
 		mousePressed = false;
 		QLine line = QLine(linePoint1, linePoint2);
 		emit sendMouseLine(line);
+		update();
 	}
 }
 
