@@ -110,39 +110,38 @@ void S2EngineThread::run()
 		if (!idle)
 		{
 			mutex.lock();
-
 			data.map["inletWrite"] = settings.inletRequests;
-
-			if (settings.flag & UevaSettings::IMGPROC_ON)
-			{
-				QThread::msleep(80);
-				//qDebug() << QThread::currentThreadId() <<
-				//	"imgproc on";
-			}
-
-			if (settings.flag & UevaSettings::CTRL_ON)
-			{
-				QThread::msleep(80);
-				//qDebug() << QThread::currentThreadId() <<
-				//	"ctrl on";
-			}
 
 			if (settings.flag & UevaSettings::MASK_MAKING)
 			{
 				//qDebug() << QThread::currentThreadId() <<
 				//	"mask making";
 			}
-
-			if (settings.flag & UevaSettings::CHANNEL_CUTTING)
+			else if (settings.flag & UevaSettings::CHANNEL_CUTTING)
 			{
 				//qDebug() << QThread::currentThreadId() <<
 				//	"channel cutting";
 			}
-
-			if (settings.flag & UevaSettings::HIGHLIGHTING)
+			else if (settings.flag & UevaSettings::HIGHLIGHTING)
 			{
 				//qDebug() << QThread::currentThreadId() <<
 				//	"highlighting";
+			}
+			else
+			{
+				if (settings.flag & UevaSettings::CTRL_ON)
+				{
+					QThread::msleep(80);
+					//qDebug() << QThread::currentThreadId() <<
+					//	"ctrl on";
+				}
+				
+				if (settings.flag & UevaSettings::IMGPROC_ON)
+				{
+					QThread::msleep(80);
+					//qDebug() << QThread::currentThreadId() <<
+					//	"imgproc on";
+				}
 			}
 
 			emit engineSignal(data);
