@@ -298,6 +298,87 @@ void MainWindow::setPump()
 	dashboard->resetInletWidgets(settings.inletInfo);
 }
 
+void MainWindow::setCalib()
+{
+	double calibLength = setup->calibLengthEdit->text().toDouble();
+	engineThread->setCalib(calibLength);
+}
+
+void MainWindow::setBkgd()
+{
+	engineThread->setBkgd();
+}
+
+void MainWindow::maskOnOff()
+{
+	if (setup->maskButton->isChecked())
+	{
+		setup->maskButton->setText(tr("Done Making Mask"));
+		settings.flag |= UevaSettings::MASK_MAKING;
+		// initialize settings
+		maskSettings();
+	}
+	else
+	{
+		setup->maskButton->setText(tr("Make Mask"));
+		settings.flag ^= UevaSettings::MASK_MAKING;
+	}
+}
+
+void MainWindow::maskSettings()
+{
+	// * 2 + 3 because they have to be odd and > 1
+	int block = setup->blockSlider->value() * 2 + 3;
+	int threshold = (127 - setup->thresholdSlider->value());
+	int openSize = setup->openSizeSlider->value() * 2 + 3;
+	int openShape = setup->openShapeSlider->value();
+
+	settings.maskBlockSize = block;
+	settings.maskThreshold = threshold;
+	settings.maskOpenSize = openSize;
+	QString openShapeText = QString("Rectangle");
+	switch (openShape)
+	{
+	case 0:
+	{
+		openShapeText = QString("Rectangle");
+		settings.maskOpenShape = cv::MORPH_RECT;
+		break;
+	}
+	case 1:
+	{
+		openShapeText = QString("Ellipse");
+		settings.maskOpenShape = cv::MORPH_ELLIPSE;
+		break;
+	}
+	case 2:
+	{
+		openShapeText = QString("Cross");
+		settings.maskOpenShape = cv::MORPH_CROSS;
+		break;
+	}
+	}
+
+	setup->blockLabel->setText(QString::number(block));
+	setup->thresholdLabel->setText(QString::number(threshold));
+	setup->openSizeLabel->setText(QString::number(openSize));
+	setup->openShapeLabel->setText(openShapeText);
+}
+
+void MainWindow::channelOnOff()
+{
+	if (setup->channelButton->isChecked())
+	{
+		setup->channelButton->setText(tr("Done Cutting Channels"));
+		settings.flag |= UevaSettings::CHANNEL_CUTTING;
+	}
+	else
+	{
+		setup->channelButton->setText(tr("Cut Channels"));
+		settings.flag ^= UevaSettings::CHANNEL_CUTTING;
+	}
+}
+
 void MainWindow::loadCtrl()
 {
 	QString fileName = QFileDialog::getOpenFileName(setup,
@@ -317,45 +398,6 @@ void MainWindow::loadCtrl()
 		setup->numOutLabel->setText(QString::number(numOut));
 		setup->numStateLabel->setText(QString::number(numState));
 		setup->numCtrlLabel->setText(QString::number(numCtrl));
-	}
-}
-
-void MainWindow::setCalib()
-{
-	double calibLength = setup->calibLengthEdit->text().toDouble();
-	engineThread->setCalib(calibLength);
-}
-
-void MainWindow::setBkgd()
-{
-	engineThread->setBkgd();
-}
-
-void MainWindow::maskOnOff()
-{
-	if (setup->maskButton->isChecked())
-	{
-		setup->maskButton->setText(tr("Done Making Mask"));
-		settings.flag |= UevaSettings::MASK_MAKING;
-	}
-	else
-	{
-		setup->maskButton->setText(tr("Make Mask"));
-		settings.flag ^= UevaSettings::MASK_MAKING;
-	}
-}
-
-void MainWindow::channelOnOff()
-{
-	if (setup->channelButton->isChecked())
-	{
-		setup->channelButton->setText(tr("Done Cutting Channels"));
-		settings.flag |= UevaSettings::CHANNEL_CUTTING;
-	}
-	else
-	{
-		setup->channelButton->setText(tr("Cut Channels"));
-		settings.flag ^= UevaSettings::CHANNEL_CUTTING;
 	}
 }
 

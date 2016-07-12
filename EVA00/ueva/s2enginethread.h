@@ -74,6 +74,7 @@ private:
 	QVector<UevaCtrl> ctrls;
 	Mat bkgd;
 	double micronPerPixel;
+	Mat mask;
 
 	private slots:
 

@@ -68,6 +68,14 @@ Setup::Setup(QWidget *parent)
 	connect(channelButton, SIGNAL(clicked()),
 		parent, SLOT(channelOnOff()));
 
+	connect(thresholdSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(maskSettings()));
+	connect(blockSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(maskSettings()));
+	connect(openSizeSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(maskSettings()));
+	connect(openShapeSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(maskSettings()));
 
 	//// CTRL
 	connect(loadCtrlButton, SIGNAL(clicked()),

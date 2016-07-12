@@ -31,7 +31,7 @@ public:
 	~Display();
 
 	void setImage(const QImage &image);
-	QPoint getMousePosition(); // used by ref set, statusbar
+	QPoint getMousePosition(); // used by mask picking, ref set
 	QLine getMousePressedMovement(); // used by ref update
 
 signals:

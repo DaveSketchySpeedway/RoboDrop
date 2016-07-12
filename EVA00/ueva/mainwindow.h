@@ -84,6 +84,7 @@ public:
 	void setCalib();
 	void setBkgd();
 	void maskOnOff();
+	void maskSettings();
 	void channelOnOff();
 	void loadCtrl();
 

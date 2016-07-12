@@ -46,6 +46,10 @@ struct UevaSettings
 	QVector<QVector<int>> inletInfo;
 	QVector<qreal> inletRequests;
 	QVector<QLine> mouseLines;
+	int maskBlockSize;
+	int maskThreshold;
+	int maskOpenSize;
+	int maskOpenShape;
 };
 
 

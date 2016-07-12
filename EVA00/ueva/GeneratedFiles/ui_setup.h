@@ -19,6 +19,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSlider>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTreeWidget>
@@ -58,8 +59,22 @@ public:
     QPushButton *calibButton;
     QLabel *label_2;
     QLineEdit *calibLengthEdit;
-    QWidget *ctrlTab;
     QWidget *layoutWidget;
+    QGridLayout *gridLayout_5;
+    QLabel *label_8;
+    QSlider *thresholdSlider;
+    QLabel *thresholdLabel;
+    QLabel *label_10;
+    QSlider *blockSlider;
+    QLabel *blockLabel;
+    QLabel *label_14;
+    QSlider *openSizeSlider;
+    QLabel *openSizeLabel;
+    QLabel *label_12;
+    QSlider *openShapeSlider;
+    QLabel *openShapeLabel;
+    QWidget *ctrlTab;
+    QWidget *layoutWidget1;
     QGridLayout *gridLayout_4;
     QLabel *label_7;
     QLabel *numInLabel;
@@ -186,15 +201,15 @@ public:
         imgprocTab->setObjectName(QStringLiteral("imgprocTab"));
         bkgdButton = new QPushButton(imgprocTab);
         bkgdButton->setObjectName(QStringLiteral("bkgdButton"));
-        bkgdButton->setGeometry(QRect(120, 150, 221, 23));
+        bkgdButton->setGeometry(QRect(110, 120, 221, 23));
         bkgdButton->setCheckable(false);
         maskButton = new QPushButton(imgprocTab);
         maskButton->setObjectName(QStringLiteral("maskButton"));
-        maskButton->setGeometry(QRect(130, 310, 221, 23));
+        maskButton->setGeometry(QRect(120, 250, 221, 23));
         maskButton->setCheckable(true);
         channelButton = new QPushButton(imgprocTab);
         channelButton->setObjectName(QStringLiteral("channelButton"));
-        channelButton->setGeometry(QRect(130, 450, 221, 23));
+        channelButton->setGeometry(QRect(110, 570, 221, 23));
         channelButton->setCheckable(true);
         calibButton = new QPushButton(imgprocTab);
         calibButton->setObjectName(QStringLiteral("calibButton"));
@@ -206,65 +221,150 @@ public:
         calibLengthEdit = new QLineEdit(imgprocTab);
         calibLengthEdit->setObjectName(QStringLiteral("calibLengthEdit"));
         calibLengthEdit->setGeometry(QRect(240, 70, 71, 20));
+        layoutWidget = new QWidget(imgprocTab);
+        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
+        layoutWidget->setGeometry(QRect(92, 300, 421, 191));
+        gridLayout_5 = new QGridLayout(layoutWidget);
+        gridLayout_5->setSpacing(6);
+        gridLayout_5->setContentsMargins(11, 11, 11, 11);
+        gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
+        gridLayout_5->setContentsMargins(0, 0, 0, 0);
+        label_8 = new QLabel(layoutWidget);
+        label_8->setObjectName(QStringLiteral("label_8"));
+
+        gridLayout_5->addWidget(label_8, 0, 0, 1, 1);
+
+        thresholdSlider = new QSlider(layoutWidget);
+        thresholdSlider->setObjectName(QStringLiteral("thresholdSlider"));
+        thresholdSlider->setMaximum(255);
+        thresholdSlider->setPageStep(5);
+        thresholdSlider->setValue(127);
+        thresholdSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_5->addWidget(thresholdSlider, 0, 1, 1, 1);
+
+        thresholdLabel = new QLabel(layoutWidget);
+        thresholdLabel->setObjectName(QStringLiteral("thresholdLabel"));
+
+        gridLayout_5->addWidget(thresholdLabel, 0, 2, 1, 1);
+
+        label_10 = new QLabel(layoutWidget);
+        label_10->setObjectName(QStringLiteral("label_10"));
+
+        gridLayout_5->addWidget(label_10, 1, 0, 1, 1);
+
+        blockSlider = new QSlider(layoutWidget);
+        blockSlider->setObjectName(QStringLiteral("blockSlider"));
+        blockSlider->setMaximum(10);
+        blockSlider->setPageStep(1);
+        blockSlider->setValue(5);
+        blockSlider->setSliderPosition(5);
+        blockSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_5->addWidget(blockSlider, 1, 1, 1, 1);
+
+        blockLabel = new QLabel(layoutWidget);
+        blockLabel->setObjectName(QStringLiteral("blockLabel"));
+
+        gridLayout_5->addWidget(blockLabel, 1, 2, 1, 1);
+
+        label_14 = new QLabel(layoutWidget);
+        label_14->setObjectName(QStringLiteral("label_14"));
+
+        gridLayout_5->addWidget(label_14, 2, 0, 1, 1);
+
+        openSizeSlider = new QSlider(layoutWidget);
+        openSizeSlider->setObjectName(QStringLiteral("openSizeSlider"));
+        openSizeSlider->setMaximum(10);
+        openSizeSlider->setPageStep(1);
+        openSizeSlider->setValue(0);
+        openSizeSlider->setSliderPosition(0);
+        openSizeSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_5->addWidget(openSizeSlider, 2, 1, 1, 1);
+
+        openSizeLabel = new QLabel(layoutWidget);
+        openSizeLabel->setObjectName(QStringLiteral("openSizeLabel"));
+
+        gridLayout_5->addWidget(openSizeLabel, 2, 2, 1, 1);
+
+        label_12 = new QLabel(layoutWidget);
+        label_12->setObjectName(QStringLiteral("label_12"));
+
+        gridLayout_5->addWidget(label_12, 3, 0, 1, 1);
+
+        openShapeSlider = new QSlider(layoutWidget);
+        openShapeSlider->setObjectName(QStringLiteral("openShapeSlider"));
+        openShapeSlider->setMaximum(2);
+        openShapeSlider->setPageStep(1);
+        openShapeSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_5->addWidget(openShapeSlider, 3, 1, 1, 1);
+
+        openShapeLabel = new QLabel(layoutWidget);
+        openShapeLabel->setObjectName(QStringLiteral("openShapeLabel"));
+
+        gridLayout_5->addWidget(openShapeLabel, 3, 2, 1, 1);
+
         tabWidget->addTab(imgprocTab, QString());
         ctrlTab = new QWidget();
         ctrlTab->setObjectName(QStringLiteral("ctrlTab"));
-        layoutWidget = new QWidget(ctrlTab);
-        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(53, 82, 481, 120));
-        gridLayout_4 = new QGridLayout(layoutWidget);
+        layoutWidget1 = new QWidget(ctrlTab);
+        layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
+        layoutWidget1->setGeometry(QRect(53, 82, 481, 120));
+        gridLayout_4 = new QGridLayout(layoutWidget1);
         gridLayout_4->setSpacing(6);
         gridLayout_4->setContentsMargins(11, 11, 11, 11);
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
         gridLayout_4->setContentsMargins(0, 0, 0, 0);
-        label_7 = new QLabel(layoutWidget);
+        label_7 = new QLabel(layoutWidget1);
         label_7->setObjectName(QStringLiteral("label_7"));
 
         gridLayout_4->addWidget(label_7, 1, 0, 1, 1);
 
-        numInLabel = new QLabel(layoutWidget);
+        numInLabel = new QLabel(layoutWidget1);
         numInLabel->setObjectName(QStringLiteral("numInLabel"));
 
         gridLayout_4->addWidget(numInLabel, 1, 1, 1, 1);
 
-        label = new QLabel(layoutWidget);
+        label = new QLabel(layoutWidget1);
         label->setObjectName(QStringLiteral("label"));
 
         gridLayout_4->addWidget(label, 2, 0, 1, 1);
 
-        numOutLabel = new QLabel(layoutWidget);
+        numOutLabel = new QLabel(layoutWidget1);
         numOutLabel->setObjectName(QStringLiteral("numOutLabel"));
 
         gridLayout_4->addWidget(numOutLabel, 2, 1, 1, 1);
 
-        label_5 = new QLabel(layoutWidget);
+        label_5 = new QLabel(layoutWidget1);
         label_5->setObjectName(QStringLiteral("label_5"));
 
         gridLayout_4->addWidget(label_5, 4, 0, 1, 1);
 
-        numCtrlLabel = new QLabel(layoutWidget);
+        numCtrlLabel = new QLabel(layoutWidget1);
         numCtrlLabel->setObjectName(QStringLiteral("numCtrlLabel"));
 
         gridLayout_4->addWidget(numCtrlLabel, 4, 1, 1, 1);
 
-        loadCtrlButton = new QPushButton(layoutWidget);
+        loadCtrlButton = new QPushButton(layoutWidget1);
         loadCtrlButton->setObjectName(QStringLiteral("loadCtrlButton"));
 
         gridLayout_4->addWidget(loadCtrlButton, 5, 1, 1, 1);
 
-        label_3 = new QLabel(layoutWidget);
+        label_3 = new QLabel(layoutWidget1);
         label_3->setObjectName(QStringLiteral("label_3"));
 
         gridLayout_4->addWidget(label_3, 0, 0, 1, 1);
 
-        numStateLabel = new QLabel(layoutWidget);
+        numStateLabel = new QLabel(layoutWidget1);
         numStateLabel->setObjectName(QStringLiteral("numStateLabel"));
 
         gridLayout_4->addWidget(numStateLabel, 0, 1, 1, 1);
 
         tabWidget->addTab(ctrlTab, QString());
 
-        gridLayout->addWidget(tabWidget, 0, 0, 1, 1);
+        gridLayout->addWidget(tabWidget, 0, 1, 1, 1);
 
 
         retranslateUi(Setup);
@@ -293,6 +393,14 @@ public:
         calibButton->setText(QApplication::translate("Setup", "Set Calibration", 0));
         label_2->setText(QApplication::translate("Setup", "Drawn Line Length (um): ", 0));
         calibLengthEdit->setText(QApplication::translate("Setup", "500", 0));
+        label_8->setText(QApplication::translate("Setup", "Threshold:", 0));
+        thresholdLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
+        label_10->setText(QApplication::translate("Setup", "Block Size:", 0));
+        blockLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
+        label_14->setText(QApplication::translate("Setup", "Open Size:", 0));
+        openSizeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
+        label_12->setText(QApplication::translate("Setup", "Open Shape:", 0));
+        openShapeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
         tabWidget->setTabText(tabWidget->indexOf(imgprocTab), QApplication::translate("Setup", "Image Processing", 0));
         label_7->setText(QApplication::translate("Setup", "Number of Plant Inputs (inlets):", 0));
         numInLabel->setText(QApplication::translate("Setup", "0", 0));

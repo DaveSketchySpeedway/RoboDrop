@@ -110,4 +110,9 @@ void Display::paintEvent(QPaintEvent *event)
 	painter.drawImage(0, 0, displayImage);
 	painter.setPen(QPen(Qt::green, 3));
 	painter.drawLine(linePoint1, linePoint2);
+
+
+
+
 }
+

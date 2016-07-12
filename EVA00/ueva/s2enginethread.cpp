@@ -147,7 +147,28 @@ void S2EngineThread::run()
 
 			if (settings.flag & UevaSettings::MASK_MAKING)
 			{
-				data.image = bkgd;
+				// threshold
+				adaptiveThreshold(bkgd, mask, 127,
+					cv::ADAPTIVE_THRESH_GAUSSIAN_C,
+					cv::THRESH_BINARY_INV,
+					settings.maskBlockSize,
+					settings.maskThreshold);
+				// flood
+				if (!settings.mouseLines.empty() && !bkgd.empty())
+				{
+					Point_<int> seed;
+					seed.x = settings.mouseLines[0].x1();
+					seed.y = settings.mouseLines[0].y1();
+					int whatever;
+					whatever = floodFill(mask, seed, 127);
+				}
+				// open
+				Mat structuringElement = getStructuringElement(
+					settings.maskOpenShape,
+					Size_<int>(settings.maskOpenSize, settings.maskOpenSize));
+				morphologyEx(mask, mask, cv::MORPH_OPEN, structuringElement);
+				// transit
+				data.image = mask;
 			}
 			else if (settings.flag & UevaSettings::CHANNEL_CUTTING)
 			{
