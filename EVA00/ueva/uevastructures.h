@@ -38,9 +38,17 @@ struct UevaSettings
 		MASK_MAKING = 1,
 		CHANNEL_CUTTING = 2,
 		HIGHLIGHTING = 4,
-		PUMP_ON = 8,
-		IMGPROC_ON = 16,
-		CTRL_ON = 32,
+		CAMERA_ON = 8,
+		PUMP_ON = 16,
+		IMGPROC_ON = 32,
+		CTRL_ON = 64,
+		DRAW_CHANNEL = 128,
+		DRAW_CONTOUR = 256,
+		DRAW_NECK = 512,
+		DRAW_MARKER = 1024,
+		RECORD_DATA = 2048,
+		RECORD_RAW = 4096,
+		RECORD_DISPLAY = 8192,
 	};
 	int flag;
 	QVector<QVector<int>> inletInfo;

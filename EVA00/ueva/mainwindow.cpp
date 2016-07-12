@@ -26,7 +26,6 @@ MainWindow::MainWindow()
 	settings = UevaSettings();
 	dataId = qRegisterMetaType<UevaData>();
 	buffer = UevaBuffer();
-	guiFlag = DRAW_DEFAULT | DRAW_CHANNEL | DRAW_CONTOUR | DRAW_NECK | DRAW_MARKER;
 	qImage = QImage(0, 0, QImage::Format_Indexed8);
 
 	//// INITIALIZE GUI
@@ -68,13 +67,13 @@ void MainWindow::cameraOnOff()
 	if (dashboard->cameraButton->isChecked())
 	{
 		dashboard->cameraButton->setText(tr("Off"));
-		guiFlag |= CAMERA_ON;
+		settings.flag |= UevaSettings::CAMERA_ON;
 		cameraThread->startCamera( (int)(timerInterval/1000) );
 	}
 	else
 	{
 		dashboard->cameraButton->setText(tr("On"));
-		guiFlag ^= CAMERA_ON;
+		settings.flag ^= UevaSettings::CAMERA_ON;
 		cameraThread->stopCamera();
 		qImage = QImage(0, 0, QImage::Format_Indexed8);
 	}
@@ -85,13 +84,13 @@ void MainWindow::recordDataOnOff()
 	if (dashboard->recordDataButton->isChecked())
 	{
 		dashboard->recordDataButton->setText(tr("Off"));
-		guiFlag |= RECORD_DATA;
+		settings.flag |= UevaSettings::RECORD_DATA;
 	}
 	else
 	{
 		dashboard->recordDataButton->setText(tr("On"));
 		UevaData::fileStream.close();
-		guiFlag ^= RECORD_DATA;
+		settings.flag ^= UevaSettings::RECORD_DATA;
 	}
 }
 
@@ -100,12 +99,25 @@ void MainWindow::recordRawOnOff()
 	if (dashboard->recordRawButton->isChecked())
 	{
 		dashboard->recordRawButton->setText(tr("Off"));
-		guiFlag |= RECORD_RAW;
+		settings.flag |= UevaSettings::RECORD_RAW;
+		if (!rawVideoWriter.isOpened() && !cvMat.empty())
+		{
+			QDateTime now = QDateTime::currentDateTime();
+			QString filename = "record/ueva_raw_";
+			filename.append(now.toString("yyyy_MM_dd_HH_mm_ss"));
+			filename.append(".avi");
+			double fps = 1.0 / (timerInterval / 1000.0);
+			rawVideoWriter = VideoWriter(filename.toStdString(), -1, fps, cvMat.size(), 0);
+		}
 	}
 	else
 	{
 		dashboard->recordRawButton->setText(tr("On"));
-		guiFlag ^= RECORD_RAW;
+		settings.flag ^= UevaSettings::RECORD_RAW;
+		if (rawVideoWriter.isOpened())
+		{
+			rawVideoWriter.release();
+		}
 	}
 }
 
@@ -114,12 +126,25 @@ void MainWindow::recordDisplayOnOff()
 	if (dashboard->recordDisplayButton->isChecked())
 	{
 		dashboard->recordDisplayButton->setText(tr("Off"));
-		guiFlag |= RECORD_DISPLAY;
+		settings.flag |= UevaSettings::RECORD_DISPLAY;
+		if (!displayVideoWriter.isOpened() && !cvMat.empty())
+		{
+			QDateTime now = QDateTime::currentDateTime();
+			QString filename = "record/ueva_display_";
+			filename.append(now.toString("yyyy_MM_dd_HH_mm_ss"));
+			filename.append(".avi");
+			double fps = 1.0 / (timerInterval / 1000.0);
+			displayVideoWriter = VideoWriter(filename.toStdString(), -1, fps, cvMat.size(), 0);
+		}
 	}
 	else
 	{
 		dashboard->recordDisplayButton->setText(tr("On"));
-		guiFlag ^= RECORD_DISPLAY;
+		settings.flag ^= UevaSettings::RECORD_DISPLAY;
+		if (displayVideoWriter.isOpened())
+		{
+			displayVideoWriter.release();
+		}
 	}
 }
 
@@ -428,7 +453,7 @@ void MainWindow::timerEvent(QTimerEvent *event)
 		pingTimeStamps.enqueue(now);
 		
 		//// INTERUPT CAMERA THREAD
-		if (guiFlag & CAMERA_ON)
+		if (settings.flag & UevaSettings::CAMERA_ON)
 		{
 			cameraThread->getCurrentImage(cvMat);
 			//qDebug() << cvMat.total() << " " <<
@@ -863,33 +888,33 @@ void MainWindow::showAndHidePlotter()
 void MainWindow::showAndHideChannel()
 {
 	if (channelAction->isChecked())
-		guiFlag |= DRAW_CHANNEL;
+		settings.flag |= UevaSettings::DRAW_CHANNEL;
 	else
-		guiFlag ^= DRAW_CHANNEL;
+		settings.flag ^= UevaSettings::DRAW_CHANNEL;
 }
 
 void MainWindow::showAndHideContour()
 {
 	if (contourAction->isChecked())
-		guiFlag |= DRAW_CONTOUR;
+		settings.flag |= UevaSettings::DRAW_CONTOUR;
 	else
-		guiFlag ^= DRAW_CONTOUR;
+		settings.flag ^= UevaSettings::DRAW_CONTOUR;
 }
 
 void MainWindow::showAndHideNeck()
 {
 	if (neckAction->isChecked())
-		guiFlag |= DRAW_NECK;
+		settings.flag |= UevaSettings::DRAW_NECK;
 	else
-		guiFlag ^= DRAW_NECK;
+		settings.flag ^= UevaSettings::DRAW_NECK;
 }
 
 void MainWindow::showAndHideMarker()
 {
 	if (markerAction->isChecked())
-		guiFlag |= DRAW_MARKER;
+		settings.flag |= UevaSettings::DRAW_MARKER;
 	else
-		guiFlag ^= DRAW_MARKER;
+		settings.flag ^= UevaSettings::DRAW_MARKER;
 }
 
 //// THREAD FUNCTIONS
@@ -909,6 +934,7 @@ void MainWindow::engineSlot(const UevaData &data)
 	//// UPDATE DISPLAY
 	qImage = cvMat2qImage(data.image);
 	display->setImage(qImage);
+	display->setSettings(settings);
 	// pass data to display
 	// pass flag to display --> record, draw
 	display->update();
@@ -934,7 +960,7 @@ void MainWindow::pumpSlot(const UevaData &data)
 	plotter->plot->update();
 
 	//// RECORD
-	if (guiFlag & RECORD_DATA)
+	if (settings.flag & UevaSettings::RECORD_DATA)
 	{
 		if (!UevaData::fileStream.is_open()) // first time
 		{
@@ -947,6 +973,16 @@ void MainWindow::pumpSlot(const UevaData &data)
 			data.headerToFile();
 		}
 		data.writeToFile();
+	}
+
+	if (settings.flag & UevaSettings::RECORD_RAW)
+	{
+		rawVideoWriter << cvMat;
+	}
+
+	if (settings.flag & UevaSettings::RECORD_DISPLAY)
+	{
+		displayVideoWriter << data.image;
 	}
 
 	//// PONG

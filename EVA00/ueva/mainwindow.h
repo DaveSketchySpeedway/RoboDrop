@@ -40,7 +40,10 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include <QPainter >
 #include <algorithm>
 #include <fstream>
-#include "opencv2/core.hpp"
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/highgui.hpp>
 
 #include "setup.h"
 #include "dashboard.h"
@@ -146,19 +149,8 @@ private:
 
 	//// GUI VARIABLES
 	QString currentFile;
-	enum FlagValues
-	{
-		DRAW_DEFAULT = 1,
-		DRAW_CHANNEL = 2,
-		DRAW_CONTOUR = 4,
-		DRAW_NECK = 8,
-		DRAW_MARKER = 16,
-		RECORD_DATA = 32,
-		RECORD_RAW = 64,
-		RECORD_DISPLAY = 128,
-		CAMERA_ON = 256,
-	};
-	int guiFlag;
+	VideoWriter rawVideoWriter;
+	VideoWriter displayVideoWriter;
 
 	//// NON MODAL SUBWINDOW
 	Setup *setup;

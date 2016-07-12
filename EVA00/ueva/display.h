@@ -23,6 +23,8 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include <QtGui > 
 #include <QWidget >
 
+#include "uevastructures.h"
+
 class Display : public QWidget
 {
 	Q_OBJECT
@@ -30,6 +32,8 @@ public:
 	Display(QWidget *parent);
 	~Display();
 
+	//// REGULAR CALLS
+	void setSettings(const UevaSettings &s);
 	void setImage(const QImage &image);
 	QPoint getMousePosition(); // used by mask picking, ref set
 	QLine getMousePressedMovement(); // used by ref update
@@ -44,7 +48,10 @@ protected:
 	void paintEvent(QPaintEvent *event);
 
 private:
+	UevaSettings settings;
+
 	QImage displayImage;
+
 	bool mousePressed;
 	QPoint mousePosition;
 	bool lastMousePressed;
