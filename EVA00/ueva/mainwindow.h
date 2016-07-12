@@ -64,24 +64,33 @@ public:
 	~MainWindow();
 
 	public slots:
-	//// COMMUNICATE WITH SUBWINDOW
+
+	//// COMMUNICATE WITH DASHBOARD
 	void cameraOnOff();
 	void recordDataOnOff();
 	void recordRawOnOff();
 	void recordDisplayOnOff();
-	void connectCamera();
-	void getCamera();
-	void setCamera();
 	void pumpOnOff();
-	void getPump();
-	void setPump();
 	void receiveInletRequests(const QVector<qreal> &values);
 	void imgprocOnOff();
 	void ctrlOnOff();
+
+	//// COMMUNICATE WITH SETUP
+	void connectCamera();
+	void getCamera();
+	void setCamera();
+	void getPump();
+	void setPump();
+	void setCalib();
+	void setBkgd();
+	void maskOnOff();
+	void channelOnOff();
 	void loadCtrl();
 
+	//// COMMUNICATE WITH DISPLAY
+	void receiveMouseLine(QLine line);
+
 signals:
-	
 
 protected:
 	//// REIMPLEMENTATION
@@ -98,7 +107,7 @@ private:
 	void createThreads();
 	void startTimers();
 
-	//// FUNCTIONS
+	//// MAIN WINDOW FUNCTIONS
 	bool noUnsavedFile(); // check if image is unsaved
 	bool loadFile(const QString &filename); // write image to file
 	bool saveFile(const QString &filename); // read image from file
@@ -106,9 +115,7 @@ private:
 	void readSettings();
 	void writeSettings(); 
 	
-	//// MEMBER
-	QString currentFile;
-
+	//// TIMING VARIABLES
 	int timerInterval; // sampling period right here
 	int timerId;
 
@@ -124,17 +131,20 @@ private:
 	QQueue<QTime> pingTimeStamps;
 	int ping;
 
+	//// THREAD
 	CameraThread *cameraThread;
 	S2EngineThread *engineThread;
 	PumpThread *pumpThread;
 
+	//// THREAD VARIABLES
 	UevaSettings settings;
 	int dataId;
 	UevaBuffer buffer;
-
 	Mat cvMat;
 	QImage qImage;
 
+	//// GUI VARIABLES
+	QString currentFile;
 	enum FlagValues
 	{
 		DRAW_DEFAULT = 1,
@@ -148,7 +158,6 @@ private:
 		CAMERA_ON = 256,
 	};
 	int guiFlag;
-
 
 	//// NON MODAL SUBWINDOW
 	Setup *setup;
@@ -189,6 +198,7 @@ private:
 	QAction *dropRefAction;
 
 	private slots:
+
 	//// TRIGGERED BY ACTIONS
 	void clear(); // check unsave and close image file
 	void open(); // check unsave and get open file name dialog
@@ -203,7 +213,6 @@ private:
 	void showAndHideContour();
 	void showAndHideNeck();
 	void showAndHideMarker();
-
 
 	//// TRIGGERED BY THREADS
 	void engineSlot(const UevaData &data);

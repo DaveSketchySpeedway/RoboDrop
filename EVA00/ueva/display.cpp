@@ -30,12 +30,17 @@ Display::Display(QWidget *parent)
 	lastMousePosition = QPoint(0, 0);
 	linePoint1 = QPoint(0, 0);
 	linePoint2 = QPoint(0, 0);
+
+	connect(this, SIGNAL(sendMouseLine(QLine)),
+		parent, SLOT(receiveMouseLine(QLine)));
 }
 
 Display::~Display()
 {
 
 }
+
+//// REGULAR CALLS
 
 void Display::setImage(const QImage &image)
 {
@@ -45,12 +50,6 @@ void Display::setImage(const QImage &image)
 QPoint Display::getMousePosition()
 {
 	return mousePosition;
-}
-
-QLine Display::getMouseLine()
-{
-	QLine line = QLine(linePoint1, linePoint2);
-	return line;
 }
 
 QLine Display::getMousePressedMovement()
@@ -65,35 +64,27 @@ QLine Display::getMousePressedMovement()
 	return movement;
 }
 
-void Display::paintEvent(QPaintEvent *event)
+//// EVENTS
+
+void Display::mousePressEvent(QMouseEvent *event)
 {
-	QPainter painter(this);
-	painter.drawImage(0, 0, displayImage);
-	painter.setPen(QPen(Qt::green, 3));
-	painter.drawLine(linePoint1, linePoint2);
+	mousePosition = event->pos();
+	mousePressed = false;
+	if (event->button() & Qt::LeftButton)
+	{
+		linePoint1 = event->pos();
+		mousePressed = true;
+	}
 }
 
 void Display::mouseMoveEvent(QMouseEvent *event)
 {
 	mousePosition = event->pos();
 	mousePressed = false;
-	if (event->buttons() & Qt::LeftButton)
+	if (event->buttons() & Qt::LeftButton) // must use buttons() instead of button()
 	{
-		linePoint2 = event->pos();
-		mousePressed = true;
-		update();
-	}
-}
-
-void Display::mousePressEvent(QMouseEvent *event)
-{
-	mousePosition = event->pos();
-	mousePressed = false;
-	if (event->buttons() & Qt::LeftButton)
-	{
-		linePoint1 = event->pos();
-		mousePressed = true;
-		update();
+	linePoint2 = event->pos();
+	mousePressed = true;
 	}
 }
 
@@ -101,10 +92,19 @@ void Display::mouseReleaseEvent(QMouseEvent *event)
 {
 	mousePosition = event->pos();
 	mousePressed = false;
-	if (event->buttons() & Qt::LeftButton)
+	if (event->button() & Qt::LeftButton)
 	{
 		linePoint2 = event->pos();
 		mousePressed = false;
-		update();
+		QLine line = QLine(linePoint1, linePoint2);
+		emit sendMouseLine(line);
 	}
+}
+
+void Display::paintEvent(QPaintEvent *event)
+{
+	QPainter painter(this);
+	painter.drawImage(0, 0, displayImage);
+	painter.setPen(QPen(Qt::green, 3));
+	painter.drawLine(linePoint1, linePoint2);
 }

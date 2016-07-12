@@ -34,6 +34,8 @@ S2EngineThread::~S2EngineThread()
 	mutex.unlock();
 }
 
+//// THREAD OPERATIONS
+
 void S2EngineThread::setSettings(const UevaSettings &s)
 {
 	mutex.lock();
@@ -55,9 +57,13 @@ void S2EngineThread::wake()
 	mutex.unlock();
 }
 
+//// SINGLE TIME
+
 void S2EngineThread::loadCtrl(string fileName,
 	int *numState, int *numIn, int *numOut, int *numCtrl)
 {
+	mutex.lock();
+
 	FileStorage fs(fileName, FileStorage::READ);
 	*numCtrl = (int)fs["numCtrl"];
 	*numState = (int)fs["numPlantState"];
@@ -98,10 +104,37 @@ void S2EngineThread::loadCtrl(string fileName,
 		//cerr << "H " << ctrl.H << endl;
 		cerr << endl;
 	}
-
-
 	fs.release();
+
+	mutex.unlock();
 }
+
+void S2EngineThread::setCalib(double micronLength)
+{
+	mutex.lock();
+
+	if (!settings.mouseLines.empty())
+	{
+		QLine mouseLine = settings.mouseLines[0];
+		double pixelLength = sqrt(
+			pow((double)mouseLine.dx(), 2.0) + pow((double)mouseLine.dy(), 2.0));
+		micronPerPixel = micronLength / pixelLength;
+		qDebug() << "micronPerPixel = " << micronPerPixel;
+	}
+	mutex.unlock();
+}
+
+void S2EngineThread::setBkgd()
+{
+	mutex.lock();
+
+	bkgd = data.image.clone();
+	qDebug() << "New Background";
+
+	mutex.unlock();
+}
+
+//// CONTINUOUS
 
 void S2EngineThread::run()
 {
@@ -114,33 +147,28 @@ void S2EngineThread::run()
 
 			if (settings.flag & UevaSettings::MASK_MAKING)
 			{
-				//qDebug() << QThread::currentThreadId() <<
-				//	"mask making";
+				data.image = bkgd;
 			}
 			else if (settings.flag & UevaSettings::CHANNEL_CUTTING)
 			{
-				//qDebug() << QThread::currentThreadId() <<
-				//	"channel cutting";
+
 			}
 			else if (settings.flag & UevaSettings::HIGHLIGHTING)
 			{
-				//qDebug() << QThread::currentThreadId() <<
-				//	"highlighting";
+
 			}
 			else
 			{
 				if (settings.flag & UevaSettings::CTRL_ON)
 				{
 					QThread::msleep(80);
-					//qDebug() << QThread::currentThreadId() <<
-					//	"ctrl on";
+
 				}
 				
 				if (settings.flag & UevaSettings::IMGPROC_ON)
 				{
 					QThread::msleep(80);
-					//qDebug() << QThread::currentThreadId() <<
-					//	"imgproc on";
+
 				}
 			}
 

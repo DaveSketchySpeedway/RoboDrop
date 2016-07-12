@@ -32,16 +32,16 @@ public:
 
 	void setImage(const QImage &image);
 	QPoint getMousePosition(); // used by ref set, statusbar
-	QLine getMouseLine(); // used by cut and calib
 	QLine getMousePressedMovement(); // used by ref update
 
 signals:
+	void sendMouseLine(QLine line);
 	
 protected:
-	void paintEvent(QPaintEvent *event);
+	void mousePressEvent(QMouseEvent *event); // used by cut and calib
 	void mouseMoveEvent(QMouseEvent *event);
-	void mousePressEvent(QMouseEvent *event);
-	void mouseReleaseEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event); // used by cut and calib
+	void paintEvent(QPaintEvent *event);
 
 private:
 	QImage displayImage;

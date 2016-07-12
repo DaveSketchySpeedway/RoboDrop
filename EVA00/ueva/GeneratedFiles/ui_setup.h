@@ -17,6 +17,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QTabWidget>
@@ -51,6 +52,12 @@ public:
     QPushButton *getPumpButton;
     QPushButton *setPumpButton;
     QWidget *imgprocTab;
+    QPushButton *bkgdButton;
+    QPushButton *maskButton;
+    QPushButton *channelButton;
+    QPushButton *calibButton;
+    QLabel *label_2;
+    QLineEdit *calibLengthEdit;
     QWidget *ctrlTab;
     QWidget *layoutWidget;
     QGridLayout *gridLayout_4;
@@ -177,6 +184,28 @@ public:
         tabWidget->addTab(pumpTab, QString());
         imgprocTab = new QWidget();
         imgprocTab->setObjectName(QStringLiteral("imgprocTab"));
+        bkgdButton = new QPushButton(imgprocTab);
+        bkgdButton->setObjectName(QStringLiteral("bkgdButton"));
+        bkgdButton->setGeometry(QRect(120, 150, 221, 23));
+        bkgdButton->setCheckable(false);
+        maskButton = new QPushButton(imgprocTab);
+        maskButton->setObjectName(QStringLiteral("maskButton"));
+        maskButton->setGeometry(QRect(130, 310, 221, 23));
+        maskButton->setCheckable(true);
+        channelButton = new QPushButton(imgprocTab);
+        channelButton->setObjectName(QStringLiteral("channelButton"));
+        channelButton->setGeometry(QRect(130, 450, 221, 23));
+        channelButton->setCheckable(true);
+        calibButton = new QPushButton(imgprocTab);
+        calibButton->setObjectName(QStringLiteral("calibButton"));
+        calibButton->setGeometry(QRect(110, 40, 221, 23));
+        calibButton->setCheckable(false);
+        label_2 = new QLabel(imgprocTab);
+        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setGeometry(QRect(110, 70, 131, 16));
+        calibLengthEdit = new QLineEdit(imgprocTab);
+        calibLengthEdit->setObjectName(QStringLiteral("calibLengthEdit"));
+        calibLengthEdit->setGeometry(QRect(240, 70, 71, 20));
         tabWidget->addTab(imgprocTab, QString());
         ctrlTab = new QWidget();
         ctrlTab->setObjectName(QStringLiteral("ctrlTab"));
@@ -240,7 +269,7 @@ public:
 
         retranslateUi(Setup);
 
-        tabWidget->setCurrentIndex(3);
+        tabWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(Setup);
@@ -258,6 +287,12 @@ public:
         getPumpButton->setText(QApplication::translate("Setup", "Get Pump", 0));
         setPumpButton->setText(QApplication::translate("Setup", "Set Pump", 0));
         tabWidget->setTabText(tabWidget->indexOf(pumpTab), QApplication::translate("Setup", "Pump", 0));
+        bkgdButton->setText(QApplication::translate("Setup", "Set Background", 0));
+        maskButton->setText(QApplication::translate("Setup", "Make Mask", 0));
+        channelButton->setText(QApplication::translate("Setup", "Cut Channel", 0));
+        calibButton->setText(QApplication::translate("Setup", "Set Calibration", 0));
+        label_2->setText(QApplication::translate("Setup", "Drawn Line Length (um): ", 0));
+        calibLengthEdit->setText(QApplication::translate("Setup", "500", 0));
         tabWidget->setTabText(tabWidget->indexOf(imgprocTab), QApplication::translate("Setup", "Image Processing", 0));
         label_7->setText(QApplication::translate("Setup", "Number of Plant Inputs (inlets):", 0));
         numInLabel->setText(QApplication::translate("Setup", "0", 0));

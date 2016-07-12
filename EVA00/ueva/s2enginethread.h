@@ -22,6 +22,7 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 
 #include <string>
 #include <iostream>
+#include <cmath>
 #include <QtGui >
 #include <QImage > 
 #include <QThread >
@@ -45,27 +46,34 @@ public:
 	S2EngineThread(QObject *parent = 0);
 	~S2EngineThread();
 
+	//// THREAD OPERATIONS
 	void setSettings(const UevaSettings &s);
 	void setData(const UevaData &d);
 	void wake();
+
+	//// SINGLE TIME 
 	void loadCtrl(string fileName,
 		int *numState, int *numIn, int *numOut, int *numCtrl);
+	void setCalib(double micronLength);
+	void setBkgd();
 
 signals:
 	void engineSignal(const UevaData &d);
 
 protected:
+
+	//// CONTINUOUS 
 	void run();
 
 private:
 	bool idle;
 	QMutex mutex;
-
 	UevaSettings settings;
 	UevaData data;
 
 	QVector<UevaCtrl> ctrls;
-
+	Mat bkgd;
+	double micronPerPixel;
 
 	private slots:
 

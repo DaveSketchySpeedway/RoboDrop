@@ -33,8 +33,6 @@ struct UevaSettings
 {
 	UevaSettings();
 
-	QVector<QVector<int>> inletInfo;
-	QVector<qreal> inletRequests;
 	enum FlagValues
 	{
 		MASK_MAKING = 1,
@@ -45,6 +43,9 @@ struct UevaSettings
 		CTRL_ON = 32,
 	};
 	int flag;
+	QVector<QVector<int>> inletInfo;
+	QVector<qreal> inletRequests;
+	QVector<QLine> mouseLines;
 };
 
 

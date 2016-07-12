@@ -677,18 +677,18 @@ void Zyla::process(Mat &image)
 	unsigned char* pointer;
 	int size;
 	returnCode = AT_WaitBuffer(handle, &pointer, &size, 0); // timeout = 0, only get existing frames
-	cerr << "zyla process wait buffer returns " << returnCode << endl;
+	//cerr << "zyla process wait buffer returns " << returnCode << endl;
 	if (returnCode == 0)
 	{
 		//// re-queue buffer
 		returnCode = AT_QueueBuffer(handle, alignedBuffers[accumNumFrames % queueLength], bufferSize);
-		cerr << "re-queue returns " << returnCode << endl;
+		//cerr << "re-queue returns " << returnCode << endl;
 		accumNumFrames++;
 		//// clean up buffer
 		image = Mat(imageHeight, imageWidth, CV_16UC1);
 		returnCode = AT_ConvertBuffer(pointer, reinterpret_cast<unsigned char*>(image.data),
 			imageWidth, imageHeight, imageStride, imageEncode, L"Mono16");
-		cerr << "convert returns " << returnCode << endl;
+		//cerr << "convert returns " << returnCode << endl;
 	}
 	else
 	{

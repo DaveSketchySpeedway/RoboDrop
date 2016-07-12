@@ -61,6 +61,8 @@ MainWindow::~MainWindow()
 
 }
 
+//// COMMUNICATE WITH DASHBOARD
+
 void MainWindow::cameraOnOff()
 {
 	if (dashboard->cameraButton->isChecked())
@@ -120,6 +122,56 @@ void MainWindow::recordDisplayOnOff()
 		guiFlag ^= RECORD_DISPLAY;
 	}
 }
+
+void MainWindow::pumpOnOff()
+{
+	if (dashboard->pumpButton->isChecked())
+	{
+		dashboard->pumpButton->setText(tr("Off"));
+		settings.flag |= UevaSettings::PUMP_ON;
+	}
+	else
+	{
+		dashboard->pumpButton->setText(tr("On"));
+		settings.flag ^= UevaSettings::PUMP_ON;
+	}
+}
+
+void MainWindow::receiveInletRequests(
+	const QVector<qreal> &values)
+{
+	settings.inletRequests = values;
+}
+
+void MainWindow::imgprocOnOff()
+{
+	if (dashboard->imgprocButton->isChecked())
+	{
+		dashboard->imgprocButton->setText(tr("Off"));
+		settings.flag |= UevaSettings::IMGPROC_ON;
+	}
+	else
+	{
+		dashboard->imgprocButton->setText(tr("On"));
+		settings.flag ^= UevaSettings::IMGPROC_ON;
+	}
+}
+
+void MainWindow::ctrlOnOff()
+{
+	if (dashboard->ctrlButton->isChecked())
+	{
+		dashboard->ctrlButton->setText(tr("Off"));
+		settings.flag |= UevaSettings::CTRL_ON;
+	}
+	else
+	{
+		dashboard->ctrlButton->setText(tr("On"));
+		settings.flag ^= UevaSettings::CTRL_ON;
+	}
+}
+
+//// COMMUNICATE WITH SETUP
 
 void MainWindow::connectCamera()
 {
@@ -194,20 +246,6 @@ void MainWindow::setCamera()
 	cameraThread->setSettings(s);
 }
 
-void MainWindow::pumpOnOff()
-{
-	if (dashboard->pumpButton->isChecked())
-	{
-		dashboard->pumpButton->setText(tr("Off"));
-		settings.flag |= UevaSettings::PUMP_ON;
-	}
-	else
-	{
-		dashboard->pumpButton->setText(tr("On"));
-		settings.flag ^= UevaSettings::PUMP_ON;
-	}
-}
-
 void MainWindow::getPump()
 {
 
@@ -260,40 +298,6 @@ void MainWindow::setPump()
 	dashboard->resetInletWidgets(settings.inletInfo);
 }
 
-void MainWindow::receiveInletRequests(
-	const QVector<qreal> &values)
-{
-	settings.inletRequests = values;
-}
-
-void MainWindow::imgprocOnOff()
-{
-	if (dashboard->imgprocButton->isChecked())
-	{
-		dashboard->imgprocButton->setText(tr("Off"));
-		settings.flag |= UevaSettings::IMGPROC_ON;
-	}
-	else
-	{
-		dashboard->imgprocButton->setText(tr("On"));
-		settings.flag ^= UevaSettings::IMGPROC_ON;
-	}
-}
-
-void MainWindow::ctrlOnOff()
-{
-	if (dashboard->ctrlButton->isChecked())
-	{
-		dashboard->ctrlButton->setText(tr("Off"));
-		settings.flag |= UevaSettings::CTRL_ON;
-	}
-	else
-	{
-		dashboard->ctrlButton->setText(tr("On"));
-		settings.flag ^= UevaSettings::CTRL_ON;
-	}
-}
-
 void MainWindow::loadCtrl()
 {
 	QString fileName = QFileDialog::getOpenFileName(setup,
@@ -315,6 +319,62 @@ void MainWindow::loadCtrl()
 		setup->numCtrlLabel->setText(QString::number(numCtrl));
 	}
 }
+
+void MainWindow::setCalib()
+{
+	double calibLength = setup->calibLengthEdit->text().toDouble();
+	engineThread->setCalib(calibLength);
+}
+
+void MainWindow::setBkgd()
+{
+	engineThread->setBkgd();
+}
+
+void MainWindow::maskOnOff()
+{
+	if (setup->maskButton->isChecked())
+	{
+		setup->maskButton->setText(tr("Done Making Mask"));
+		settings.flag |= UevaSettings::MASK_MAKING;
+	}
+	else
+	{
+		setup->maskButton->setText(tr("Make Mask"));
+		settings.flag ^= UevaSettings::MASK_MAKING;
+	}
+}
+
+void MainWindow::channelOnOff()
+{
+	if (setup->channelButton->isChecked())
+	{
+		setup->channelButton->setText(tr("Done Cutting Channels"));
+		settings.flag |= UevaSettings::CHANNEL_CUTTING;
+	}
+	else
+	{
+		setup->channelButton->setText(tr("Cut Channels"));
+		settings.flag ^= UevaSettings::CHANNEL_CUTTING;
+	}
+}
+
+//// COMMUNICATE WITH DISPLAY
+
+void MainWindow::receiveMouseLine(QLine line)
+{
+	if (settings.flag & UevaSettings::CHANNEL_CUTTING)
+	{
+		settings.mouseLines.push_back(line);
+	}
+	else
+	{
+		settings.mouseLines.clear();
+		settings.mouseLines.push_back(line);
+	}
+}
+
+//// REIMPLEMENTATION
 
 void MainWindow::timerEvent(QTimerEvent *event)
 {
@@ -367,6 +427,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
 		event->ignore(); // doesn't work
 	}
 }
+
+///// CONSTRUCTOR FUNCTIONS
 
 void MainWindow::createActions()
 {
@@ -568,6 +630,8 @@ void MainWindow::startTimers()
 	pumpLastTime = now;
 }
 
+//// MAINWINDOW FUNCTIONS
+
 bool MainWindow::noUnsavedFile()
 {
 	if (isWindowModified())
@@ -645,6 +709,8 @@ void MainWindow::readSettings()
 	int i = settings.value("nothing", QVariant("0")).toInt();
 
 }
+
+//// ACTION FUNCTIONS
 
 void MainWindow::clear()
 {
@@ -783,6 +849,8 @@ void MainWindow::showAndHideMarker()
 	else
 		guiFlag ^= DRAW_MARKER;
 }
+
+//// THREAD FUNCTIONS
 
 void MainWindow::engineSlot(const UevaData &data)
 {

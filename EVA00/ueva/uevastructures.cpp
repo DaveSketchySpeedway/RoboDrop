@@ -19,14 +19,14 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 
 #include "uevastructures.h"
 
-
+//// SETTINGS
 
 UevaSettings::UevaSettings()
 {
 	flag = 0;
 }
 
-
+//// DATA
 
 UevaData::UevaData()
 {
@@ -83,7 +83,7 @@ void UevaData::writeToFile() const
 ofstream UevaData::fileStream;
 QTime UevaData::startTime;
 
-
+//// BUFFER
 
 UevaBuffer::UevaBuffer()
 {
@@ -160,9 +160,7 @@ void UevaBuffer::write(const UevaData &data)
 	}
 }
 
-
-
-
+//// CTRL
 
 UevaCtrl::UevaCtrl()
 {
@@ -173,3 +171,5 @@ int UevaCtrl::numPlantState = 0;
 int UevaCtrl::numPlantInput = 0;
 int UevaCtrl::numPlantOutput = 0;
 double UevaCtrl::samplePeriod = 0;
+
+//// CHANNEL

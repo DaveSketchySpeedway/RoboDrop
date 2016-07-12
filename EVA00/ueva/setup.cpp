@@ -58,9 +58,16 @@ Setup::Setup(QWidget *parent)
 		tr("Inlet Index") <<
 		tr("Limit (mbar)"));
 
-
-
 	//// IMGPROC
+	connect(calibButton, SIGNAL(clicked()),
+		parent, SLOT(setCalib()));
+	connect(bkgdButton, SIGNAL(clicked()),
+		parent, SLOT(setBkgd()));
+	connect(maskButton, SIGNAL(clicked()),
+		parent, SLOT(maskOnOff()));
+	connect(channelButton, SIGNAL(clicked()),
+		parent, SLOT(channelOnOff()));
+
 
 	//// CTRL
 	connect(loadCtrlButton, SIGNAL(clicked()),
