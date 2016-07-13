@@ -72,7 +72,9 @@ struct UevaData
 	static ofstream fileStream;
 	static QTime startTime;
 
-	Mat image;
+	Mat rawGray;
+	Mat displayBgr;
+	Mat displayRgb;
 	QMap<QString, QVector<qreal>> map;
 };
 

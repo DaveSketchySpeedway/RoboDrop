@@ -119,8 +119,9 @@ void S2EngineThread::setCalib(double micronLength)
 		double pixelLength = sqrt(
 			pow((double)mouseLine.dx(), 2.0) + pow((double)mouseLine.dy(), 2.0));
 		micronPerPixel = micronLength / pixelLength;
-		qDebug() << "micronPerPixel = " << micronPerPixel;
+		qDebug() << "micronPerPixel = " << micronPerPixel << endl;
 	}
+
 	mutex.unlock();
 }
 
@@ -128,8 +129,8 @@ void S2EngineThread::setBkgd()
 {
 	mutex.lock();
 
-	bkgd = data.image.clone();
-	qDebug() << "New Background";
+	bkgd = data.rawGray.clone();
+	qDebug() << "New Background" << endl;
 
 	mutex.unlock();
 }
@@ -145,22 +146,37 @@ void S2EngineThread::run()
 			mutex.lock();
 			data.map["inletWrite"] = settings.inletRequests;
 
+			//// DEFAULT
+			if (!(settings.flag & UevaSettings::MASK_MAKING) &
+				!(settings.flag & UevaSettings::CHANNEL_CUTTING) &
+				!(settings.flag & UevaSettings::HIGHLIGHTING) &
+				!(settings.flag & UevaSettings::CTRL_ON) &
+				!(settings.flag & UevaSettings::IMGPROC_ON) &
+				!data.rawGray.empty())
+			{
+				cvtColor(data.rawGray, data.displayBgr, CV_GRAY2BGR); // deep copy 1
+				circle(data.displayBgr, Point_<int>(100, 100), 50, Scalar_<int>(255, 0, 0));
+				cvtColor(data.displayBgr, data.displayRgb, CV_BGR2RGB); // deep copy 2
+			}
+			
+			//// MASK MAKING
 			if (settings.flag & UevaSettings::MASK_MAKING)
 			{
 				// threshold
-				adaptiveThreshold(bkgd, mask, 127,
+				adaptiveThreshold(bkgd, mask, 
+					FILL_VALUE,
 					cv::ADAPTIVE_THRESH_GAUSSIAN_C,
 					cv::THRESH_BINARY_INV,
 					settings.maskBlockSize,
-					settings.maskThreshold);
+					settings.maskThreshold); // deep copy 1
 				// flood
 				if (!settings.mouseLines.empty() && !bkgd.empty())
 				{
 					Point_<int> seed;
 					seed.x = settings.mouseLines[0].x1();
 					seed.y = settings.mouseLines[0].y1();
-					int whatever;
-					whatever = floodFill(mask, seed, 127);
+					int floodFillReturn;
+					floodFillReturn = floodFill(mask, seed, FILL_VALUE);
 				}
 				// open
 				Mat structuringElement = getStructuringElement(
@@ -168,30 +184,39 @@ void S2EngineThread::run()
 					Size_<int>(settings.maskOpenSize, settings.maskOpenSize));
 				morphologyEx(mask, mask, cv::MORPH_OPEN, structuringElement);
 				// transit
-				data.image = mask;
+				cvtColor(mask, data.displayBgr, CV_GRAY2BGR); // deep copy 2
+				cvtColor(data.displayBgr, data.displayRgb, CV_BGR2RGB); // deep copy 3
 			}
+			
+			//// CHANNEL CUTTING
 			else if (settings.flag & UevaSettings::CHANNEL_CUTTING)
 			{
 
 			}
+			
+			//// HIGH LIGHTING
 			else if (settings.flag & UevaSettings::HIGHLIGHTING)
 			{
 
 			}
 			else
 			{
+				
+				//// CTRL
 				if (settings.flag & UevaSettings::CTRL_ON)
 				{
 					QThread::msleep(80);
 
 				}
 				
+				//// IMGPROC
 				if (settings.flag & UevaSettings::IMGPROC_ON)
 				{
 					QThread::msleep(80);
 
 				}
 			}
+
 
 			emit engineSignal(data);
 			idle = true;

@@ -6,14 +6,13 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/imgcodecs.hpp"
 #include <QtGui >
+#include <iostream>
 
 using namespace std;
 using namespace cv;
 
-QImage cvMat2qImage(const Mat &cvMat);
-
 Mat qImage2cvMat(const QImage &qImage);
 
-
+QImage cvMat2qImage(const Mat &cvMat);
 
 #endif

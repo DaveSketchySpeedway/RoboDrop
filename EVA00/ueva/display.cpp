@@ -41,14 +41,9 @@ Display::~Display()
 }
 
 //// REGULAR CALLS
-void Display::setSettings(const UevaSettings &s)
+void Display::setImage(const QImage &i)
 {
-	settings = s;
-}
-
-void Display::setImage(const QImage &image)
-{
-	displayImage = image;
+	image = i;
 }
 
 QPoint Display::getMousePosition()
@@ -111,26 +106,8 @@ void Display::mouseReleaseEvent(QMouseEvent *event)
 void Display::paintEvent(QPaintEvent *event)
 {
 	QPainter painter(this);
-	// default stuff
-	painter.drawImage(0, 0, displayImage);
+	painter.drawImage(0, 0, image);
 	painter.setPen(QPen(Qt::green, 3));
 	painter.drawLine(linePoint1, linePoint2);
-	// draw
-	if (settings.flag & UevaSettings::DRAW_CHANNEL)
-	{
-
-	}
-	if (settings.flag & UevaSettings::DRAW_CONTOUR)
-	{
-
-	}
-	if (settings.flag & UevaSettings::DRAW_MARKER)
-	{
-
-	}
-	if (settings.flag & UevaSettings::DRAW_NECK)
-	{
-
-	}
 }
 

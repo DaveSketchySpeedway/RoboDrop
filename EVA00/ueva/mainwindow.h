@@ -144,11 +144,11 @@ private:
 	UevaSettings settings;
 	int dataId;
 	UevaBuffer buffer;
-	Mat cvMat;
-	QImage qImage;
 
 	//// GUI VARIABLES
 	QString currentFile;
+	Mat file8uc1;
+	Size_<int> videoWriterSize;
 	VideoWriter rawVideoWriter;
 	VideoWriter displayVideoWriter;
 

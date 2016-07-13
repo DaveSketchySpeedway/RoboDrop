@@ -26,7 +26,6 @@ MainWindow::MainWindow()
 	settings = UevaSettings();
 	dataId = qRegisterMetaType<UevaData>();
 	buffer = UevaBuffer();
-	qImage = QImage(0, 0, QImage::Format_Indexed8);
 
 	//// INITIALIZE GUI
 	setWindowIcon(QIcon("icon/eva_icon.png"));
@@ -75,7 +74,7 @@ void MainWindow::cameraOnOff()
 		dashboard->cameraButton->setText(tr("On"));
 		settings.flag ^= UevaSettings::CAMERA_ON;
 		cameraThread->stopCamera();
-		qImage = QImage(0, 0, QImage::Format_Indexed8);
+		file8uc1 = Mat(0, 0, CV_8UC1);
 	}
 }
 
@@ -100,14 +99,15 @@ void MainWindow::recordRawOnOff()
 	{
 		dashboard->recordRawButton->setText(tr("Off"));
 		settings.flag |= UevaSettings::RECORD_RAW;
-		if (!rawVideoWriter.isOpened() && !cvMat.empty())
+		if (!rawVideoWriter.isOpened())
 		{
 			QDateTime now = QDateTime::currentDateTime();
 			QString filename = "record/ueva_raw_";
 			filename.append(now.toString("yyyy_MM_dd_HH_mm_ss"));
 			filename.append(".avi");
 			double fps = 1.0 / (timerInterval / 1000.0);
-			rawVideoWriter = VideoWriter(filename.toStdString(), -1, fps, cvMat.size(), 0);
+			rawVideoWriter = VideoWriter(filename.toStdString(), 
+				CV_FOURCC('M', 'S', 'V', 'C'), fps, videoWriterSize, 0);
 		}
 	}
 	else
@@ -127,14 +127,15 @@ void MainWindow::recordDisplayOnOff()
 	{
 		dashboard->recordDisplayButton->setText(tr("Off"));
 		settings.flag |= UevaSettings::RECORD_DISPLAY;
-		if (!displayVideoWriter.isOpened() && !cvMat.empty())
+		if (!displayVideoWriter.isOpened())
 		{
 			QDateTime now = QDateTime::currentDateTime();
 			QString filename = "record/ueva_display_";
 			filename.append(now.toString("yyyy_MM_dd_HH_mm_ss"));
 			filename.append(".avi");
 			double fps = 1.0 / (timerInterval / 1000.0);
-			displayVideoWriter = VideoWriter(filename.toStdString(), -1, fps, cvMat.size(), 0);
+			displayVideoWriter = VideoWriter(filename.toStdString(), 
+				CV_FOURCC('M', 'S', 'V', 'C'), fps, videoWriterSize, 1);
 		}
 	}
 	else
@@ -453,24 +454,20 @@ void MainWindow::timerEvent(QTimerEvent *event)
 		pingTimeStamps.enqueue(now);
 		
 		//// INTERUPT CAMERA THREAD
+		Mat temp8uc1;
 		if (settings.flag & UevaSettings::CAMERA_ON)
 		{
-			cameraThread->getCurrentImage(cvMat);
-			//qDebug() << cvMat.total() << " " <<
-			//	cvMat.type() << " " << // 0 means CV_8U
-			//	cvMat.rows << " " <<
-			//	cvMat.cols << " " <<
-			//	cvMat.isContinuous() << endl;;
+			cameraThread->getCurrentImage(temp8uc1); // 16uc1 to 8uc1, 1 deep copy
 		}
 		else
 		{
-			cvMat = qImage2cvMat(qImage);
+			temp8uc1 = file8uc1.clone(); // 1 deep copy
 		}
+		videoWriterSize = temp8uc1.size();
 
 		//// WAKE ENGINE THREAD
 		UevaData data = UevaData();
-		//data.rawImage = cvMat.clone(); // deep copy, cost 7ms seconds for 1x1
-		data.image = cvMat; // shallow copy, screwed if engine last more than interval
+		data.rawGray = temp8uc1;
 		engineThread->setSettings(settings); 
 		engineThread->setData(data);
 		engineThread->wake();
@@ -726,12 +723,15 @@ bool MainWindow::noUnsavedFile()
 
 bool MainWindow::loadFile(const QString &fileName)
 {
-
-	if (!qImage.load(fileName)) 
+	QImage argb32;
+	if (!argb32.load(fileName)) 
 	{
 		statusBar()->showMessage(tr("Loading canceled"), 2000);
 		return false;
 	}
+	Mat file8uc4 = Mat(argb32.height(), argb32.width(), CV_8UC4,
+		const_cast<uchar*>(argb32.bits()), argb32.bytesPerLine());
+	cvtColor(file8uc4, file8uc1, CV_BGRA2GRAY); // 1 deep copy
 	setCurrentFile(fileName);
 	statusBar()->showMessage(tr("File loaded"), 2000);
 	return true;
@@ -739,7 +739,7 @@ bool MainWindow::loadFile(const QString &fileName)
 
 bool MainWindow::saveFile(const QString &fileName)
 {
-	if (!qImage.save(fileName))
+	if (false)
 	{
 		statusBar()->showMessage(tr("Saving canceled"), 2000);
 		return false;
@@ -783,7 +783,7 @@ void MainWindow::clear()
 {
 	if (noUnsavedFile())
 	{
-		qImage = QImage(0, 0, QImage::Format_Indexed8);
+		file8uc1 = Mat(0, 0, CV_8UC1);
 		setCurrentFile("");
 	}
 }
@@ -921,6 +921,15 @@ void MainWindow::showAndHideMarker()
 
 void MainWindow::engineSlot(const UevaData &data)
 {
+	//// TRACK IMAGE DATA
+	//if (!cvMatGray.empty() && !data.rawGray.empty() && !data.displayRgb.empty())
+	//{
+	//	cerr << "cvMatGray " << static_cast<void*>(cvMatGray.data) << endl;
+	//	cerr << "data.rawGray" << static_cast<void*>(data.rawGray.data) << endl;
+	//	cerr << "data.displayRgb" << static_cast<void*>(data.displayRgb.data) << endl << endl;
+	//}
+	
+
 	//// ENGINE THREAD DUTY CYCLE
 	QTime now = QTime::currentTime();
 	engineDutyCycle = double(engineLastTime.msecsTo(now))/
@@ -932,9 +941,7 @@ void MainWindow::engineSlot(const UevaData &data)
 	pumpThread->wake();
 
 	//// UPDATE DISPLAY
-	qImage = cvMat2qImage(data.image);
-	display->setImage(qImage);
-	display->setSettings(settings);
+	display->setImage(cvMat2qImage(data.displayRgb)); // rgb8uc3 to rgb888, 1 deep copy
 	// pass data to display
 	// pass flag to display --> record, draw
 	display->update();
@@ -959,7 +966,7 @@ void MainWindow::pumpSlot(const UevaData &data)
 	plotter->setPlot(buffer);
 	plotter->plot->update();
 
-	//// RECORD
+	//// RECORD DATA
 	if (settings.flag & UevaSettings::RECORD_DATA)
 	{
 		if (!UevaData::fileStream.is_open()) // first time
@@ -974,17 +981,16 @@ void MainWindow::pumpSlot(const UevaData &data)
 		}
 		data.writeToFile();
 	}
-
+	//// RECORD RAW
 	if (settings.flag & UevaSettings::RECORD_RAW)
 	{
-		rawVideoWriter << cvMat;
+		rawVideoWriter << data.rawGray;
 	}
-
+	//// RECORD DISPLAY
 	if (settings.flag & UevaSettings::RECORD_DISPLAY)
 	{
-		displayVideoWriter << data.image;
+		displayVideoWriter << data.displayBgr;
 	}
-
 	//// PONG
 	if (!pingTimeStamps.isEmpty())
 	{

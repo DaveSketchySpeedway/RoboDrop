@@ -71,6 +71,13 @@ private:
 	UevaSettings settings;
 	UevaData data;
 
+	enum EngineConstants
+	{
+		FILL_VALUE = 127,
+	};
+
+
+
 	QVector<UevaCtrl> ctrls;
 	Mat bkgd;
 	double micronPerPixel;

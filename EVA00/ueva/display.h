@@ -33,8 +33,7 @@ public:
 	~Display();
 
 	//// REGULAR CALLS
-	void setSettings(const UevaSettings &s);
-	void setImage(const QImage &image);
+	void setImage(const QImage &i);
 	QPoint getMousePosition(); // used by mask picking, ref set
 	QLine getMousePressedMovement(); // used by ref update
 
@@ -48,9 +47,7 @@ protected:
 	void paintEvent(QPaintEvent *event);
 
 private:
-	UevaSettings settings;
-
-	QImage displayImage;
+	QImage image;
 
 	bool mousePressed;
 	QPoint mousePosition;
