@@ -66,22 +66,34 @@ protected:
 	void run();
 
 private:
+	//// THREAD VARIABLES
 	bool idle;
 	QMutex mutex;
 	UevaSettings settings;
 	UevaData data;
 
+	//// PERSISTENT VARIABLES
+	QVector<UevaCtrl> ctrls;
+	double micronPerPixel;
+	Mat bkgd;
+	Mat dropletMask;
+	Mat markerMask;
+	Mat channels;
+
+	//// NON PERSISTANT VARIABLES
+	Mat droplets;
+	Mat markers;
+
+	//// IMGPROC PARAMETERS
 	enum EngineConstants
 	{
-		FILL_VALUE = 127,
+		LOW_VALUE = 0,
+		MID_VALUE = 127,
+		HIGH_VALUE = 255,
 	};
-
-
-
-	QVector<UevaCtrl> ctrls;
-	Mat bkgd;
-	double micronPerPixel;
-	Mat mask;
+	Mat structuringElement;
+	Point_<int> seed;
+	int floodFillReturn;
 
 	private slots:
 

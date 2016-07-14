@@ -72,10 +72,11 @@ public:
 	void cameraOnOff();
 	void recordDataOnOff();
 	void recordRawOnOff();
-	void recordDisplayOnOff();
+	void recordDrawnOnOff();
 	void pumpOnOff();
 	void receiveInletRequests(const QVector<qreal> &values);
 	void imgprocOnOff();
+	void imgprocSettings();
 	void ctrlOnOff();
 
 	//// COMMUNICATE WITH SETUP
@@ -89,6 +90,7 @@ public:
 	void maskOnOff();
 	void maskSettings();
 	void channelOnOff();
+	void channelSettings();
 	void loadCtrl();
 
 	//// COMMUNICATE WITH DISPLAY
@@ -148,9 +150,10 @@ private:
 	//// GUI VARIABLES
 	QString currentFile;
 	Mat file8uc1;
+	QImage fileRgb888;
 	Size_<int> videoWriterSize;
 	VideoWriter rawVideoWriter;
-	VideoWriter displayVideoWriter;
+	VideoWriter drawnVideoWriter;
 
 	//// NON MODAL SUBWINDOW
 	Setup *setup;

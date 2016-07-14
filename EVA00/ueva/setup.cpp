@@ -76,6 +76,13 @@ Setup::Setup(QWidget *parent)
 		parent, SLOT(maskSettings()));
 	connect(openShapeSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(maskSettings()));
+	connect(erodeSizeSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(channelSettings()));
+	connect(erodeShapeSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(channelSettings()));
+	connect(cutThicknessSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(channelSettings()));
+
 
 	//// CTRL
 	connect(loadCtrlButton, SIGNAL(clicked()),

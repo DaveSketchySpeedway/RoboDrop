@@ -25,15 +25,17 @@ Dashboard::Dashboard(QWidget *parent)
 	setupUi(this);
 	setWindowFlags(Qt::Window);
 
+	// camera and record
 	connect(cameraButton, SIGNAL(clicked()),
 		parent, SLOT(cameraOnOff()));
 	connect(recordDataButton, SIGNAL(clicked()),
 		parent, SLOT(recordDataOnOff()));
 	connect(recordRawButton, SIGNAL(clicked()),
 		parent, SLOT(recordRawOnOff()));
-	connect(recordDisplayButton, SIGNAL(clicked()),
-		parent, SLOT(recordDisplayOnOff()));
+	connect(recordDrawnButton, SIGNAL(clicked()),
+		parent, SLOT(recordDrawnOnOff()));
 
+	// pump
 	connect(pumpButton, SIGNAL(clicked()),
 		parent, SLOT(pumpOnOff()));
 	connect(zeroPumpButton, SIGNAL(clicked()),
@@ -41,8 +43,13 @@ Dashboard::Dashboard(QWidget *parent)
 	connect(this, SIGNAL(sendInletRequests(QVector<qreal>)),
 		parent, SLOT(receiveInletRequests(QVector<qreal>)));
 
+	// imgproc
 	connect(imgprocButton, SIGNAL(clicked()),
 		parent, SLOT(imgprocOnOff()));
+	connect(dropThreshSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(imgprocSettings()));
+
+	// ctrl
 	connect(ctrlButton, SIGNAL(clicked()),
 		parent, SLOT(ctrlOnOff()));
 }

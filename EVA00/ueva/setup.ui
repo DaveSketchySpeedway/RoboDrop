@@ -162,7 +162,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>120</y>
+         <y>140</y>
          <width>221</width>
          <height>23</height>
         </rect>
@@ -177,7 +177,7 @@
       <widget class="QPushButton" name="maskButton">
        <property name="geometry">
         <rect>
-         <x>120</x>
+         <x>110</x>
          <y>250</y>
          <width>221</width>
          <height>23</height>
@@ -193,8 +193,8 @@
       <widget class="QPushButton" name="channelButton">
        <property name="geometry">
         <rect>
-         <x>110</x>
-         <y>570</y>
+         <x>100</x>
+         <y>550</y>
          <width>221</width>
          <height>23</height>
         </rect>
@@ -258,6 +258,59 @@
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_5">
+        <item row="2" column="1">
+         <widget class="QSlider" name="openSizeSlider">
+          <property name="maximum">
+           <number>10</number>
+          </property>
+          <property name="pageStep">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+          <property name="sliderPosition">
+           <number>0</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLabel" name="openSizeLabel">
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_12">
+          <property name="text">
+           <string>Open Shape:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QSlider" name="openShapeSlider">
+          <property name="maximum">
+           <number>2</number>
+          </property>
+          <property name="pageStep">
+           <number>1</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QLabel" name="openShapeLabel">
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="0">
          <widget class="QLabel" name="label_8">
           <property name="text">
@@ -328,41 +381,61 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
-         <widget class="QSlider" name="openSizeSlider">
+       </layout>
+      </widget>
+      <widget class="QWidget" name="">
+       <property name="geometry">
+        <rect>
+         <x>78</x>
+         <y>619</y>
+         <width>451</width>
+         <height>100</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_15">
+          <property name="text">
+           <string>Erode Shape:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QLabel" name="erodeSizeLabel">
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QSlider" name="erodeSizeSlider">
           <property name="maximum">
-           <number>10</number>
+           <number>20</number>
           </property>
           <property name="pageStep">
            <number>1</number>
-          </property>
-          <property name="value">
-           <number>0</number>
-          </property>
-          <property name="sliderPosition">
-           <number>0</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </item>
-        <item row="2" column="2">
-         <widget class="QLabel" name="openSizeLabel">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_13">
+          <property name="text">
+           <string>Erode Size:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLabel" name="erodeShapeLabel">
           <property name="text">
            <string>TextLabel</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_12">
-          <property name="text">
-           <string>Open Shape:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QSlider" name="openShapeSlider">
+        <item row="1" column="1">
+         <widget class="QSlider" name="erodeShapeSlider">
           <property name="maximum">
            <number>2</number>
           </property>
@@ -374,8 +447,28 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="2">
-         <widget class="QLabel" name="openShapeLabel">
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_16">
+          <property name="text">
+           <string>Cut Thickness:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSlider" name="cutThicknessSlider">
+          <property name="maximum">
+           <number>10</number>
+          </property>
+          <property name="pageStep">
+           <number>1</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLabel" name="cutThicknessLabel">
           <property name="text">
            <string>TextLabel</string>
           </property>

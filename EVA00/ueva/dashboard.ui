@@ -105,7 +105,7 @@
          <item row="2" column="0">
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>Record Display Footage:</string>
+            <string>Record Drawn Footage:</string>
            </property>
           </widget>
          </item>
@@ -120,7 +120,7 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QPushButton" name="recordDisplayButton">
+          <widget class="QPushButton" name="recordDrawnButton">
            <property name="text">
             <string>On</string>
            </property>
@@ -221,6 +221,51 @@
         </property>
         <property name="checkable">
          <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_5">
+        <property name="geometry">
+         <rect>
+          <x>170</x>
+          <y>40</y>
+          <width>91</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Droplet Threshold:</string>
+        </property>
+       </widget>
+       <widget class="QSlider" name="dropThreshSlider">
+        <property name="geometry">
+         <rect>
+          <x>280</x>
+          <y>40</y>
+          <width>160</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="minimum">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <number>99</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QLabel" name="dropThreshLabel">
+        <property name="geometry">
+         <rect>
+          <x>460</x>
+          <y>40</y>
+          <width>47</width>
+          <height>13</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
         </property>
        </widget>
       </widget>

@@ -121,30 +121,30 @@ void MainWindow::recordRawOnOff()
 	}
 }
 
-void MainWindow::recordDisplayOnOff()
+void MainWindow::recordDrawnOnOff()
 {
-	if (dashboard->recordDisplayButton->isChecked())
+	if (dashboard->recordDrawnButton->isChecked())
 	{
-		dashboard->recordDisplayButton->setText(tr("Off"));
-		settings.flag |= UevaSettings::RECORD_DISPLAY;
-		if (!displayVideoWriter.isOpened())
+		dashboard->recordDrawnButton->setText(tr("Off"));
+		settings.flag |= UevaSettings::RECORD_DRAWN;
+		if (!drawnVideoWriter.isOpened())
 		{
 			QDateTime now = QDateTime::currentDateTime();
-			QString filename = "record/ueva_display_";
+			QString filename = "record/ueva_drawn_";
 			filename.append(now.toString("yyyy_MM_dd_HH_mm_ss"));
 			filename.append(".avi");
 			double fps = 1.0 / (timerInterval / 1000.0);
-			displayVideoWriter = VideoWriter(filename.toStdString(), 
+			drawnVideoWriter = VideoWriter(filename.toStdString(),
 				CV_FOURCC('M', 'S', 'V', 'C'), fps, videoWriterSize, 1);
 		}
 	}
 	else
 	{
-		dashboard->recordDisplayButton->setText(tr("On"));
-		settings.flag ^= UevaSettings::RECORD_DISPLAY;
-		if (displayVideoWriter.isOpened())
+		dashboard->recordDrawnButton->setText(tr("On"));
+		settings.flag ^= UevaSettings::RECORD_DRAWN;
+		if (drawnVideoWriter.isOpened())
 		{
-			displayVideoWriter.release();
+			drawnVideoWriter.release();
 		}
 	}
 }
@@ -175,12 +175,23 @@ void MainWindow::imgprocOnOff()
 	{
 		dashboard->imgprocButton->setText(tr("Off"));
 		settings.flag |= UevaSettings::IMGPROC_ON;
+		// initialize settings
+		imgprocSettings();
 	}
 	else
 	{
 		dashboard->imgprocButton->setText(tr("On"));
 		settings.flag ^= UevaSettings::IMGPROC_ON;
 	}
+}
+
+void MainWindow::imgprocSettings()
+{
+	int threshold = dashboard->dropThreshSlider->value() + 1; // 0 threshold will leak memory and crash
+
+	settings.dropThreshold = threshold;
+
+	dashboard->dropThreshLabel->setText(QString::number(threshold));
 }
 
 void MainWindow::ctrlOnOff()
@@ -341,7 +352,7 @@ void MainWindow::maskOnOff()
 	{
 		setup->maskButton->setText(tr("Done Making Mask"));
 		settings.flag |= UevaSettings::MASK_MAKING;
-		// initialize settings
+		// initialize in case slider not tempered with
 		maskSettings();
 	}
 	else
@@ -362,7 +373,8 @@ void MainWindow::maskSettings()
 	settings.maskBlockSize = block;
 	settings.maskThreshold = threshold;
 	settings.maskOpenSize = openSize;
-	QString openShapeText = QString("Rectangle");
+	QString openShapeText;
+
 	switch (openShape)
 	{
 	case 0:
@@ -397,12 +409,54 @@ void MainWindow::channelOnOff()
 	{
 		setup->channelButton->setText(tr("Done Cutting Channels"));
 		settings.flag |= UevaSettings::CHANNEL_CUTTING;
+		// initialize in case slider not tempered with
+		channelSettings();
 	}
 	else
 	{
 		setup->channelButton->setText(tr("Cut Channels"));
 		settings.flag ^= UevaSettings::CHANNEL_CUTTING;
+		// clear in case user don't click on screen in between
+		settings.mouseLines.clear();
+		QLine line = QLine(0, 0, 0, 0);
+		settings.mouseLines.push_back(line);
 	}
+}
+
+void MainWindow::channelSettings()
+{
+	int erodeSize = setup->erodeSizeSlider->value() * 2 + 3;
+	int erodeShape = setup->erodeShapeSlider->value();
+	int cutThickness = setup->cutThicknessSlider->value() + 1;
+
+	settings.channelErodeSize = erodeSize;
+	QString erodeShapeText;
+	settings.channelCutThickness = cutThickness;
+	switch (erodeShape)
+	{
+	case 0:
+	{
+		erodeShapeText = QString("Rectangle");
+		settings.channelErodeShape = cv::MORPH_RECT;
+		break;
+	}
+	case 1:
+	{
+		erodeShapeText = QString("Ellipse");
+		settings.channelErodeShape = cv::MORPH_ELLIPSE;
+		break;
+	}
+	case 2:
+	{
+		erodeShapeText = QString("Cross");
+		settings.channelErodeShape = cv::MORPH_CROSS;
+		break;
+	}
+	}
+
+	setup->erodeSizeLabel->setText(QString::number(erodeSize));
+	setup->erodeShapeLabel->setText(erodeShapeText);
+	setup->cutThicknessLabel->setText(QString::number(cutThickness));
 }
 
 void MainWindow::loadCtrl()
@@ -729,9 +783,7 @@ bool MainWindow::loadFile(const QString &fileName)
 		statusBar()->showMessage(tr("Loading canceled"), 2000);
 		return false;
 	}
-	Mat file8uc4 = Mat(argb32.height(), argb32.width(), CV_8UC4,
-		const_cast<uchar*>(argb32.bits()), argb32.bytesPerLine());
-	cvtColor(file8uc4, file8uc1, CV_BGRA2GRAY); // 1 deep copy
+	file8uc1 = qImage2cvMat(argb32);
 	setCurrentFile(fileName);
 	statusBar()->showMessage(tr("File loaded"), 2000);
 	return true;
@@ -739,7 +791,7 @@ bool MainWindow::loadFile(const QString &fileName)
 
 bool MainWindow::saveFile(const QString &fileName)
 {
-	if (false)
+	if (!fileRgb888.save(fileName))
 	{
 		statusBar()->showMessage(tr("Saving canceled"), 2000);
 		return false;
@@ -941,11 +993,12 @@ void MainWindow::engineSlot(const UevaData &data)
 	pumpThread->wake();
 
 	//// UPDATE DISPLAY
-	display->setImage(cvMat2qImage(data.displayRgb)); // rgb8uc3 to rgb888, 1 deep copy
-	// pass data to display
-	// pass flag to display --> record, draw
+	fileRgb888 = cvMat2qImage(data.drawnRgb); // rgb8uc3 to rgb888, 1 deep copy
+	display->setImage(fileRgb888); 
 	display->update();
 	
+	//// UPDATE DASHBOARD
+
 	//// PUMP THREAD FPS
 	now = QTime::currentTime();
 	pumpFps = 1000.0 / pumpLastTime.msecsTo(now);
@@ -986,10 +1039,10 @@ void MainWindow::pumpSlot(const UevaData &data)
 	{
 		rawVideoWriter << data.rawGray;
 	}
-	//// RECORD DISPLAY
-	if (settings.flag & UevaSettings::RECORD_DISPLAY)
+	//// RECORD DRAWN
+	if (settings.flag & UevaSettings::RECORD_DRAWN)
 	{
-		displayVideoWriter << data.displayBgr;
+		drawnVideoWriter << data.drawnBgr;
 	}
 	//// PONG
 	if (!pingTimeStamps.isEmpty())

@@ -48,7 +48,7 @@ struct UevaSettings
 		DRAW_MARKER = 1024,
 		RECORD_DATA = 2048,
 		RECORD_RAW = 4096,
-		RECORD_DISPLAY = 8192,
+		RECORD_DRAWN = 8192,
 	};
 	int flag;
 	QVector<QVector<int>> inletInfo;
@@ -58,6 +58,11 @@ struct UevaSettings
 	int maskThreshold;
 	int maskOpenSize;
 	int maskOpenShape;
+	int channelErodeSize;
+	int channelErodeShape;
+	int channelCutThickness;
+	int dropThreshold;
+
 };
 
 
@@ -73,8 +78,8 @@ struct UevaData
 	static QTime startTime;
 
 	Mat rawGray;
-	Mat displayBgr;
-	Mat displayRgb;
+	Mat drawnBgr;
+	Mat drawnRgb;
 	QMap<QString, QVector<qreal>> map;
 };
 

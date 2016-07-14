@@ -33,6 +33,9 @@ Display::Display(QWidget *parent)
 
 	connect(this, SIGNAL(sendMouseLine(QLine)),
 		parent, SLOT(receiveMouseLine(QLine)));
+
+	QLine line = QLine(linePoint1, linePoint2);
+	emit sendMouseLine(line);
 }
 
 Display::~Display()

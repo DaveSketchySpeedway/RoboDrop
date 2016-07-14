@@ -61,6 +61,11 @@ public:
     QLineEdit *calibLengthEdit;
     QWidget *layoutWidget;
     QGridLayout *gridLayout_5;
+    QSlider *openSizeSlider;
+    QLabel *openSizeLabel;
+    QLabel *label_12;
+    QSlider *openShapeSlider;
+    QLabel *openShapeLabel;
     QLabel *label_8;
     QSlider *thresholdSlider;
     QLabel *thresholdLabel;
@@ -68,11 +73,17 @@ public:
     QSlider *blockSlider;
     QLabel *blockLabel;
     QLabel *label_14;
-    QSlider *openSizeSlider;
-    QLabel *openSizeLabel;
-    QLabel *label_12;
-    QSlider *openShapeSlider;
-    QLabel *openShapeLabel;
+    QWidget *widget;
+    QGridLayout *gridLayout_6;
+    QLabel *label_15;
+    QLabel *erodeSizeLabel;
+    QSlider *erodeSizeSlider;
+    QLabel *label_13;
+    QLabel *erodeShapeLabel;
+    QSlider *erodeShapeSlider;
+    QLabel *label_16;
+    QSlider *cutThicknessSlider;
+    QLabel *cutThicknessLabel;
     QWidget *ctrlTab;
     QWidget *layoutWidget1;
     QGridLayout *gridLayout_4;
@@ -201,15 +212,15 @@ public:
         imgprocTab->setObjectName(QStringLiteral("imgprocTab"));
         bkgdButton = new QPushButton(imgprocTab);
         bkgdButton->setObjectName(QStringLiteral("bkgdButton"));
-        bkgdButton->setGeometry(QRect(110, 120, 221, 23));
+        bkgdButton->setGeometry(QRect(110, 140, 221, 23));
         bkgdButton->setCheckable(false);
         maskButton = new QPushButton(imgprocTab);
         maskButton->setObjectName(QStringLiteral("maskButton"));
-        maskButton->setGeometry(QRect(120, 250, 221, 23));
+        maskButton->setGeometry(QRect(110, 250, 221, 23));
         maskButton->setCheckable(true);
         channelButton = new QPushButton(imgprocTab);
         channelButton->setObjectName(QStringLiteral("channelButton"));
-        channelButton->setGeometry(QRect(110, 570, 221, 23));
+        channelButton->setGeometry(QRect(100, 550, 221, 23));
         channelButton->setCheckable(true);
         calibButton = new QPushButton(imgprocTab);
         calibButton->setObjectName(QStringLiteral("calibButton"));
@@ -229,6 +240,39 @@ public:
         gridLayout_5->setContentsMargins(11, 11, 11, 11);
         gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
         gridLayout_5->setContentsMargins(0, 0, 0, 0);
+        openSizeSlider = new QSlider(layoutWidget);
+        openSizeSlider->setObjectName(QStringLiteral("openSizeSlider"));
+        openSizeSlider->setMaximum(10);
+        openSizeSlider->setPageStep(1);
+        openSizeSlider->setValue(0);
+        openSizeSlider->setSliderPosition(0);
+        openSizeSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_5->addWidget(openSizeSlider, 2, 1, 1, 1);
+
+        openSizeLabel = new QLabel(layoutWidget);
+        openSizeLabel->setObjectName(QStringLiteral("openSizeLabel"));
+
+        gridLayout_5->addWidget(openSizeLabel, 2, 2, 1, 1);
+
+        label_12 = new QLabel(layoutWidget);
+        label_12->setObjectName(QStringLiteral("label_12"));
+
+        gridLayout_5->addWidget(label_12, 3, 0, 1, 1);
+
+        openShapeSlider = new QSlider(layoutWidget);
+        openShapeSlider->setObjectName(QStringLiteral("openShapeSlider"));
+        openShapeSlider->setMaximum(2);
+        openShapeSlider->setPageStep(1);
+        openShapeSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_5->addWidget(openShapeSlider, 3, 1, 1, 1);
+
+        openShapeLabel = new QLabel(layoutWidget);
+        openShapeLabel->setObjectName(QStringLiteral("openShapeLabel"));
+
+        gridLayout_5->addWidget(openShapeLabel, 3, 2, 1, 1);
+
         label_8 = new QLabel(layoutWidget);
         label_8->setObjectName(QStringLiteral("label_8"));
 
@@ -273,38 +317,67 @@ public:
 
         gridLayout_5->addWidget(label_14, 2, 0, 1, 1);
 
-        openSizeSlider = new QSlider(layoutWidget);
-        openSizeSlider->setObjectName(QStringLiteral("openSizeSlider"));
-        openSizeSlider->setMaximum(10);
-        openSizeSlider->setPageStep(1);
-        openSizeSlider->setValue(0);
-        openSizeSlider->setSliderPosition(0);
-        openSizeSlider->setOrientation(Qt::Horizontal);
+        widget = new QWidget(imgprocTab);
+        widget->setObjectName(QStringLiteral("widget"));
+        widget->setGeometry(QRect(78, 619, 451, 100));
+        gridLayout_6 = new QGridLayout(widget);
+        gridLayout_6->setSpacing(6);
+        gridLayout_6->setContentsMargins(11, 11, 11, 11);
+        gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
+        gridLayout_6->setContentsMargins(0, 0, 0, 0);
+        label_15 = new QLabel(widget);
+        label_15->setObjectName(QStringLiteral("label_15"));
 
-        gridLayout_5->addWidget(openSizeSlider, 2, 1, 1, 1);
+        gridLayout_6->addWidget(label_15, 1, 0, 1, 1);
 
-        openSizeLabel = new QLabel(layoutWidget);
-        openSizeLabel->setObjectName(QStringLiteral("openSizeLabel"));
+        erodeSizeLabel = new QLabel(widget);
+        erodeSizeLabel->setObjectName(QStringLiteral("erodeSizeLabel"));
 
-        gridLayout_5->addWidget(openSizeLabel, 2, 2, 1, 1);
+        gridLayout_6->addWidget(erodeSizeLabel, 0, 2, 1, 1);
 
-        label_12 = new QLabel(layoutWidget);
-        label_12->setObjectName(QStringLiteral("label_12"));
+        erodeSizeSlider = new QSlider(widget);
+        erodeSizeSlider->setObjectName(QStringLiteral("erodeSizeSlider"));
+        erodeSizeSlider->setMaximum(20);
+        erodeSizeSlider->setPageStep(1);
+        erodeSizeSlider->setOrientation(Qt::Horizontal);
 
-        gridLayout_5->addWidget(label_12, 3, 0, 1, 1);
+        gridLayout_6->addWidget(erodeSizeSlider, 0, 1, 1, 1);
 
-        openShapeSlider = new QSlider(layoutWidget);
-        openShapeSlider->setObjectName(QStringLiteral("openShapeSlider"));
-        openShapeSlider->setMaximum(2);
-        openShapeSlider->setPageStep(1);
-        openShapeSlider->setOrientation(Qt::Horizontal);
+        label_13 = new QLabel(widget);
+        label_13->setObjectName(QStringLiteral("label_13"));
 
-        gridLayout_5->addWidget(openShapeSlider, 3, 1, 1, 1);
+        gridLayout_6->addWidget(label_13, 0, 0, 1, 1);
 
-        openShapeLabel = new QLabel(layoutWidget);
-        openShapeLabel->setObjectName(QStringLiteral("openShapeLabel"));
+        erodeShapeLabel = new QLabel(widget);
+        erodeShapeLabel->setObjectName(QStringLiteral("erodeShapeLabel"));
 
-        gridLayout_5->addWidget(openShapeLabel, 3, 2, 1, 1);
+        gridLayout_6->addWidget(erodeShapeLabel, 1, 2, 1, 1);
+
+        erodeShapeSlider = new QSlider(widget);
+        erodeShapeSlider->setObjectName(QStringLiteral("erodeShapeSlider"));
+        erodeShapeSlider->setMaximum(2);
+        erodeShapeSlider->setPageStep(1);
+        erodeShapeSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_6->addWidget(erodeShapeSlider, 1, 1, 1, 1);
+
+        label_16 = new QLabel(widget);
+        label_16->setObjectName(QStringLiteral("label_16"));
+
+        gridLayout_6->addWidget(label_16, 2, 0, 1, 1);
+
+        cutThicknessSlider = new QSlider(widget);
+        cutThicknessSlider->setObjectName(QStringLiteral("cutThicknessSlider"));
+        cutThicknessSlider->setMaximum(10);
+        cutThicknessSlider->setPageStep(1);
+        cutThicknessSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_6->addWidget(cutThicknessSlider, 2, 1, 1, 1);
+
+        cutThicknessLabel = new QLabel(widget);
+        cutThicknessLabel->setObjectName(QStringLiteral("cutThicknessLabel"));
+
+        gridLayout_6->addWidget(cutThicknessLabel, 2, 2, 1, 1);
 
         tabWidget->addTab(imgprocTab, QString());
         ctrlTab = new QWidget();
@@ -393,14 +466,20 @@ public:
         calibButton->setText(QApplication::translate("Setup", "Set Calibration", 0));
         label_2->setText(QApplication::translate("Setup", "Drawn Line Length (um): ", 0));
         calibLengthEdit->setText(QApplication::translate("Setup", "500", 0));
+        openSizeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
+        label_12->setText(QApplication::translate("Setup", "Open Shape:", 0));
+        openShapeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
         label_8->setText(QApplication::translate("Setup", "Threshold:", 0));
         thresholdLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
         label_10->setText(QApplication::translate("Setup", "Block Size:", 0));
         blockLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
         label_14->setText(QApplication::translate("Setup", "Open Size:", 0));
-        openSizeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
-        label_12->setText(QApplication::translate("Setup", "Open Shape:", 0));
-        openShapeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
+        label_15->setText(QApplication::translate("Setup", "Erode Shape:", 0));
+        erodeSizeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
+        label_13->setText(QApplication::translate("Setup", "Erode Size:", 0));
+        erodeShapeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
+        label_16->setText(QApplication::translate("Setup", "Cut Thickness:", 0));
+        cutThicknessLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
         tabWidget->setTabText(tabWidget->indexOf(imgprocTab), QApplication::translate("Setup", "Image Processing", 0));
         label_7->setText(QApplication::translate("Setup", "Number of Plant Inputs (inlets):", 0));
         numInLabel->setText(QApplication::translate("Setup", "0", 0));

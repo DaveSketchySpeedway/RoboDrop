@@ -5,14 +5,21 @@ Mat qImage2cvMat(const QImage &qImage)
 	// indexed8 to 8uc1 
 	//Mat cvMat(qImage.height(), qImage.width(), CV_8UC1,
 	//	const_cast<uchar*>(qImage.bits()), qImage.bytesPerLine());
-	//return cvMat.clone(); // 1 deep copy
+	//return cvMat.clone(); // 1 deep copy otherwise data gone as qImage go out of scope
 
 
 	// rgb888 to 8uc1
-	Mat color(qImage.height(), qImage.width(), CV_8UC3,
+	//Mat color(qImage.height(), qImage.width(), CV_8UC3,
+	//	const_cast<uchar*>(qImage.bits()), qImage.bytesPerLine());
+	//Mat cvMat;
+	//cvtColor(color, cvMat, CV_RGB2GRAY); // deep copy 1
+	//return cvMat;
+
+	// argb32 to 8uc1
+	Mat color = Mat(qImage.height(), qImage.width(), CV_8UC4,
 		const_cast<uchar*>(qImage.bits()), qImage.bytesPerLine());
 	Mat cvMat;
-	cvtColor(color, cvMat, CV_RGB2GRAY); // deep copy 1
+	cvtColor(color, cvMat, CV_BGRA2GRAY); // 1 deep copy
 	return cvMat;
 }
 

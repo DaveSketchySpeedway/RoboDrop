@@ -20,6 +20,7 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSlider>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -40,7 +41,7 @@ public:
     QLabel *label_3;
     QLabel *label_4;
     QPushButton *recordRawButton;
-    QPushButton *recordDisplayButton;
+    QPushButton *recordDrawnButton;
     QGroupBox *groupBox;
     QGridLayout *gridLayout_2;
     QHBoxLayout *pumpLayout;
@@ -51,6 +52,9 @@ public:
     QWidget *widget;
     QGroupBox *groupBox_3;
     QPushButton *imgprocButton;
+    QLabel *label_5;
+    QSlider *dropThreshSlider;
+    QLabel *dropThreshLabel;
     QGroupBox *groupBox_4;
     QPushButton *ctrlButton;
 
@@ -122,11 +126,11 @@ public:
 
         formLayout->setWidget(1, QFormLayout::FieldRole, recordRawButton);
 
-        recordDisplayButton = new QPushButton(layoutWidget);
-        recordDisplayButton->setObjectName(QStringLiteral("recordDisplayButton"));
-        recordDisplayButton->setCheckable(true);
+        recordDrawnButton = new QPushButton(layoutWidget);
+        recordDrawnButton->setObjectName(QStringLiteral("recordDrawnButton"));
+        recordDrawnButton->setCheckable(true);
 
-        formLayout->setWidget(2, QFormLayout::FieldRole, recordDisplayButton);
+        formLayout->setWidget(2, QFormLayout::FieldRole, recordDrawnButton);
 
 
         gridLayout->addWidget(groupBox_5, 0, 1, 1, 1);
@@ -196,6 +200,18 @@ public:
         imgprocButton->setObjectName(QStringLiteral("imgprocButton"));
         imgprocButton->setGeometry(QRect(30, 20, 75, 23));
         imgprocButton->setCheckable(true);
+        label_5 = new QLabel(groupBox_3);
+        label_5->setObjectName(QStringLiteral("label_5"));
+        label_5->setGeometry(QRect(170, 40, 91, 16));
+        dropThreshSlider = new QSlider(groupBox_3);
+        dropThreshSlider->setObjectName(QStringLiteral("dropThreshSlider"));
+        dropThreshSlider->setGeometry(QRect(280, 40, 160, 16));
+        dropThreshSlider->setMinimum(0);
+        dropThreshSlider->setMaximum(99);
+        dropThreshSlider->setOrientation(Qt::Horizontal);
+        dropThreshLabel = new QLabel(groupBox_3);
+        dropThreshLabel->setObjectName(QStringLiteral("dropThreshLabel"));
+        dropThreshLabel->setGeometry(QRect(460, 40, 47, 13));
 
         gridLayout->addWidget(groupBox_3, 2, 0, 1, 2);
 
@@ -228,15 +244,17 @@ public:
         label->setText(QApplication::translate("Dashboard", "Record Data:", 0));
         recordDataButton->setText(QApplication::translate("Dashboard", "On", 0));
         label_3->setText(QApplication::translate("Dashboard", "Record Raw Footage:", 0));
-        label_4->setText(QApplication::translate("Dashboard", "Record Display Footage:", 0));
+        label_4->setText(QApplication::translate("Dashboard", "Record Drawn Footage:", 0));
         recordRawButton->setText(QApplication::translate("Dashboard", "On", 0));
-        recordDisplayButton->setText(QApplication::translate("Dashboard", "On", 0));
+        recordDrawnButton->setText(QApplication::translate("Dashboard", "On", 0));
         groupBox->setTitle(QApplication::translate("Dashboard", "Pump", 0));
         pumpButton->setText(QApplication::translate("Dashboard", "On", 0));
         zeroPumpButton->setText(QApplication::translate("Dashboard", "Zero All", 0));
         label_2->setText(QApplication::translate("Dashboard", "Request (mbar)", 0));
         groupBox_3->setTitle(QApplication::translate("Dashboard", "Image Processing", 0));
         imgprocButton->setText(QApplication::translate("Dashboard", "On", 0));
+        label_5->setText(QApplication::translate("Dashboard", "Droplet Threshold:", 0));
+        dropThreshLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         groupBox_4->setTitle(QApplication::translate("Dashboard", "Controller", 0));
         ctrlButton->setText(QApplication::translate("Dashboard", "On", 0));
     } // retranslateUi

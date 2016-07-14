@@ -154,46 +154,60 @@ void S2EngineThread::run()
 				!(settings.flag & UevaSettings::IMGPROC_ON) &
 				!data.rawGray.empty())
 			{
-				cvtColor(data.rawGray, data.displayBgr, CV_GRAY2BGR); // deep copy 1
-				circle(data.displayBgr, Point_<int>(100, 100), 50, Scalar_<int>(255, 0, 0));
-				cvtColor(data.displayBgr, data.displayRgb, CV_BGR2RGB); // deep copy 2
+				cvtColor(data.rawGray, data.drawnBgr, CV_GRAY2BGR);
+				cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
 			}
-			
 			//// MASK MAKING
 			if (settings.flag & UevaSettings::MASK_MAKING)
 			{
-				// threshold
-				adaptiveThreshold(bkgd, mask, 
-					FILL_VALUE,
+				CV_Assert(!bkgd.empty());
+				// detect walls with threshold
+				adaptiveThreshold(bkgd, dropletMask,
+					HIGH_VALUE,
 					cv::ADAPTIVE_THRESH_GAUSSIAN_C,
 					cv::THRESH_BINARY_INV,
 					settings.maskBlockSize,
-					settings.maskThreshold); // deep copy 1
-				// flood
-				if (!settings.mouseLines.empty() && !bkgd.empty())
-				{
-					Point_<int> seed;
-					seed.x = settings.mouseLines[0].x1();
-					seed.y = settings.mouseLines[0].y1();
-					int floodFillReturn;
-					floodFillReturn = floodFill(mask, seed, FILL_VALUE);
-				}
-				// open
-				Mat structuringElement = getStructuringElement(
+					settings.maskThreshold); 
+				// flood twice to exclude wall and noise
+				seed.x = settings.mouseLines[0].x1();
+				seed.y = settings.mouseLines[0].y1();
+				floodFillReturn = floodFill(dropletMask, seed, MID_VALUE);
+				// eliminate noise by opening
+				structuringElement = getStructuringElement(
 					settings.maskOpenShape,
 					Size_<int>(settings.maskOpenSize, settings.maskOpenSize));
-				morphologyEx(mask, mask, cv::MORPH_OPEN, structuringElement);
-				// transit
-				cvtColor(mask, data.displayBgr, CV_GRAY2BGR); // deep copy 2
-				cvtColor(data.displayBgr, data.displayRgb, CV_BGR2RGB); // deep copy 3
+				morphologyEx(dropletMask, dropletMask, cv::MORPH_OPEN, structuringElement);
+				// draw
+				cvtColor(dropletMask, data.drawnBgr, CV_GRAY2BGR);
+				cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
 			}
 			
 			//// CHANNEL CUTTING
 			else if (settings.flag & UevaSettings::CHANNEL_CUTTING)
 			{
-
+				CV_Assert(!dropletMask.empty());
+				// further erode to get thinner mask
+				structuringElement = getStructuringElement(
+					settings.channelErodeShape,
+					Size_<int>(settings.channelErodeSize, settings.channelErodeSize));
+				erode(dropletMask, markerMask, structuringElement);
+				channels = markerMask.clone();
+				for (int i = 1; i < settings.mouseLines.size(); i++)
+				{
+					Point_<int> pt1 = Point_<int>(
+						settings.mouseLines[i].x1(),
+						settings.mouseLines[i].y1());
+					Point_<int> pt2 = Point_<int>(
+						settings.mouseLines[i].x2(),
+						settings.mouseLines[i].y2());
+					line(channels, pt1, pt2, Scalar(0), settings.channelCutThickness);
+				}
+				// draw
+				Mat drawn;
+				add(dropletMask, channels, drawn);
+				cvtColor(drawn, data.drawnBgr, CV_GRAY2BGR);
+				cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
 			}
-			
 			//// HIGH LIGHTING
 			else if (settings.flag & UevaSettings::HIGHLIGHTING)
 			{
@@ -201,19 +215,45 @@ void S2EngineThread::run()
 			}
 			else
 			{
-				
 				//// CTRL
 				if (settings.flag & UevaSettings::CTRL_ON)
 				{
 					QThread::msleep(80);
-
 				}
 				
 				//// IMGPROC
 				if (settings.flag & UevaSettings::IMGPROC_ON)
-				{
-					QThread::msleep(80);
+				{			
+					CV_Assert(!bkgd.empty());
+					CV_Assert(!dropletMask.empty());
+					CV_Assert(!markerMask.empty());
+					absdiff(data.rawGray, bkgd, markers); 
 
+					threshold(markers, markers,
+						settings.dropThreshold,
+						HIGH_VALUE,
+						cv::THRESH_BINARY);
+					
+					droplets = markers.clone(); 
+					seed = Point(0, 0);
+					floodFillReturn = floodFill(droplets, 
+						seed, 
+						HIGH_VALUE,
+						0, Scalar_<int>(0), Scalar_<int>(0),
+						FLOODFILL_FIXED_RANGE);
+
+					droplets = HIGH_VALUE - droplets;
+
+					bitwise_or(markers, droplets, droplets);
+
+
+					cvtColor(droplets, data.drawnBgr, CV_GRAY2BGR);
+
+
+					circle(data.drawnBgr, Point_<int>(100, 100), 50, Scalar_<int>(255, 0, 0));
+
+
+					cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
 				}
 			}
 
