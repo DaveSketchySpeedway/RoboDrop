@@ -44,7 +44,9 @@ Dashboard::Dashboard(QWidget *parent)
 	// imgproc
 	connect(imgprocButton, SIGNAL(clicked()),
 		parent, SLOT(imgprocOnOff()));
-	connect(dropThreshSlider, SIGNAL(valueChanged(int)),
+	connect(threshSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(imgprocSettings()));
+	connect(contourSizeSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(imgprocSettings()));
 
 	// ctrl

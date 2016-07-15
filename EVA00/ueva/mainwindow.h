@@ -188,7 +188,7 @@ private:
 	QAction *dashboardAction;
 	QAction *plotterAction;
 	QAction *channelAction;
-	QAction *contourAction;
+	QAction *dropletAction;
 	QAction *neckAction;
 	QAction *markerAction;
 	QAction *useRefAction;
@@ -207,7 +207,7 @@ private:
 	void showAndHideDashboard();
 	void showAndHidePlotter();
 	void showAndHideChannel();
-	void showAndHideContour();
+	void showAndHideDroplet();
 	void showAndHideNeck();
 	void showAndHideMarker();
 

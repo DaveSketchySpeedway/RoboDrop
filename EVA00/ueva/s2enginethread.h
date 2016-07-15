@@ -78,11 +78,15 @@ private:
 	Mat bkgd;
 	Mat dropletMask;
 	Mat markerMask;
-	Mat channels;
+	Mat allChannels;
 
 	//// NON PERSISTANT VARIABLES
-	Mat droplets;
-	Mat markers;
+	Mat allDroplets;
+	Mat allMarkers;
+	vector<vector< Point_<int> >> dropletContours;
+	vector<vector< Point_<int> >>::iterator dc;
+	vector<vector< Point_<int> >> markerContours;
+	vector<vector< Point_<int> >>::iterator mc;
 
 	//// IMGPROC PARAMETERS
 	enum EngineConstants
@@ -94,6 +98,9 @@ private:
 	Mat structuringElement;
 	Point_<int> seed;
 	int floodFillReturn;
+	Scalar_<int> lineColor;
+	int lineThickness;
+	int lineType;
 
 	private slots:
 

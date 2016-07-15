@@ -169,11 +169,14 @@ void MainWindow::imgprocOnOff()
 
 void MainWindow::imgprocSettings()
 {
-	int threshold = dashboard->dropThreshSlider->value() + 1; // 0 threshold will leak memory and crash
+	int threshold = dashboard->threshSlider->value() + 1; // 0 threshold will leak memory and crash
+	int contourSize = dashboard->contourSizeSlider->value();
 
-	settings.dropThreshold = threshold;
+	settings.imgprogThreshold = threshold;
+	settings.imgprogContourSize = contourSize;
 
-	dashboard->dropThreshLabel->setText(QString::number(threshold));
+	dashboard->threshLabel->setText(QString::number(threshold));
+	dashboard->contourSizeLabel->setText(QString::number(contourSize));
 }
 
 void MainWindow::ctrlOnOff()
@@ -619,13 +622,13 @@ void MainWindow::createActions()
 	connect(channelAction, SIGNAL(triggered()),
 		this, SLOT(showAndHideChannel()));
 
-	contourAction = new QAction(tr("draw &Contour"), this);
+	dropletAction = new QAction(tr("draw &Droplet"), this);
 	//contourAction->setIcon(QIcon("icon/contour.png"));
-	contourAction->setStatusTip(tr("Draw detected contours"));
-	contourAction->setCheckable(true);
-	contourAction->setChecked(false);
-	connect(contourAction, SIGNAL(triggered()),
-		this, SLOT(showAndHideContour()));
+	dropletAction->setStatusTip(tr("Draw detected droplets"));
+	dropletAction->setCheckable(true);
+	dropletAction->setChecked(false);
+	connect(dropletAction, SIGNAL(triggered()),
+		this, SLOT(showAndHideDroplet()));
 
 	neckAction = new QAction(tr("draw &Neck"), this);
 	//neckAction->setIcon(QIcon("icon/neck.png"));
@@ -637,7 +640,7 @@ void MainWindow::createActions()
 
 	markerAction = new QAction(tr("draw &Marker"), this);
 	//markerAction->setIcon(QIcon("icon/marker.png"));
-	markerAction->setStatusTip(tr("Draw all detected markers"));
+	markerAction->setStatusTip(tr("Draw detected markers"));
 	markerAction->setCheckable(true);
 	markerAction->setChecked(false);
 	connect(markerAction, SIGNAL(triggered()),
@@ -666,9 +669,10 @@ void MainWindow::createMenus()
 	viewMenu->addAction(plotterAction);
 	viewMenu->addSeparator();
 	visibilitySubMenu = viewMenu->addMenu(tr("&Visibility"));
-	visibilitySubMenu->addAction(contourAction);
-	visibilitySubMenu->addAction(neckAction);
+	visibilitySubMenu->addAction(channelAction);
+	visibilitySubMenu->addAction(dropletAction);
 	visibilitySubMenu->addAction(markerAction);
+	visibilitySubMenu->addAction(neckAction);
 
 	helpMenu = menuBar()->addMenu(tr("&Help"));
 	helpMenu->addAction(aboutAction);
@@ -685,9 +689,9 @@ void MainWindow::createToolBars()
 {
 	visibilityToolBar = addToolBar(tr("&Visibility"));	
 	visibilityToolBar->addAction(channelAction);
-	visibilityToolBar->addAction(contourAction);
-	visibilityToolBar->addAction(neckAction);
+	visibilityToolBar->addAction(dropletAction);
 	visibilityToolBar->addAction(markerAction);
+	visibilityToolBar->addAction(neckAction);
 	visibilityToolBar->addSeparator();
 }
 
@@ -899,12 +903,12 @@ void MainWindow::updateStatusBar()
 	QPoint mousePosition = display->getMousePosition();
 	engineFpsLabel->setText(tr("Engine FPS: %1")
 		.arg(QString::number(engineFps)));
-	engineDutyCycleLabel->setText(tr("Engine Duty Cycle: %1")
-		.arg(QString::number(engineDutyCycle)));
+	engineDutyCycleLabel->setText(tr("Engine Duty Cycle: %1 %")
+		.arg(QString::number(engineDutyCycle * 100.0)));
 	pumpFpsLabel->setText(tr("Pump FPS: %1")
 		.arg(QString::number(pumpFps)));
-	pumpDutyCycleLabel->setText(tr("Pump Duty Cycle: %1")
-		.arg(QString::number(pumpDutyCycle)));
+	pumpDutyCycleLabel->setText(tr("Pump Duty Cycle: %1 %")
+		.arg(QString::number(pumpDutyCycle * 100.0)));
 	pingLabel->setText(tr("Ping: %1")
 		.arg(QString::number(ping)));
 	mousePositionLabel->setText(tr("X: %1	Y: %2")
@@ -938,12 +942,12 @@ void MainWindow::showAndHideChannel()
 		settings.flag ^= UevaSettings::DRAW_CHANNEL;
 }
 
-void MainWindow::showAndHideContour()
+void MainWindow::showAndHideDroplet()
 {
-	if (contourAction->isChecked())
-		settings.flag |= UevaSettings::DRAW_CONTOUR;
+	if (dropletAction->isChecked())
+		settings.flag |= UevaSettings::DRAW_DROPLET;
 	else
-		settings.flag ^= UevaSettings::DRAW_CONTOUR;
+		settings.flag ^= UevaSettings::DRAW_DROPLET;
 }
 
 void MainWindow::showAndHideNeck()

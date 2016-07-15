@@ -43,9 +43,9 @@ struct UevaSettings
 		IMGPROC_ON = 32,
 		CTRL_ON = 64,
 		DRAW_CHANNEL = 128,
-		DRAW_CONTOUR = 256,
-		DRAW_NECK = 512,
+		DRAW_DROPLET = 256,
 		DRAW_MARKER = 1024,
+		DRAW_NECK = 512,
 		RECORD_DATA = 2048,
 		RECORD_RAW = 4096,
 		RECORD_DRAWN = 8192,
@@ -61,7 +61,8 @@ struct UevaSettings
 	int channelErodeSize;
 	int channelErodeShape;
 	int channelCutThickness;
-	int dropThreshold;
+	int imgprogThreshold;
+	int imgprogContourSize;
 
 };
 
