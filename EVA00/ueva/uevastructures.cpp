@@ -20,14 +20,12 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include "uevastructures.h"
 
 //// SETTINGS
-
 UevaSettings::UevaSettings()
 {
 	flag = 0;
 }
 
 //// DATA
-
 UevaData::UevaData()
 {
 	//// PUMP
@@ -84,7 +82,6 @@ ofstream UevaData::fileStream;
 QTime UevaData::startTime;
 
 //// BUFFER
-
 UevaBuffer::UevaBuffer()
 {
 	index = 0;
@@ -161,7 +158,6 @@ void UevaBuffer::write(const UevaData &data)
 }
 
 //// CTRL
-
 UevaCtrl::UevaCtrl()
 {
 
@@ -173,3 +169,8 @@ int UevaCtrl::numPlantOutput = 0;
 double UevaCtrl::samplePeriod = 0;
 
 //// CHANNEL
+UevaChannel::UevaChannel()
+{
+
+}
+

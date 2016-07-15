@@ -74,7 +74,7 @@ public:
     QSlider *blockSlider;
     QLabel *blockLabel;
     QLabel *label_14;
-    QWidget *widget;
+    QWidget *layoutWidget1;
     QGridLayout *gridLayout_6;
     QLabel *label_15;
     QLabel *erodeSizeLabel;
@@ -86,7 +86,7 @@ public:
     QSlider *cutThicknessSlider;
     QLabel *cutThicknessLabel;
     QWidget *ctrlTab;
-    QWidget *layoutWidget1;
+    QWidget *layoutWidget2;
     QGridLayout *gridLayout_4;
     QLabel *label_7;
     QLabel *numInLabel;
@@ -97,6 +97,12 @@ public:
     QPushButton *loadCtrlButton;
     QLabel *label_3;
     QLabel *numStateLabel;
+    QLabel *label_6;
+    QLabel *ctrlTsLabel;
+    QWidget *layoutWidget3;
+    QGridLayout *gridLayout_7;
+    QLineEdit *timerIntervalEdit;
+    QPushButton *timerIntervalButton;
 
     void setupUi(QWidget *Setup)
     {
@@ -324,25 +330,25 @@ public:
 
         gridLayout_5->addWidget(label_14, 2, 0, 1, 1);
 
-        widget = new QWidget(imgprocTab);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setGeometry(QRect(78, 619, 451, 100));
-        gridLayout_6 = new QGridLayout(widget);
+        layoutWidget1 = new QWidget(imgprocTab);
+        layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
+        layoutWidget1->setGeometry(QRect(78, 619, 451, 100));
+        gridLayout_6 = new QGridLayout(layoutWidget1);
         gridLayout_6->setSpacing(6);
         gridLayout_6->setContentsMargins(11, 11, 11, 11);
         gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
         gridLayout_6->setContentsMargins(0, 0, 0, 0);
-        label_15 = new QLabel(widget);
+        label_15 = new QLabel(layoutWidget1);
         label_15->setObjectName(QStringLiteral("label_15"));
 
         gridLayout_6->addWidget(label_15, 1, 0, 1, 1);
 
-        erodeSizeLabel = new QLabel(widget);
+        erodeSizeLabel = new QLabel(layoutWidget1);
         erodeSizeLabel->setObjectName(QStringLiteral("erodeSizeLabel"));
 
         gridLayout_6->addWidget(erodeSizeLabel, 0, 2, 1, 1);
 
-        erodeSizeSlider = new QSlider(widget);
+        erodeSizeSlider = new QSlider(layoutWidget1);
         erodeSizeSlider->setObjectName(QStringLiteral("erodeSizeSlider"));
         erodeSizeSlider->setMaximum(20);
         erodeSizeSlider->setPageStep(1);
@@ -350,17 +356,17 @@ public:
 
         gridLayout_6->addWidget(erodeSizeSlider, 0, 1, 1, 1);
 
-        label_13 = new QLabel(widget);
+        label_13 = new QLabel(layoutWidget1);
         label_13->setObjectName(QStringLiteral("label_13"));
 
         gridLayout_6->addWidget(label_13, 0, 0, 1, 1);
 
-        erodeShapeLabel = new QLabel(widget);
+        erodeShapeLabel = new QLabel(layoutWidget1);
         erodeShapeLabel->setObjectName(QStringLiteral("erodeShapeLabel"));
 
         gridLayout_6->addWidget(erodeShapeLabel, 1, 2, 1, 1);
 
-        erodeShapeSlider = new QSlider(widget);
+        erodeShapeSlider = new QSlider(layoutWidget1);
         erodeShapeSlider->setObjectName(QStringLiteral("erodeShapeSlider"));
         erodeShapeSlider->setMaximum(2);
         erodeShapeSlider->setPageStep(1);
@@ -368,12 +374,12 @@ public:
 
         gridLayout_6->addWidget(erodeShapeSlider, 1, 1, 1, 1);
 
-        label_16 = new QLabel(widget);
+        label_16 = new QLabel(layoutWidget1);
         label_16->setObjectName(QStringLiteral("label_16"));
 
         gridLayout_6->addWidget(label_16, 2, 0, 1, 1);
 
-        cutThicknessSlider = new QSlider(widget);
+        cutThicknessSlider = new QSlider(layoutWidget1);
         cutThicknessSlider->setObjectName(QStringLiteral("cutThicknessSlider"));
         cutThicknessSlider->setMaximum(10);
         cutThicknessSlider->setPageStep(1);
@@ -381,7 +387,7 @@ public:
 
         gridLayout_6->addWidget(cutThicknessSlider, 2, 1, 1, 1);
 
-        cutThicknessLabel = new QLabel(widget);
+        cutThicknessLabel = new QLabel(layoutWidget1);
         cutThicknessLabel->setObjectName(QStringLiteral("cutThicknessLabel"));
 
         gridLayout_6->addWidget(cutThicknessLabel, 2, 2, 1, 1);
@@ -389,58 +395,86 @@ public:
         tabWidget->addTab(imgprocTab, QString());
         ctrlTab = new QWidget();
         ctrlTab->setObjectName(QStringLiteral("ctrlTab"));
-        layoutWidget1 = new QWidget(ctrlTab);
-        layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
-        layoutWidget1->setGeometry(QRect(53, 82, 481, 120));
-        gridLayout_4 = new QGridLayout(layoutWidget1);
+        layoutWidget2 = new QWidget(ctrlTab);
+        layoutWidget2->setObjectName(QStringLiteral("layoutWidget2"));
+        layoutWidget2->setGeometry(QRect(53, 82, 481, 139));
+        gridLayout_4 = new QGridLayout(layoutWidget2);
         gridLayout_4->setSpacing(6);
         gridLayout_4->setContentsMargins(11, 11, 11, 11);
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
         gridLayout_4->setContentsMargins(0, 0, 0, 0);
-        label_7 = new QLabel(layoutWidget1);
+        label_7 = new QLabel(layoutWidget2);
         label_7->setObjectName(QStringLiteral("label_7"));
 
         gridLayout_4->addWidget(label_7, 1, 0, 1, 1);
 
-        numInLabel = new QLabel(layoutWidget1);
+        numInLabel = new QLabel(layoutWidget2);
         numInLabel->setObjectName(QStringLiteral("numInLabel"));
 
         gridLayout_4->addWidget(numInLabel, 1, 1, 1, 1);
 
-        label = new QLabel(layoutWidget1);
+        label = new QLabel(layoutWidget2);
         label->setObjectName(QStringLiteral("label"));
 
         gridLayout_4->addWidget(label, 2, 0, 1, 1);
 
-        numOutLabel = new QLabel(layoutWidget1);
+        numOutLabel = new QLabel(layoutWidget2);
         numOutLabel->setObjectName(QStringLiteral("numOutLabel"));
 
         gridLayout_4->addWidget(numOutLabel, 2, 1, 1, 1);
 
-        label_5 = new QLabel(layoutWidget1);
+        label_5 = new QLabel(layoutWidget2);
         label_5->setObjectName(QStringLiteral("label_5"));
 
         gridLayout_4->addWidget(label_5, 4, 0, 1, 1);
 
-        numCtrlLabel = new QLabel(layoutWidget1);
+        numCtrlLabel = new QLabel(layoutWidget2);
         numCtrlLabel->setObjectName(QStringLiteral("numCtrlLabel"));
 
         gridLayout_4->addWidget(numCtrlLabel, 4, 1, 1, 1);
 
-        loadCtrlButton = new QPushButton(layoutWidget1);
+        loadCtrlButton = new QPushButton(layoutWidget2);
         loadCtrlButton->setObjectName(QStringLiteral("loadCtrlButton"));
 
-        gridLayout_4->addWidget(loadCtrlButton, 5, 1, 1, 1);
+        gridLayout_4->addWidget(loadCtrlButton, 7, 1, 1, 1);
 
-        label_3 = new QLabel(layoutWidget1);
+        label_3 = new QLabel(layoutWidget2);
         label_3->setObjectName(QStringLiteral("label_3"));
 
         gridLayout_4->addWidget(label_3, 0, 0, 1, 1);
 
-        numStateLabel = new QLabel(layoutWidget1);
+        numStateLabel = new QLabel(layoutWidget2);
         numStateLabel->setObjectName(QStringLiteral("numStateLabel"));
 
         gridLayout_4->addWidget(numStateLabel, 0, 1, 1, 1);
+
+        label_6 = new QLabel(layoutWidget2);
+        label_6->setObjectName(QStringLiteral("label_6"));
+
+        gridLayout_4->addWidget(label_6, 5, 0, 1, 1);
+
+        ctrlTsLabel = new QLabel(layoutWidget2);
+        ctrlTsLabel->setObjectName(QStringLiteral("ctrlTsLabel"));
+
+        gridLayout_4->addWidget(ctrlTsLabel, 5, 1, 1, 1);
+
+        layoutWidget3 = new QWidget(ctrlTab);
+        layoutWidget3->setObjectName(QStringLiteral("layoutWidget3"));
+        layoutWidget3->setGeometry(QRect(59, 540, 411, 25));
+        gridLayout_7 = new QGridLayout(layoutWidget3);
+        gridLayout_7->setSpacing(6);
+        gridLayout_7->setContentsMargins(11, 11, 11, 11);
+        gridLayout_7->setObjectName(QStringLiteral("gridLayout_7"));
+        gridLayout_7->setContentsMargins(0, 0, 0, 0);
+        timerIntervalEdit = new QLineEdit(layoutWidget3);
+        timerIntervalEdit->setObjectName(QStringLiteral("timerIntervalEdit"));
+
+        gridLayout_7->addWidget(timerIntervalEdit, 0, 0, 1, 1);
+
+        timerIntervalButton = new QPushButton(layoutWidget3);
+        timerIntervalButton->setObjectName(QStringLiteral("timerIntervalButton"));
+
+        gridLayout_7->addWidget(timerIntervalButton, 0, 1, 1, 1);
 
         tabWidget->addTab(ctrlTab, QString());
 
@@ -449,7 +483,7 @@ public:
 
         retranslateUi(Setup);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(Setup);
@@ -493,11 +527,15 @@ public:
         numInLabel->setText(QApplication::translate("Setup", "0", 0));
         label->setText(QApplication::translate("Setup", "Number of Plant Outputs (channels):", 0));
         numOutLabel->setText(QApplication::translate("Setup", "0", 0));
-        label_5->setText(QApplication::translate("Setup", "Number of Controllers", 0));
+        label_5->setText(QApplication::translate("Setup", "Number of Controllers:", 0));
         numCtrlLabel->setText(QApplication::translate("Setup", "0", 0));
         loadCtrlButton->setText(QApplication::translate("Setup", "Load Controllers", 0));
         label_3->setText(QApplication::translate("Setup", "Number of Plant States:", 0));
         numStateLabel->setText(QApplication::translate("Setup", "0", 0));
+        label_6->setText(QApplication::translate("Setup", "Controller Designed Sample Period:", 0));
+        ctrlTsLabel->setText(QApplication::translate("Setup", "0", 0));
+        timerIntervalEdit->setText(QApplication::translate("Setup", "100", 0));
+        timerIntervalButton->setText(QApplication::translate("Setup", "Change uEVA Timer Interval (Sampling Period [ms])", 0));
         tabWidget->setTabText(tabWidget->indexOf(ctrlTab), QApplication::translate("Setup", "Controller", 0));
     } // retranslateUi
 

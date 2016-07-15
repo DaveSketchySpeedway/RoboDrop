@@ -60,12 +60,13 @@ void S2EngineThread::wake()
 //// SINGLE TIME
 
 void S2EngineThread::loadCtrl(string fileName,
-	int *numState, int *numIn, int *numOut, int *numCtrl)
+	int *numState, int *numIn, int *numOut, int *numCtrl, double *ctrlTs)
 {
 	mutex.lock();
 
 	FileStorage fs(fileName, FileStorage::READ);
 	*numCtrl = (int)fs["numCtrl"];
+	*ctrlTs = (double)fs["samplePeriod"];
 	*numState = (int)fs["numPlantState"];
 	*numIn = (int)fs["numPlantInput"];
 	*numOut = (int)fs["numPlantOutput"];
@@ -136,7 +137,6 @@ void S2EngineThread::setBkgd()
 }
 
 //// CONTINUOUS
-
 void S2EngineThread::run()
 {
 	forever
@@ -289,11 +289,20 @@ void S2EngineThread::run()
 							mc++;
 						}
 					}
+					// marker centroid
+
+					// channel occuying marker
+
+					// channel occupying droplets
+
 					// draw
 					cvtColor(data.rawGray, data.drawnBgr, CV_GRAY2BGR);
+					// for each channel draw text white ch1 d1 m0
+					// for each occupying marker draw rectangle cyan
+					// for each reference marker draw rectangle red
 					if (settings.flag & UevaSettings::DRAW_CHANNEL)
 					{
-						
+					// for each channel draw filled contour	white
 					}
 					if (settings.flag & UevaSettings::DRAW_DROPLET)
 					{

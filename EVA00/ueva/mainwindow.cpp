@@ -193,6 +193,15 @@ void MainWindow::ctrlOnOff()
 	}
 }
 
+void MainWindow::ctrlSettings()
+{
+	int markerSize = dashboard->markerSizeSlider->value();
+
+	settings.ctrlMarkerSize = markerSize;
+
+	dashboard->markerSizeLabel->setText(QString::number(markerSize));
+}
+
 //// COMMUNICATE WITH SETUP
 void MainWindow::connectCamera()
 {
@@ -473,13 +482,25 @@ void MainWindow::loadCtrl()
 		int numIn;
 		int numState;
 		int numCtrl;
+		double ctrlTs;
 		engineThread->loadCtrl(fileName.toStdString(),
-			&numState, &numIn, &numOut, &numCtrl);
+			&numState, &numIn, &numOut, &numCtrl, &ctrlTs);
 		setup->numInLabel->setText(QString::number(numIn));
 		setup->numOutLabel->setText(QString::number(numOut));
 		setup->numStateLabel->setText(QString::number(numState));
 		setup->numCtrlLabel->setText(QString::number(numCtrl));
+		setup->ctrlTsLabel->setText(QString::number(ctrlTs));
 	}
+}
+
+void MainWindow::changeTimerInterval()
+{
+	// stop timer
+	killTimer(timerId);
+	// get new interval
+	timerInterval = setup->timerIntervalEdit->text().toInt();
+	// start new timer
+	startTimers();
 }
 
 //// COMMUNICATE WITH DISPLAY

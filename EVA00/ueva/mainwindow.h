@@ -69,7 +69,6 @@ public:
 	public slots:
 
 	//// COMMUNICATE WITH DASHBOARD
-
 	void recordDataOnOff();
 	void recordRawOnOff();
 	void recordDrawnOnOff();
@@ -78,6 +77,7 @@ public:
 	void imgprocOnOff();
 	void imgprocSettings();
 	void ctrlOnOff();
+	void ctrlSettings();
 
 	//// COMMUNICATE WITH SETUP
 	void connectCamera();
@@ -93,6 +93,7 @@ public:
 	void channelOnOff();
 	void channelSettings();
 	void loadCtrl();
+	void changeTimerInterval();
 
 	//// COMMUNICATE WITH DISPLAY
 	void receiveMouseLine(QLine line);

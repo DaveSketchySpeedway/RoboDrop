@@ -53,7 +53,7 @@ public:
 
 	//// SINGLE TIME 
 	void loadCtrl(string fileName,
-		int *numState, int *numIn, int *numOut, int *numCtrl);
+		int *numState, int *numIn, int *numOut, int *numCtrl, double *ctrlTs);
 	void setCalib(double micronLength);
 	void setBkgd();
 

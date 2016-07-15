@@ -86,10 +86,11 @@ Setup::Setup(QWidget *parent)
 	connect(cutThicknessSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(channelSettings()));
 
-
 	//// CTRL
 	connect(loadCtrlButton, SIGNAL(clicked()),
 		parent, SLOT(loadCtrl()));
+	connect(timerIntervalButton, SIGNAL(clicked()),
+		parent, SLOT(changeTimerInterval()));
 }
 
 Setup::~Setup()

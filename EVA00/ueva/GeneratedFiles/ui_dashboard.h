@@ -56,6 +56,9 @@ public:
     QPushButton *recordDrawnButton;
     QGroupBox *groupBox_4;
     QPushButton *ctrlButton;
+    QLabel *markerSizeLabel;
+    QSlider *markerSizeSlider;
+    QLabel *label_7;
 
     void setupUi(QWidget *Dashboard)
     {
@@ -213,6 +216,19 @@ public:
         ctrlButton->setObjectName(QStringLiteral("ctrlButton"));
         ctrlButton->setGeometry(QRect(30, 40, 75, 23));
         ctrlButton->setCheckable(true);
+        markerSizeLabel = new QLabel(groupBox_4);
+        markerSizeLabel->setObjectName(QStringLiteral("markerSizeLabel"));
+        markerSizeLabel->setGeometry(QRect(470, 70, 47, 13));
+        markerSizeSlider = new QSlider(groupBox_4);
+        markerSizeSlider->setObjectName(QStringLiteral("markerSizeSlider"));
+        markerSizeSlider->setGeometry(QRect(290, 70, 160, 16));
+        markerSizeSlider->setMinimum(0);
+        markerSizeSlider->setMaximum(200);
+        markerSizeSlider->setValue(50);
+        markerSizeSlider->setOrientation(Qt::Horizontal);
+        label_7 = new QLabel(groupBox_4);
+        label_7->setObjectName(QStringLiteral("label_7"));
+        label_7->setGeometry(QRect(140, 70, 131, 20));
 
         retranslateUi(Dashboard);
 
@@ -241,6 +257,8 @@ public:
         recordDrawnButton->setText(QApplication::translate("Dashboard", "On", 0));
         groupBox_4->setTitle(QApplication::translate("Dashboard", "Controller", 0));
         ctrlButton->setText(QApplication::translate("Dashboard", "On", 0));
+        markerSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
+        label_7->setText(QApplication::translate("Dashboard", "Marker Rectangle  Size:", 0));
     } // retranslateUi
 
 };

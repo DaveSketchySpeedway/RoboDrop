@@ -23,7 +23,7 @@
    <item row="0" column="1">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="cameraTab">
       <attribute name="title">
@@ -393,7 +393,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
          <x>78</x>
@@ -497,7 +497,7 @@
          <x>53</x>
          <y>82</y>
          <width>481</width>
-         <height>120</height>
+         <height>139</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_4">
@@ -532,7 +532,7 @@
         <item row="4" column="0">
          <widget class="QLabel" name="label_5">
           <property name="text">
-           <string>Number of Controllers</string>
+           <string>Number of Controllers:</string>
           </property>
          </widget>
         </item>
@@ -543,7 +543,7 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="7" column="1">
          <widget class="QPushButton" name="loadCtrlButton">
           <property name="text">
            <string>Load Controllers</string>
@@ -561,6 +561,46 @@
          <widget class="QLabel" name="numStateLabel">
           <property name="text">
            <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Controller Designed Sample Period:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLabel" name="ctrlTsLabel">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>59</x>
+         <y>540</y>
+         <width>411</width>
+         <height>25</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_7">
+        <item row="0" column="0">
+         <widget class="QLineEdit" name="timerIntervalEdit">
+          <property name="text">
+           <string>100</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="timerIntervalButton">
+          <property name="text">
+           <string>Change uEVA Timer Interval (Sampling Period [ms])</string>
           </property>
          </widget>
         </item>

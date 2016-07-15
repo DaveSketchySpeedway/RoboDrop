@@ -52,6 +52,8 @@ Dashboard::Dashboard(QWidget *parent)
 	// ctrl
 	connect(ctrlButton, SIGNAL(clicked()),
 		parent, SLOT(ctrlOnOff()));
+	connect(markerSizeSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(ctrlSettings()));
 }
 
 Dashboard::~Dashboard()

@@ -27,8 +27,6 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 using namespace std;
 using namespace cv;
 
-
-
 struct UevaSettings
 {
 	UevaSettings();
@@ -63,10 +61,9 @@ struct UevaSettings
 	int channelCutThickness;
 	int imgprogThreshold;
 	int imgprogContourSize;
+	int ctrlMarkerSize;
 
 };
-
-
 
 struct UevaData
 {
@@ -84,8 +81,6 @@ struct UevaData
 	QMap<QString, QVector<qreal>> map;
 };
 
-
-
 struct UevaBuffer
 {
 	UevaBuffer();
@@ -96,8 +91,6 @@ struct UevaBuffer
 	int size;
 	QMap<QString, QVector<QVector<qreal>> > map;
 };
-
-
 
 struct UevaCtrl
 {
@@ -120,11 +113,27 @@ struct UevaCtrl
 	Mat H;
 };
 
+struct UevaChannel
+{
+	UevaChannel();
+
+	int index;
+	vector<Point_<int>> contour;
+	Mat mask;
+	int horizontalMultiplier;
+	int verticalMultiplier;
+
+	vector<int> occupyingMarkers;
+	vector<int> occupyingDroplets;
+	
+
+};
 
 
 Q_DECLARE_METATYPE(UevaSettings)
 Q_DECLARE_METATYPE(UevaData)
 Q_DECLARE_METATYPE(UevaBuffer)
 Q_DECLARE_METATYPE(UevaCtrl)
+Q_DECLARE_METATYPE(UevaChannel)
 
 #endif
