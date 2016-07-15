@@ -69,7 +69,7 @@ public:
 	public slots:
 
 	//// COMMUNICATE WITH DASHBOARD
-	void cameraOnOff();
+
 	void recordDataOnOff();
 	void recordRawOnOff();
 	void recordDrawnOnOff();
@@ -81,8 +81,9 @@ public:
 
 	//// COMMUNICATE WITH SETUP
 	void connectCamera();
-	void getCamera();
 	void setCamera();
+	void cameraOnOff();
+	void getCamera();
 	void getPump();
 	void setPump();
 	void setCalib();

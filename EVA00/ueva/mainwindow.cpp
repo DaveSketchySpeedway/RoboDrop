@@ -60,24 +60,6 @@ MainWindow::~MainWindow()
 }
 
 //// COMMUNICATE WITH DASHBOARD
-
-void MainWindow::cameraOnOff()
-{
-	if (dashboard->cameraButton->isChecked())
-	{
-		dashboard->cameraButton->setText(tr("Off"));
-		settings.flag |= UevaSettings::CAMERA_ON;
-		cameraThread->startCamera( (int)(timerInterval/1000) );
-	}
-	else
-	{
-		dashboard->cameraButton->setText(tr("On"));
-		settings.flag ^= UevaSettings::CAMERA_ON;
-		cameraThread->stopCamera();
-		file8uc1 = Mat(0, 0, CV_8UC1);
-	}
-}
-
 void MainWindow::recordDataOnOff()
 {
 	if (dashboard->recordDataButton->isChecked())
@@ -209,7 +191,6 @@ void MainWindow::ctrlOnOff()
 }
 
 //// COMMUNICATE WITH SETUP
-
 void MainWindow::connectCamera()
 {
 	if (setup->connectCameraButton->isChecked())
@@ -223,7 +204,7 @@ void MainWindow::connectCamera()
 			delete setup->cameraTree->takeTopLevelItem(numItem - 1);
 		}
 		//// default setting
-		QMapIterator<QString, QString> d (cameraThread->defaultSettings());
+		QMapIterator<QString, QString> d(cameraThread->defaultSettings());
 		QTreeWidgetItem *p;
 		d.toFront();
 		while (d.hasNext())
@@ -248,6 +229,37 @@ void MainWindow::connectCamera()
 	}
 }
 
+void MainWindow::setCamera()
+{
+	// extract settings from tree
+	QMap<QString, QString> s;
+	for (int i = 0; i < setup->cameraTree->topLevelItemCount(); i++)
+	{
+		QTreeWidgetItem *p;
+		p = setup->cameraTree->topLevelItem(i);
+		s[p->text(0)] = p->text(1);
+	}
+	//// set settings
+	cameraThread->setSettings(s);
+}
+
+void MainWindow::cameraOnOff()
+{
+	if (setup->cameraButton->isChecked())
+	{
+		setup->cameraButton->setText(tr("Off"));
+		settings.flag |= UevaSettings::CAMERA_ON;
+		cameraThread->startCamera((int)(timerInterval / 1000));
+	}
+	else
+	{
+		setup->cameraButton->setText(tr("On"));
+		settings.flag ^= UevaSettings::CAMERA_ON;
+		cameraThread->stopCamera();
+		file8uc1 = Mat(0, 0, CV_8UC1);
+	}
+}
+
 void MainWindow::getCamera()
 {
 	//// erase settings
@@ -267,20 +279,6 @@ void MainWindow::getCamera()
 		p->setText(1, s.value());
 		p->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
 	}
-}
-
-void MainWindow::setCamera()
-{
-	// extract settings from tree
-	QMap<QString, QString> s;
-	for (int i = 0; i < setup->cameraTree->topLevelItemCount(); i++)
-	{
-		QTreeWidgetItem *p;
-		p = setup->cameraTree->topLevelItem(i);
-		s[p->text(0)] = p->text(1);
-	}
-	//// set settings
-	cameraThread->setSettings(s);
 }
 
 void MainWindow::getPump()
@@ -482,7 +480,6 @@ void MainWindow::loadCtrl()
 }
 
 //// COMMUNICATE WITH DISPLAY
-
 void MainWindow::receiveMouseLine(QLine line)
 {
 	if (settings.flag & UevaSettings::CHANNEL_CUTTING)
@@ -497,7 +494,6 @@ void MainWindow::receiveMouseLine(QLine line)
 }
 
 //// REIMPLEMENTATION
-
 void MainWindow::timerEvent(QTimerEvent *event)
 {
 	
@@ -547,7 +543,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
 }
 
 ///// CONSTRUCTOR FUNCTIONS
-
 void MainWindow::createActions()
 {
 	clearAction = new QAction(tr("&Clear"), this);
@@ -749,7 +744,6 @@ void MainWindow::startTimers()
 }
 
 //// MAINWINDOW FUNCTIONS
-
 bool MainWindow::noUnsavedFile()
 {
 	if (isWindowModified())
@@ -830,7 +824,6 @@ void MainWindow::readSettings()
 }
 
 //// ACTION FUNCTIONS
-
 void MainWindow::clear()
 {
 	if (noUnsavedFile())
@@ -970,7 +963,6 @@ void MainWindow::showAndHideMarker()
 }
 
 //// THREAD FUNCTIONS
-
 void MainWindow::engineSlot(const UevaData &data)
 {
 	//// TRACK IMAGE DATA

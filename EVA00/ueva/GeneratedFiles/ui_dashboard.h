@@ -29,10 +29,19 @@ QT_BEGIN_NAMESPACE
 class Ui_Dashboard
 {
 public:
-    QGridLayout *gridLayout_3;
-    QGridLayout *gridLayout;
-    QGroupBox *groupBox_2;
-    QPushButton *cameraButton;
+    QGroupBox *groupBox_3;
+    QPushButton *imgprocButton;
+    QLabel *label_5;
+    QSlider *dropThreshSlider;
+    QLabel *dropThreshLabel;
+    QGroupBox *groupBox;
+    QGridLayout *gridLayout_2;
+    QHBoxLayout *pumpLayout;
+    QVBoxLayout *verticalLayout_2;
+    QPushButton *pumpButton;
+    QPushButton *zeroPumpButton;
+    QLabel *label_2;
+    QWidget *widget;
     QGroupBox *groupBox_5;
     QWidget *layoutWidget;
     QFormLayout *formLayout;
@@ -42,19 +51,6 @@ public:
     QLabel *label_4;
     QPushButton *recordRawButton;
     QPushButton *recordDrawnButton;
-    QGroupBox *groupBox;
-    QGridLayout *gridLayout_2;
-    QHBoxLayout *pumpLayout;
-    QVBoxLayout *verticalLayout_2;
-    QPushButton *pumpButton;
-    QPushButton *zeroPumpButton;
-    QLabel *label_2;
-    QWidget *widget;
-    QGroupBox *groupBox_3;
-    QPushButton *imgprocButton;
-    QLabel *label_5;
-    QSlider *dropThreshSlider;
-    QLabel *dropThreshLabel;
     QGroupBox *groupBox_4;
     QPushButton *ctrlButton;
 
@@ -69,74 +65,30 @@ public:
         sizePolicy.setHeightForWidth(Dashboard->sizePolicy().hasHeightForWidth());
         Dashboard->setSizePolicy(sizePolicy);
         Dashboard->setMinimumSize(QSize(600, 800));
-        gridLayout_3 = new QGridLayout(Dashboard);
-        gridLayout_3->setSpacing(6);
-        gridLayout_3->setContentsMargins(11, 11, 11, 11);
-        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
-        gridLayout = new QGridLayout();
-        gridLayout->setSpacing(6);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        groupBox_2 = new QGroupBox(Dashboard);
-        groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
-        sizePolicy.setHeightForWidth(groupBox_2->sizePolicy().hasHeightForWidth());
-        groupBox_2->setSizePolicy(sizePolicy);
-        cameraButton = new QPushButton(groupBox_2);
-        cameraButton->setObjectName(QStringLiteral("cameraButton"));
-        cameraButton->setGeometry(QRect(30, 30, 75, 23));
-        cameraButton->setCheckable(true);
-
-        gridLayout->addWidget(groupBox_2, 0, 0, 1, 1);
-
-        groupBox_5 = new QGroupBox(Dashboard);
-        groupBox_5->setObjectName(QStringLiteral("groupBox_5"));
-        sizePolicy.setHeightForWidth(groupBox_5->sizePolicy().hasHeightForWidth());
-        groupBox_5->setSizePolicy(sizePolicy);
-        layoutWidget = new QWidget(groupBox_5);
-        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(60, 20, 201, 83));
-        formLayout = new QFormLayout(layoutWidget);
-        formLayout->setSpacing(6);
-        formLayout->setContentsMargins(11, 11, 11, 11);
-        formLayout->setObjectName(QStringLiteral("formLayout"));
-        formLayout->setContentsMargins(0, 0, 0, 0);
-        label = new QLabel(layoutWidget);
-        label->setObjectName(QStringLiteral("label"));
-
-        formLayout->setWidget(0, QFormLayout::LabelRole, label);
-
-        recordDataButton = new QPushButton(layoutWidget);
-        recordDataButton->setObjectName(QStringLiteral("recordDataButton"));
-        recordDataButton->setCheckable(true);
-
-        formLayout->setWidget(0, QFormLayout::FieldRole, recordDataButton);
-
-        label_3 = new QLabel(layoutWidget);
-        label_3->setObjectName(QStringLiteral("label_3"));
-
-        formLayout->setWidget(1, QFormLayout::LabelRole, label_3);
-
-        label_4 = new QLabel(layoutWidget);
-        label_4->setObjectName(QStringLiteral("label_4"));
-
-        formLayout->setWidget(2, QFormLayout::LabelRole, label_4);
-
-        recordRawButton = new QPushButton(layoutWidget);
-        recordRawButton->setObjectName(QStringLiteral("recordRawButton"));
-        recordRawButton->setCheckable(true);
-
-        formLayout->setWidget(1, QFormLayout::FieldRole, recordRawButton);
-
-        recordDrawnButton = new QPushButton(layoutWidget);
-        recordDrawnButton->setObjectName(QStringLiteral("recordDrawnButton"));
-        recordDrawnButton->setCheckable(true);
-
-        formLayout->setWidget(2, QFormLayout::FieldRole, recordDrawnButton);
-
-
-        gridLayout->addWidget(groupBox_5, 0, 1, 1, 1);
-
+        groupBox_3 = new QGroupBox(Dashboard);
+        groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
+        groupBox_3->setGeometry(QRect(30, 350, 661, 191));
+        sizePolicy.setHeightForWidth(groupBox_3->sizePolicy().hasHeightForWidth());
+        groupBox_3->setSizePolicy(sizePolicy);
+        imgprocButton = new QPushButton(groupBox_3);
+        imgprocButton->setObjectName(QStringLiteral("imgprocButton"));
+        imgprocButton->setGeometry(QRect(30, 20, 75, 23));
+        imgprocButton->setCheckable(true);
+        label_5 = new QLabel(groupBox_3);
+        label_5->setObjectName(QStringLiteral("label_5"));
+        label_5->setGeometry(QRect(170, 40, 91, 16));
+        dropThreshSlider = new QSlider(groupBox_3);
+        dropThreshSlider->setObjectName(QStringLiteral("dropThreshSlider"));
+        dropThreshSlider->setGeometry(QRect(280, 40, 160, 16));
+        dropThreshSlider->setMinimum(0);
+        dropThreshSlider->setMaximum(99);
+        dropThreshSlider->setOrientation(Qt::Horizontal);
+        dropThreshLabel = new QLabel(groupBox_3);
+        dropThreshLabel->setObjectName(QStringLiteral("dropThreshLabel"));
+        dropThreshLabel->setGeometry(QRect(460, 40, 47, 13));
         groupBox = new QGroupBox(Dashboard);
         groupBox->setObjectName(QStringLiteral("groupBox"));
+        groupBox->setGeometry(QRect(20, 120, 741, 211));
         QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy1.setHorizontalStretch(2);
         sizePolicy1.setVerticalStretch(2);
@@ -189,46 +141,61 @@ public:
 
         gridLayout_2->addLayout(pumpLayout, 0, 0, 1, 1);
 
+        groupBox_5 = new QGroupBox(Dashboard);
+        groupBox_5->setObjectName(QStringLiteral("groupBox_5"));
+        groupBox_5->setGeometry(QRect(140, 10, 471, 111));
+        sizePolicy.setHeightForWidth(groupBox_5->sizePolicy().hasHeightForWidth());
+        groupBox_5->setSizePolicy(sizePolicy);
+        layoutWidget = new QWidget(groupBox_5);
+        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
+        layoutWidget->setGeometry(QRect(60, 20, 201, 83));
+        formLayout = new QFormLayout(layoutWidget);
+        formLayout->setSpacing(6);
+        formLayout->setContentsMargins(11, 11, 11, 11);
+        formLayout->setObjectName(QStringLiteral("formLayout"));
+        formLayout->setContentsMargins(0, 0, 0, 0);
+        label = new QLabel(layoutWidget);
+        label->setObjectName(QStringLiteral("label"));
 
-        gridLayout->addWidget(groupBox, 1, 0, 1, 2);
+        formLayout->setWidget(0, QFormLayout::LabelRole, label);
 
-        groupBox_3 = new QGroupBox(Dashboard);
-        groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
-        sizePolicy.setHeightForWidth(groupBox_3->sizePolicy().hasHeightForWidth());
-        groupBox_3->setSizePolicy(sizePolicy);
-        imgprocButton = new QPushButton(groupBox_3);
-        imgprocButton->setObjectName(QStringLiteral("imgprocButton"));
-        imgprocButton->setGeometry(QRect(30, 20, 75, 23));
-        imgprocButton->setCheckable(true);
-        label_5 = new QLabel(groupBox_3);
-        label_5->setObjectName(QStringLiteral("label_5"));
-        label_5->setGeometry(QRect(170, 40, 91, 16));
-        dropThreshSlider = new QSlider(groupBox_3);
-        dropThreshSlider->setObjectName(QStringLiteral("dropThreshSlider"));
-        dropThreshSlider->setGeometry(QRect(280, 40, 160, 16));
-        dropThreshSlider->setMinimum(0);
-        dropThreshSlider->setMaximum(99);
-        dropThreshSlider->setOrientation(Qt::Horizontal);
-        dropThreshLabel = new QLabel(groupBox_3);
-        dropThreshLabel->setObjectName(QStringLiteral("dropThreshLabel"));
-        dropThreshLabel->setGeometry(QRect(460, 40, 47, 13));
+        recordDataButton = new QPushButton(layoutWidget);
+        recordDataButton->setObjectName(QStringLiteral("recordDataButton"));
+        recordDataButton->setCheckable(true);
 
-        gridLayout->addWidget(groupBox_3, 2, 0, 1, 2);
+        formLayout->setWidget(0, QFormLayout::FieldRole, recordDataButton);
+
+        label_3 = new QLabel(layoutWidget);
+        label_3->setObjectName(QStringLiteral("label_3"));
+
+        formLayout->setWidget(1, QFormLayout::LabelRole, label_3);
+
+        label_4 = new QLabel(layoutWidget);
+        label_4->setObjectName(QStringLiteral("label_4"));
+
+        formLayout->setWidget(2, QFormLayout::LabelRole, label_4);
+
+        recordRawButton = new QPushButton(layoutWidget);
+        recordRawButton->setObjectName(QStringLiteral("recordRawButton"));
+        recordRawButton->setCheckable(true);
+
+        formLayout->setWidget(1, QFormLayout::FieldRole, recordRawButton);
+
+        recordDrawnButton = new QPushButton(layoutWidget);
+        recordDrawnButton->setObjectName(QStringLiteral("recordDrawnButton"));
+        recordDrawnButton->setCheckable(true);
+
+        formLayout->setWidget(2, QFormLayout::FieldRole, recordDrawnButton);
 
         groupBox_4 = new QGroupBox(Dashboard);
         groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
+        groupBox_4->setGeometry(QRect(30, 550, 671, 201));
         sizePolicy1.setHeightForWidth(groupBox_4->sizePolicy().hasHeightForWidth());
         groupBox_4->setSizePolicy(sizePolicy1);
         ctrlButton = new QPushButton(groupBox_4);
         ctrlButton->setObjectName(QStringLiteral("ctrlButton"));
         ctrlButton->setGeometry(QRect(30, 40, 75, 23));
         ctrlButton->setCheckable(true);
-
-        gridLayout->addWidget(groupBox_4, 3, 0, 1, 2);
-
-
-        gridLayout_3->addLayout(gridLayout, 0, 0, 1, 1);
-
 
         retranslateUi(Dashboard);
 
@@ -238,8 +205,14 @@ public:
     void retranslateUi(QWidget *Dashboard)
     {
         Dashboard->setWindowTitle(QApplication::translate("Dashboard", "Dashboard", 0));
-        groupBox_2->setTitle(QApplication::translate("Dashboard", "Camera", 0));
-        cameraButton->setText(QApplication::translate("Dashboard", "On", 0));
+        groupBox_3->setTitle(QApplication::translate("Dashboard", "Image Processing", 0));
+        imgprocButton->setText(QApplication::translate("Dashboard", "On", 0));
+        label_5->setText(QApplication::translate("Dashboard", "Droplet Threshold:", 0));
+        dropThreshLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
+        groupBox->setTitle(QApplication::translate("Dashboard", "Pump", 0));
+        pumpButton->setText(QApplication::translate("Dashboard", "On", 0));
+        zeroPumpButton->setText(QApplication::translate("Dashboard", "Zero All", 0));
+        label_2->setText(QApplication::translate("Dashboard", "Request (mbar)", 0));
         groupBox_5->setTitle(QApplication::translate("Dashboard", "Record", 0));
         label->setText(QApplication::translate("Dashboard", "Record Data:", 0));
         recordDataButton->setText(QApplication::translate("Dashboard", "On", 0));
@@ -247,14 +220,6 @@ public:
         label_4->setText(QApplication::translate("Dashboard", "Record Drawn Footage:", 0));
         recordRawButton->setText(QApplication::translate("Dashboard", "On", 0));
         recordDrawnButton->setText(QApplication::translate("Dashboard", "On", 0));
-        groupBox->setTitle(QApplication::translate("Dashboard", "Pump", 0));
-        pumpButton->setText(QApplication::translate("Dashboard", "On", 0));
-        zeroPumpButton->setText(QApplication::translate("Dashboard", "Zero All", 0));
-        label_2->setText(QApplication::translate("Dashboard", "Request (mbar)", 0));
-        groupBox_3->setTitle(QApplication::translate("Dashboard", "Image Processing", 0));
-        imgprocButton->setText(QApplication::translate("Dashboard", "On", 0));
-        label_5->setText(QApplication::translate("Dashboard", "Droplet Threshold:", 0));
-        dropThreshLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         groupBox_4->setTitle(QApplication::translate("Dashboard", "Controller", 0));
         ctrlButton->setText(QApplication::translate("Dashboard", "On", 0));
     } // retranslateUi

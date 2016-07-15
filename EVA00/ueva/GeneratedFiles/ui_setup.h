@@ -39,9 +39,10 @@ public:
     QTreeWidget *cameraTree;
     QHBoxLayout *horizontalLayout_2;
     QPushButton *connectCameraButton;
-    QSpacerItem *horizontalSpacer_2;
-    QPushButton *getCameraButton;
     QPushButton *setCameraButton;
+    QSpacerItem *horizontalSpacer_2;
+    QPushButton *cameraButton;
+    QPushButton *getCameraButton;
     QWidget *pumpTab;
     QGridLayout *gridLayout_2;
     QVBoxLayout *verticalLayout;
@@ -135,19 +136,25 @@ public:
 
         horizontalLayout_2->addWidget(connectCameraButton);
 
+        setCameraButton = new QPushButton(cameraTab);
+        setCameraButton->setObjectName(QStringLiteral("setCameraButton"));
+
+        horizontalLayout_2->addWidget(setCameraButton);
+
         horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_2->addItem(horizontalSpacer_2);
+
+        cameraButton = new QPushButton(cameraTab);
+        cameraButton->setObjectName(QStringLiteral("cameraButton"));
+        cameraButton->setCheckable(true);
+
+        horizontalLayout_2->addWidget(cameraButton);
 
         getCameraButton = new QPushButton(cameraTab);
         getCameraButton->setObjectName(QStringLiteral("getCameraButton"));
 
         horizontalLayout_2->addWidget(getCameraButton);
-
-        setCameraButton = new QPushButton(cameraTab);
-        setCameraButton->setObjectName(QStringLiteral("setCameraButton"));
-
-        horizontalLayout_2->addWidget(setCameraButton);
 
 
         verticalLayout_2->addLayout(horizontalLayout_2);
@@ -442,7 +449,7 @@ public:
 
         retranslateUi(Setup);
 
-        tabWidget->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(Setup);
@@ -452,8 +459,9 @@ public:
     {
         Setup->setWindowTitle(QApplication::translate("Setup", "Setup", 0));
         connectCameraButton->setText(QApplication::translate("Setup", "Connect", 0));
-        getCameraButton->setText(QApplication::translate("Setup", "Get Camera", 0));
         setCameraButton->setText(QApplication::translate("Setup", "Set Camera", 0));
+        cameraButton->setText(QApplication::translate("Setup", "On", 0));
+        getCameraButton->setText(QApplication::translate("Setup", "Get Camera", 0));
         tabWidget->setTabText(tabWidget->indexOf(cameraTab), QApplication::translate("Setup", "Camera", 0));
         addPumpButton->setText(QApplication::translate("Setup", "Add Pump", 0));
         clearPumpButton->setText(QApplication::translate("Setup", "Clear All", 0));

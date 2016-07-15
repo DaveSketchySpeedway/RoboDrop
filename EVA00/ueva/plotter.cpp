@@ -25,13 +25,13 @@ Plotter::Plotter(QWidget *parent)
 	setupUi(this);
 	setWindowFlags(Qt::Window);
 
-	//// 64 RANDOM COLORS
+	//// 26 * 3 = 78 RANDOM COLORS
 	srand(time(NULL));
 	for (int i = 0; i < 64; i++)
 	{
-		int hue = ((rand() % 8) * 37) % 256;
-		int saturation = ((rand() % 8) * 37) % 256;
-		colors.push_back(QColor::fromHsv(hue, saturation, 255));
+		int hue = ((rand() % 26) * 10) % 256; // 26 hue possibilities
+		int saturation = ((rand() % 3) * 50) % 150 + 106; // 3 saturation possibilities, ignore white
+		colors.push_back(QColor::fromHsv(hue, saturation, 255)); // value = 255, always bright
 	}
 
 	//// 16 ROTATING PEN STYLES

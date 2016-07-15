@@ -28,10 +28,13 @@ Setup::Setup(QWidget *parent)
 	//// CAMERA
 	connect(connectCameraButton, SIGNAL(clicked()),
 		parent, SLOT(connectCamera()));
-	connect(getCameraButton, SIGNAL(clicked()),
-		parent, SLOT(getCamera()));
 	connect(setCameraButton, SIGNAL(clicked()),
 		parent, SLOT(setCamera()));
+	connect(cameraButton, SIGNAL(clicked()),
+		parent, SLOT(cameraOnOff()));
+	connect(getCameraButton, SIGNAL(clicked()),
+		parent, SLOT(getCamera()));
+
 
 	cameraTree->setColumnCount(2);
 	cameraTree->header()->resizeSection(0, 300);

@@ -23,7 +23,7 @@
    <item row="0" column="1">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="cameraTab">
       <attribute name="title">
@@ -54,6 +54,13 @@
             </widget>
            </item>
            <item>
+            <widget class="QPushButton" name="setCameraButton">
+             <property name="text">
+              <string>Set Camera</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <spacer name="horizontalSpacer_2">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -67,16 +74,19 @@
             </spacer>
            </item>
            <item>
-            <widget class="QPushButton" name="getCameraButton">
+            <widget class="QPushButton" name="cameraButton">
              <property name="text">
-              <string>Get Camera</string>
+              <string>On</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="setCameraButton">
+            <widget class="QPushButton" name="getCameraButton">
              <property name="text">
-              <string>Set Camera</string>
+              <string>Get Camera</string>
              </property>
             </widget>
            </item>

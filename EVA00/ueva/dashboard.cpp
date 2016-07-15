@@ -25,9 +25,7 @@ Dashboard::Dashboard(QWidget *parent)
 	setupUi(this);
 	setWindowFlags(Qt::Window);
 
-	// camera and record
-	connect(cameraButton, SIGNAL(clicked()),
-		parent, SLOT(cameraOnOff()));
+	// record
 	connect(recordDataButton, SIGNAL(clicked()),
 		parent, SLOT(recordDataOnOff()));
 	connect(recordRawButton, SIGNAL(clicked()),
