@@ -17,44 +17,20 @@ You should have received a copy of the GNU General Public License
 along with uEva. If not, see <http://www.gnu.org/licenses/>
 */
 
-#ifndef SETUP_H
-#define SETUP_H
 
-#include <QtGui >
-#include <QDialog>
-#include <map>
-#include <string>
-#include <vector>
-#include "ui_setup.h"
-#include "addpumpdialog.h"
-#include "channelinfowidget.h"
+#ifndef CHANNELINFOWIDGET_H
+#define CHANNELINFOWIDGET_H
 
-using namespace std;
+#include <QWidget>
+#include "ui_channelinfowidget.h"
 
-class Setup : public QWidget, public Ui_Setup
+class ChannelInfoWidget : public QWidget, public Ui_ChannelInfoWidget
 {
 	Q_OBJECT
 
 public:
-	Setup(QWidget *parent = 0);
-	~Setup();
-
-	void createChannelInfoWidgets(int numChan);
-	void  deleteChannelInfoWidgets(map<string, vector<int> > &channelInfo);
-
-	public slots:
-
-signals:
-
-protected:
-
-private:
-	QVector<ChannelInfoWidget*> channelInfoWidgets;
-	
-	private slots :
-	void addPump();
-	void clearPump();
+	ChannelInfoWidget(int id, int numChan, QWidget *parent = 0);
 
 };
 
-#endif // SETUP_H
+#endif // CHANNELINFOWIDGET_H

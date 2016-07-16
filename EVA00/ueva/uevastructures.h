@@ -35,18 +35,17 @@ struct UevaSettings
 	{
 		MASK_MAKING = 1,
 		CHANNEL_CUTTING = 2,
-		HIGHLIGHTING = 4,
-		CAMERA_ON = 8,
-		PUMP_ON = 16,
-		IMGPROC_ON = 32,
-		CTRL_ON = 64,
-		DRAW_CHANNEL = 128,
-		DRAW_DROPLET = 256,
-		DRAW_MARKER = 1024,
+		CAMERA_ON = 4,
+		PUMP_ON = 8,
+		IMGPROC_ON = 16,
+		CTRL_ON = 32,
+		DRAW_CHANNEL = 64,
+		DRAW_DROPLET = 128,
+		DRAW_MARKER = 256,
 		DRAW_NECK = 512,
-		RECORD_DATA = 2048,
-		RECORD_RAW = 4096,
-		RECORD_DRAWN = 8192,
+		RECORD_DATA = 1024,
+		RECORD_RAW = 2048,
+		RECORD_DRAWN = 4096,
 	};
 	int flag;
 	QVector<QVector<int>> inletInfo;
@@ -118,7 +117,6 @@ struct UevaChannel
 	UevaChannel();
 
 	int index;
-	vector<Point_<int>> contour;
 	Mat mask;
 	int horizontalMultiplier;
 	int verticalMultiplier;

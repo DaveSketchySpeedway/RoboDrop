@@ -21,6 +21,7 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #define S2ENGINETHREAD_H
 
 #include <string>
+#include <sstream>
 #include <iostream>
 #include <cmath>
 #include <QtGui >
@@ -56,6 +57,8 @@ public:
 		int *numState, int *numIn, int *numOut, int *numCtrl, double *ctrlTs);
 	void setCalib(double micronLength);
 	void setBkgd();
+	void separateChannels(int &numChan);
+	void sortChannels(map<string, vector<int> > &channelInfo);
 
 signals:
 	void engineSignal(const UevaData &d);
@@ -73,19 +76,21 @@ private:
 	UevaData data;
 
 	//// PERSISTENT VARIABLES
-	QVector<UevaCtrl> ctrls;
 	double micronPerPixel;
 	Mat bkgd;
 	Mat dropletMask;
 	Mat markerMask;
 	Mat allChannels;
+	vector<UevaChannel> channels;
+	vector<vector<Point_<int>>> channelContours;
+	vector<UevaCtrl> ctrls;
 
 	//// NON PERSISTANT VARIABLES
 	Mat allDroplets;
 	Mat allMarkers;
 	vector<vector< Point_<int> >> dropletContours;
-	vector<vector< Point_<int> >>::iterator dc;
 	vector<vector< Point_<int> >> markerContours;
+	vector<vector< Point_<int> >>::iterator dc;
 	vector<vector< Point_<int> >>::iterator mc;
 
 	//// IMGPROC PARAMETERS
@@ -101,6 +106,10 @@ private:
 	Scalar_<int> lineColor;
 	int lineThickness;
 	int lineType;
+	double fontScale;
+	Point_<int> anchor;
+	Moments mom;
+	Rect rect;
 
 	private slots:
 

@@ -36,7 +36,7 @@ public:
     {
         if (InletWidget->objectName().isEmpty())
             InletWidget->setObjectName(QStringLiteral("InletWidget"));
-        InletWidget->resize(153, 300);
+        InletWidget->resize(78, 300);
         QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);

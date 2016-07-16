@@ -136,6 +136,53 @@ void S2EngineThread::setBkgd()
 	mutex.unlock();
 }
 
+void S2EngineThread::separateChannels(int &numChan)
+{
+	CV_Assert(!allChannels.empty());
+	// find all channel contours
+	channels.clear();
+	channelContours.clear();
+	findContours(allChannels, channelContours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
+	numChan = channelContours.size();
+	// seprate into vector of UevaChannel
+	for (int i = 0; i < numChan; i++)
+	{
+		vector<vector< Point_<int> >> singleContourVector;
+		singleContourVector.push_back(channelContours[i]);
+		UevaChannel channel;
+		channel.index = i;
+		channel.mask = Mat(allChannels.rows, allChannels.cols, CV_8UC1, Scalar_<int>(0));
+		drawContours(channel.mask, singleContourVector, -1, Scalar_<int>(255), -1);
+		channels.push_back(channel);
+	}
+}
+
+void S2EngineThread::sortChannels(map<string, vector<int> > &channelInfo)
+{
+	CV_Assert(channelInfo["newIndices"].size() == channels.size());
+	// fill info
+	for (int i = 0; i < channels.size(); i++)
+	{
+		channels[i].index = channelInfo["newIndices"][i];
+		channels[i].horizontalMultiplier = channelInfo["horizontalMultipliers"][i];
+		channels[i].verticalMultiplier = channelInfo["verticalMultipliers"][i];
+	}
+	// sort
+	sort(channels.begin(), channels.end(),
+		[](const UevaChannel &a, const UevaChannel &b)
+	{
+		return a.index < b.index;
+	});
+	// update channel contours 
+	channelContours.clear();
+	for (int i = 0; i < channels.size(); i++)
+	{
+		vector<vector< Point_<int> >> singleContourVector;
+		findContours(channels[i].mask, singleContourVector, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
+		channelContours.push_back(singleContourVector[0]);
+	}
+}
+
 //// CONTINUOUS
 void S2EngineThread::run()
 {
@@ -145,18 +192,6 @@ void S2EngineThread::run()
 		{
 			mutex.lock();
 			data.map["inletWrite"] = settings.inletRequests;
-
-			//// DEFAULT
-			if (!(settings.flag & UevaSettings::MASK_MAKING) &
-				!(settings.flag & UevaSettings::CHANNEL_CUTTING) &
-				!(settings.flag & UevaSettings::HIGHLIGHTING) &
-				!(settings.flag & UevaSettings::CTRL_ON) &
-				!(settings.flag & UevaSettings::IMGPROC_ON) &
-				!data.rawGray.empty())
-			{
-				cvtColor(data.rawGray, data.drawnBgr, CV_GRAY2BGR);
-				cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
-			}
 
 			//// MASK MAKING
 			if (settings.flag & UevaSettings::MASK_MAKING)
@@ -216,15 +251,8 @@ void S2EngineThread::run()
 				cvtColor(drawn, data.drawnBgr, CV_GRAY2BGR);
 				cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
 			}
-
-			//// HIGH LIGHTING
-			else if (settings.flag & UevaSettings::HIGHLIGHTING)
-			{
-
-			}
 			else
 			{
-
 				//// CTRL
 				if (settings.flag & UevaSettings::CTRL_ON)
 				{
@@ -266,8 +294,8 @@ void S2EngineThread::run()
 					dc = dropletContours.begin();
 					while (dc != dropletContours.end())
 					{
-						Moments m = moments(*dc);
-						if (m.m00 < settings.imgprogContourSize)
+						mom = moments(*dc);
+						if (mom.m00 < settings.imgprogContourSize)
 						{
 							dc = dropletContours.erase(dc);
 						}
@@ -279,8 +307,8 @@ void S2EngineThread::run()
 					mc = markerContours.begin();
 					while (mc != markerContours.end())
 					{
-						Moments m = moments(*mc);
-						if (m.m00 < settings.imgprogContourSize)
+						mom = moments(*mc);
+						if (mom.m00 < settings.imgprogContourSize)
 						{
 							mc = markerContours.erase(mc);
 						}
@@ -295,14 +323,40 @@ void S2EngineThread::run()
 
 					// channel occupying droplets
 
-					// draw
+				}
+				//// DRAW
+				if (!data.rawGray.empty())
+				{
 					cvtColor(data.rawGray, data.drawnBgr, CV_GRAY2BGR);
-					// for each channel draw text white ch1 d1 m0
-					// for each occupying marker draw rectangle cyan
-					// for each reference marker draw rectangle red
+					// for each channel draw text white ch1 h0 v0 d0 m0
+					for (int i = 0; i < channels.size(); i++)
+					{
+						ostringstream oss;
+						oss << "CH" << i << " " <<
+							"h" << channels[i].horizontalMultiplier <<
+							"v" << channels[i].verticalMultiplier <<
+							"d0" << "m0";
+						string str = oss.str();
+						rect = boundingRect(channelContours[i]);
+						anchor.x = rect.x + 60; // offset right from leftmost
+						mom = moments(channelContours[i]);
+						anchor.y = mom.m01 / mom.m00 - 30; // offset up from center
+						fontScale = 0.6;
+						lineColor = Scalar(255, 255, 255); // white
+						lineThickness = 1;
+						lineType = 8;
+						putText(data.drawnBgr, str, anchor,
+							FONT_HERSHEY_SIMPLEX, fontScale, lineColor, lineThickness, lineType);
+						// for each occupying marker draw rectangle cyan
+						// for each reference marker draw rectangle red
+					}
 					if (settings.flag & UevaSettings::DRAW_CHANNEL)
 					{
-					// for each channel draw filled contour	white
+						lineColor = Scalar(255, 255, 255); // white
+						lineThickness = CV_FILLED; 
+						lineType = 8;
+						drawContours(data.drawnBgr, channelContours, -1,
+							lineColor, lineThickness, lineType);
 					}
 					if (settings.flag & UevaSettings::DRAW_DROPLET)
 					{
@@ -324,6 +378,7 @@ void S2EngineThread::run()
 					{
 
 					}
+
 					cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
 				}
 			}

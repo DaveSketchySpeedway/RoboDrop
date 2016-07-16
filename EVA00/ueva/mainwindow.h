@@ -92,6 +92,7 @@ public:
 	void maskSettings();
 	void channelOnOff();
 	void channelSettings();
+	void sepSortOnOff();
 	void loadCtrl();
 	void changeTimerInterval();
 

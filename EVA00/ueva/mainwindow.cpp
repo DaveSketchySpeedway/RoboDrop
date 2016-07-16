@@ -469,6 +469,29 @@ void MainWindow::channelSettings()
 	setup->cutThicknessLabel->setText(QString::number(cutThickness));
 }
 
+void MainWindow::sepSortOnOff()
+{
+	if (setup->sepSortButton->isChecked())
+	{
+		setup->sepSortButton->setText(tr("Sort Channels"));
+		// create channel objects
+		int numChan;
+		engineThread->separateChannels(numChan);
+		// create channel info widgets
+		setup->createChannelInfoWidgets(numChan);
+
+	}
+	else
+	{
+		setup->sepSortButton->setText(tr("Separate Channels"));
+		// get channel info 
+		map<string, vector<int> > channelInfo;
+		setup->deleteChannelInfoWidgets(channelInfo);
+		// sort channel objects
+		engineThread->sortChannels(channelInfo);
+	}
+}
+
 void MainWindow::loadCtrl()
 {
 	QString fileName = QFileDialog::getOpenFileName(setup,

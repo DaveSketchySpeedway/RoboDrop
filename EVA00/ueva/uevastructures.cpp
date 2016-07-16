@@ -171,6 +171,6 @@ double UevaCtrl::samplePeriod = 0;
 //// CHANNEL
 UevaChannel::UevaChannel()
 {
-
+	horizontalMultiplier = 0;
+	verticalMultiplier = 0;
 }
-

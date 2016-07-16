@@ -70,7 +70,9 @@ Setup::Setup(QWidget *parent)
 		parent, SLOT(maskOnOff()));
 	connect(channelButton, SIGNAL(clicked()),
 		parent, SLOT(channelOnOff()));
-
+	connect(sepSortButton, SIGNAL(clicked()),
+		parent, SLOT(sepSortOnOff()));
+	
 	connect(thresholdSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(maskSettings()));
 	connect(blockSlider, SIGNAL(valueChanged(int)),
@@ -86,6 +88,7 @@ Setup::Setup(QWidget *parent)
 	connect(cutThicknessSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(channelSettings()));
 
+
 	//// CTRL
 	connect(loadCtrlButton, SIGNAL(clicked()),
 		parent, SLOT(loadCtrl()));
@@ -97,6 +100,62 @@ Setup::~Setup()
 {
 
 }
+
+void Setup::createChannelInfoWidgets(int numChan)
+{
+	for (int i = 0; i < numChan; i++)
+	{
+		ChannelInfoWidget *channelInfoWidget = new ChannelInfoWidget(i, numChan, this);
+		channelInfoWidgets.push_back(channelInfoWidget);
+		sepSortLayout->addWidget(channelInfoWidget);
+	}
+}
+
+void Setup::deleteChannelInfoWidgets(map<string, vector<int> > &channelInfo)
+{
+	vector<int> newIndices;
+	vector<int> horizontalMultipliers;
+	vector<int> verticalMultipliers;
+	foreach(ChannelInfoWidget *channelInfoWidget, channelInfoWidgets)
+	{
+		newIndices.push_back(channelInfoWidget->newBox->currentIndex());
+		switch (channelInfoWidget->directionBox->currentIndex())
+		{
+		case 0:
+		{
+			horizontalMultipliers.push_back(0);
+			verticalMultipliers.push_back(-1);
+			break;
+		}
+		case 1:
+		{
+			horizontalMultipliers.push_back(0);
+			verticalMultipliers.push_back(1);
+			break;
+		}
+		case 2:
+		{
+			horizontalMultipliers.push_back(-1);
+			verticalMultipliers.push_back(0);
+			break;
+		}
+		case 3:
+		{
+			horizontalMultipliers.push_back(1);
+			verticalMultipliers.push_back(0);
+			break;
+		}
+		}
+		sepSortLayout->removeWidget(channelInfoWidget);
+		delete channelInfoWidget;
+	}
+	channelInfoWidgets.clear();
+
+	channelInfo["newIndices"] = newIndices;
+	channelInfo["horizontalMultipliers"] = horizontalMultipliers;
+	channelInfo["verticalMultipliers"] = verticalMultipliers;
+}
+
 
 void Setup::addPump()
 {
