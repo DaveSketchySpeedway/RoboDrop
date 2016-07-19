@@ -5,12 +5,12 @@ This file is part of uEVA. https://github.com/DaveSketchySpeedway/uEVA
 
 uEVA is free software : you can redistribute it and / or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
+the Free Software Foundation, either version 3 of the License, or 
 any later version.
 
 uEVA is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
@@ -44,8 +44,8 @@ MainWindow::MainWindow()
 	createContextMenu();
 	createToolBars();
 	createStatusBar();
-
 	createThreads();
+
 	updateStatusBar();
 	setCurrentFile("");
 	showMaximized();
@@ -363,7 +363,7 @@ void MainWindow::maskOnOff()
 		setup->maskButton->setText(tr("Done Making Mask"));
 		settings.flag |= UevaSettings::MASK_MAKING;
 		// initialize in case slider not tempered with
-		maskSettings();
+		maskSetup();
 	}
 	else
 	{
@@ -372,45 +372,20 @@ void MainWindow::maskOnOff()
 	}
 }
 
-void MainWindow::maskSettings()
+void MainWindow::maskSetup()
 {
 	// * 2 + 3 because they have to be odd and > 1
 	int block = setup->blockSlider->value() * 2 + 3;
 	int threshold = (127 - setup->thresholdSlider->value());
 	int openSize = setup->openSizeSlider->value() * 2 + 3;
-	int openShape = setup->openShapeSlider->value();
 
 	settings.maskBlockSize = block;
 	settings.maskThreshold = threshold;
 	settings.maskOpenSize = openSize;
-	QString openShapeText;
-
-	switch (openShape)
-	{
-	case 0:
-	{
-		openShapeText = QString("Rectangle");
-		settings.maskOpenShape = cv::MORPH_RECT;
-		break;
-	}
-	case 1:
-	{
-		openShapeText = QString("Ellipse");
-		settings.maskOpenShape = cv::MORPH_ELLIPSE;
-		break;
-	}
-	case 2:
-	{
-		openShapeText = QString("Cross");
-		settings.maskOpenShape = cv::MORPH_CROSS;
-		break;
-	}
-	}
 
 	setup->blockLabel->setText(QString::number(block));
 	setup->thresholdLabel->setText(QString::number(threshold));
 	setup->openSizeLabel->setText(QString::number(openSize));
-	setup->openShapeLabel->setText(openShapeText);
 }
 
 void MainWindow::channelOnOff()
@@ -420,7 +395,7 @@ void MainWindow::channelOnOff()
 		setup->channelButton->setText(tr("Done Cutting Channels"));
 		settings.flag |= UevaSettings::CHANNEL_CUTTING;
 		// initialize in case slider not tempered with
-		channelSettings();
+		channelSetup();
 	}
 	else
 	{
@@ -433,39 +408,15 @@ void MainWindow::channelOnOff()
 	}
 }
 
-void MainWindow::channelSettings()
+void MainWindow::channelSetup()
 {
 	int erodeSize = setup->erodeSizeSlider->value() * 2 + 3;
-	int erodeShape = setup->erodeShapeSlider->value();
 	int cutThickness = setup->cutThicknessSlider->value() + 1;
 
 	settings.channelErodeSize = erodeSize;
-	QString erodeShapeText;
 	settings.channelCutThickness = cutThickness;
-	switch (erodeShape)
-	{
-	case 0:
-	{
-		erodeShapeText = QString("Rectangle");
-		settings.channelErodeShape = cv::MORPH_RECT;
-		break;
-	}
-	case 1:
-	{
-		erodeShapeText = QString("Ellipse");
-		settings.channelErodeShape = cv::MORPH_ELLIPSE;
-		break;
-	}
-	case 2:
-	{
-		erodeShapeText = QString("Cross");
-		settings.channelErodeShape = cv::MORPH_CROSS;
-		break;
-	}
-	}
-
+	
 	setup->erodeSizeLabel->setText(QString::number(erodeSize));
-	setup->erodeShapeLabel->setText(erodeShapeText);
 	setup->cutThicknessLabel->setText(QString::number(cutThickness));
 }
 
@@ -631,70 +582,81 @@ void MainWindow::createActions()
 	connect(aboutAction, SIGNAL(triggered()),
 		this, SLOT(about()));
 
-	setupAction = new QAction(tr("show &Setup"), this);
+	setupAction = new QAction(tr("show Setup"), this);
 	setupAction->setIcon(QIcon("icon/setup.png"));
 	setupAction->setShortcut(tr("Alt+S"));
 	setupAction->setStatusTip(tr("Setup application"));
+	setupAction->setShortcutContext(Qt::ApplicationShortcut);
 	setupAction->setCheckable(true);
 	setupAction->setChecked(false);
 	connect(setupAction, SIGNAL(triggered()),
 		this, SLOT(showAndHideSetup()));
 
-	dashboardAction = new QAction(tr("show &Dashboard"), this);
+	dashboardAction = new QAction(tr("show Dashboard"), this);
 	dashboardAction->setIcon(QIcon("icon/dashboard.png"));
 	dashboardAction->setShortcut(tr("Alt+D"));
+	dashboardAction->setShortcutContext(Qt::ApplicationShortcut);
 	dashboardAction->setStatusTip(tr("Operate application"));
 	//dashboardAction->setCheckable(true);
 	//dashboardAction->setChecked(false);
 	connect(dashboardAction, SIGNAL(triggered()),
 		this, SLOT(showAndHideDashboard()));
 
-	plotterAction = new QAction(tr("show &Plotter"), this);
+	plotterAction = new QAction(tr("show Plotter"), this);
 	plotterAction->setIcon(QIcon("icon/plotter.png"));
-	plotterAction->setShortcut(tr("Alt+P"));
+	plotterAction->setShortcut(tr("Alt+A"));
+	plotterAction->setShortcutContext(Qt::ApplicationShortcut);
 	plotterAction->setStatusTip(tr("Plot data"));
 	//plotterAction->setCheckable(true);
 	//plotterAction->setChecked(false);
 	connect(plotterAction, SIGNAL(triggered()),
 		this, SLOT(showAndHidePlotter()));
 
-	channelAction = new QAction(tr("draw Cha&nnel"), this);
-	//channelAction->setIcon(QIcon("icon/channel.png"));
-	channelAction->setStatusTip(tr("Draw all channels"));
-	channelAction->setCheckable(true);
-	channelAction->setChecked(false);
-	connect(channelAction, SIGNAL(triggered()),
-		this, SLOT(showAndHideChannel()));
-
-	dropletAction = new QAction(tr("draw &Droplet"), this);
+	dropletAction = new QAction(tr("draw Droplet"), this);
 	//contourAction->setIcon(QIcon("icon/contour.png"));
 	dropletAction->setStatusTip(tr("Draw detected droplets"));
+	dropletAction->setShortcut(tr("CTRL+Z"));
+	dropletAction->setShortcutContext(Qt::ApplicationShortcut);
 	dropletAction->setCheckable(true);
 	dropletAction->setChecked(false);
 	connect(dropletAction, SIGNAL(triggered()),
 		this, SLOT(showAndHideDroplet()));
 
-	neckAction = new QAction(tr("draw &Neck"), this);
-	//neckAction->setIcon(QIcon("icon/neck.png"));
-	neckAction->setStatusTip(tr("Draw detected necks"));
-	neckAction->setCheckable(true);
-	neckAction->setChecked(false);
-	connect(neckAction, SIGNAL(triggered()),
-		this, SLOT(showAndHideNeck()));
-
-	markerAction = new QAction(tr("draw &Marker"), this);
+	markerAction = new QAction(tr("draw Marker"), this);
 	//markerAction->setIcon(QIcon("icon/marker.png"));
 	markerAction->setStatusTip(tr("Draw detected markers"));
+	markerAction->setShortcut(tr("CTRL+X"));
+	markerAction->setShortcutContext(Qt::ApplicationShortcut);
 	markerAction->setCheckable(true);
 	markerAction->setChecked(false);
 	connect(markerAction, SIGNAL(triggered()),
 		this, SLOT(showAndHideMarker()));
 
-	useRefAction = new QAction(tr("use as Reference"), this);
-	useRefAction->setStatusTip(tr("Use this marker as reference"));
+	channelAction = new QAction(tr("draw Channel"), this);
+	//channelAction->setIcon(QIcon("icon/channel.png"));
+	channelAction->setStatusTip(tr("Draw all channels"));
+	channelAction->setShortcut(tr("CTRL+C"));
+	channelAction->setShortcutContext(Qt::ApplicationShortcut);
+	channelAction->setCheckable(true);
+	channelAction->setChecked(false);
+	connect(channelAction, SIGNAL(triggered()),
+		this, SLOT(showAndHideChannel()));
 
-	dropRefAction = new QAction(tr("drop Reference"), this);
-	dropRefAction->setStatusTip(tr("Drop this reference"));
+	neckAction = new QAction(tr("draw Neck"), this);
+	//neckAction->setIcon(QIcon("icon/neck.png"));
+	neckAction->setStatusTip(tr("Draw detected necks"));
+	neckAction->setShortcut(tr("CTRL+V"));
+	neckAction->setShortcutContext(Qt::ApplicationShortcut);
+	neckAction->setCheckable(true);
+	neckAction->setChecked(false);
+	connect(neckAction, SIGNAL(triggered()),
+		this, SLOT(showAndHideNeck()));
+
+	//useRefAction = new QAction(tr("use as Reference"), this);
+	//useRefAction->setStatusTip(tr("Use this marker as reference"));
+
+	//dropRefAction = new QAction(tr("drop Reference"), this);
+	//dropRefAction->setStatusTip(tr("Drop this reference"));
 }
 
 void MainWindow::createMenus()
@@ -724,17 +686,17 @@ void MainWindow::createMenus()
 
 void MainWindow::createContextMenu()
 {
-	display->addAction(useRefAction);
-	display->addAction(dropRefAction);
-	display->setContextMenuPolicy(Qt::ActionsContextMenu);
+	//display->addAction(useRefAction);
+	//display->addAction(dropRefAction);
+	//display->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
 void MainWindow::createToolBars()
 {
 	visibilityToolBar = addToolBar(tr("&Visibility"));	
-	visibilityToolBar->addAction(channelAction);
 	visibilityToolBar->addAction(dropletAction);
 	visibilityToolBar->addAction(markerAction);
+	visibilityToolBar->addAction(channelAction);
 	visibilityToolBar->addAction(neckAction);
 	visibilityToolBar->addSeparator();
 }
@@ -929,15 +891,15 @@ void MainWindow::about()
 		"<p>Microfluidics Enhanced Vison-based Automation"
 		" https://github.com/DaveSketchySpeedway/uEVA"
 		"<p>Copyright &copy; 2016 David Wong"
-		"<p>This program is free software: you can redistribute it and/or modify"
-		"it under the terms of the GNU General Public License as published by"
-		"the Free Software Foundation, either version 3 of the License, or"
+		"<p>This program is free software: you can redistribute it and/or modify "
+		"it under the terms of the GNU General Public License as published by "
+		"the Free Software Foundation, either version 3 of the License, or "
 		"any later version."
-		"<p>This program is distributed in the hope that it will be useful,"
-		"but WITHOUT ANY WARRANTY; without even the implied warranty of"
-		"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the"
+		"<p>This program is distributed in the hope that it will be useful, "
+		"but WITHOUT ANY WARRANTY; without even the implied warranty of "
+		"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the "
 		"GNU General Public License for more details."
-		"<p>You should have received a copy of the GNU General Public License"
+		"<p>You should have received a copy of the GNU General Public License "
 		"along with this program. If not, see http://www.gnu.org/licenses/."
 		));
 }
@@ -974,7 +936,7 @@ void MainWindow::showAndHideDashboard()
 
 void MainWindow::showAndHidePlotter()
 {
-	plotter->showMaximized();
+	plotter->show();
 	plotter->activateWindow();
 }
 

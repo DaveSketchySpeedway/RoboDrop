@@ -164,8 +164,7 @@ void S2EngineThread::sortChannels(map<string, vector<int> > &channelInfo)
 	for (int i = 0; i < channels.size(); i++)
 	{
 		channels[i].index = channelInfo["newIndices"][i];
-		channels[i].horizontalMultiplier = channelInfo["horizontalMultipliers"][i];
-		channels[i].verticalMultiplier = channelInfo["verticalMultipliers"][i];
+		channels[i].direction = channelInfo["directions"][i];
 	}
 	// sort
 	sort(channels.begin(), channels.end(),
@@ -215,8 +214,7 @@ void S2EngineThread::run()
 				}
 				floodFillReturn = floodFill(dropletMask, seed, MID_VALUE);
 				// eliminate noise by morphological opening (second most time consuming)
-				structuringElement = getStructuringElement(
-					settings.maskOpenShape,
+				structuringElement = getStructuringElement(MORPH_RECT,
 					Size_<int>(settings.maskOpenSize, settings.maskOpenSize));
 				morphologyEx(dropletMask, dropletMask, cv::MORPH_OPEN, structuringElement);
 				// draw
@@ -229,8 +227,7 @@ void S2EngineThread::run()
 			{
 				CV_Assert(!dropletMask.empty());
 				// further erode to get thinner mask
-				structuringElement = getStructuringElement(
-					settings.channelErodeShape,
+				structuringElement = getStructuringElement(MORPH_RECT,
 					Size_<int>(settings.channelErodeSize, settings.channelErodeSize));
 				erode(dropletMask, markerMask, structuringElement);
 				// cut into channels
@@ -252,13 +249,7 @@ void S2EngineThread::run()
 				cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
 			}
 			else
-			{
-				//// CTRL
-				if (settings.flag & UevaSettings::CTRL_ON)
-				{
-					QThread::msleep(80);
-				}
-				
+			{	
 				//// IMGPROC
 				if (settings.flag & UevaSettings::IMGPROC_ON)
 				{			
@@ -324,24 +315,53 @@ void S2EngineThread::run()
 					// channel occupying droplets
 
 				}
+
+				//// CTRL
+				if (settings.flag & UevaSettings::CTRL_ON)
+				{
+					QThread::msleep(80);
+				}
+
 				//// DRAW
 				if (!data.rawGray.empty())
 				{
 					cvtColor(data.rawGray, data.drawnBgr, CV_GRAY2BGR);
-					// for each channel draw text white ch1 h0 v0 d0 m0
+					// channel text
 					for (int i = 0; i < channels.size(); i++)
 					{
+						string dir;
+						switch (channels[i].direction)
+						{
+						case 0:
+						{
+							dir = "^";
+							break;
+						}
+						case 1:
+						{
+							dir = "v";
+							break;
+						}
+						case 2:
+						{
+							dir = "<";
+							break;
+						}
+						case 3:
+						{
+							dir = ">";
+							break;
+						}
+						}
+
 						ostringstream oss;
-						oss << "CH" << i << " " <<
-							"h" << channels[i].horizontalMultiplier <<
-							"v" << channels[i].verticalMultiplier <<
-							"d0" << "m0";
+						oss << "CH" << i << " " << dir;
 						string str = oss.str();
 						rect = boundingRect(channelContours[i]);
 						anchor.x = rect.x + 60; // offset right from leftmost
 						mom = moments(channelContours[i]);
 						anchor.y = mom.m01 / mom.m00 - 30; // offset up from center
-						fontScale = 0.6;
+						fontScale = 0.8;
 						lineColor = Scalar(255, 255, 255); // white
 						lineThickness = 1;
 						lineType = 8;
@@ -350,6 +370,7 @@ void S2EngineThread::run()
 						// for each occupying marker draw rectangle cyan
 						// for each reference marker draw rectangle red
 					}
+					// channel
 					if (settings.flag & UevaSettings::DRAW_CHANNEL)
 					{
 						lineColor = Scalar(255, 255, 255); // white
@@ -358,6 +379,7 @@ void S2EngineThread::run()
 						drawContours(data.drawnBgr, channelContours, -1,
 							lineColor, lineThickness, lineType);
 					}
+					// droplet
 					if (settings.flag & UevaSettings::DRAW_DROPLET)
 					{
 						lineColor = Scalar(255, 0, 255); // magenta
@@ -366,6 +388,7 @@ void S2EngineThread::run()
 						drawContours(data.drawnBgr, dropletContours, -1,
 							lineColor, lineThickness, lineType);
 					}
+					// marker
 					if (settings.flag & UevaSettings::DRAW_MARKER)
 					{
 						lineColor = Scalar(255, 255, 0); // cyan
@@ -374,15 +397,14 @@ void S2EngineThread::run()
 						drawContours(data.drawnBgr, markerContours, -1,
 							lineColor, lineThickness, lineType);
 					}
+					// neck
 					if (settings.flag & UevaSettings::DRAW_NECK)
 					{
 
 					}
-
 					cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
 				}
 			}
-
 
 			emit engineSignal(data);
 			idle = true;

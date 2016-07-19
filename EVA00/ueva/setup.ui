@@ -23,7 +23,7 @@
    <item row="0" column="1">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="cameraTab">
       <attribute name="title">
@@ -241,33 +241,6 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="label_12">
-             <property name="text">
-              <string>Open Shape:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1">
-            <widget class="QSlider" name="openShapeSlider">
-             <property name="maximum">
-              <number>2</number>
-             </property>
-             <property name="pageStep">
-              <number>1</number>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="2">
-            <widget class="QLabel" name="openShapeLabel">
-             <property name="text">
-              <string>TextLabel</string>
-             </property>
-            </widget>
-           </item>
            <item row="1" column="0">
             <widget class="QLabel" name="label_8">
              <property name="text">
@@ -352,13 +325,6 @@
          </item>
          <item>
           <layout class="QGridLayout" name="gridLayout_6">
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_15">
-             <property name="text">
-              <string>Erode Shape:</string>
-             </property>
-            </widget>
-           </item>
            <item row="1" column="2">
             <widget class="QLabel" name="erodeSizeLabel">
              <property name="text">
@@ -386,34 +352,7 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="2">
-            <widget class="QLabel" name="erodeShapeLabel">
-             <property name="text">
-              <string>TextLabel</string>
-             </property>
-            </widget>
-           </item>
            <item row="2" column="1">
-            <widget class="QSlider" name="erodeShapeSlider">
-             <property name="maximum">
-              <number>2</number>
-             </property>
-             <property name="pageStep">
-              <number>1</number>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_16">
-             <property name="text">
-              <string>Cut Thickness:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
             <widget class="QSlider" name="cutThicknessSlider">
              <property name="maximum">
               <number>10</number>
@@ -426,7 +365,7 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="2">
+           <item row="2" column="2">
             <widget class="QLabel" name="cutThicknessLabel">
              <property name="text">
               <string>TextLabel</string>
@@ -440,6 +379,13 @@
              </property>
              <property name="checkable">
               <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_16">
+             <property name="text">
+              <string>Cut Thickness:</string>
              </property>
             </widget>
            </item>

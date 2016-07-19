@@ -54,9 +54,7 @@ struct UevaSettings
 	int maskBlockSize;
 	int maskThreshold;
 	int maskOpenSize;
-	int maskOpenShape;
 	int channelErodeSize;
-	int channelErodeShape;
 	int channelCutThickness;
 	int imgprogThreshold;
 	int imgprogContourSize;
@@ -118,8 +116,8 @@ struct UevaChannel
 
 	int index;
 	Mat mask;
-	int horizontalMultiplier;
-	int verticalMultiplier;
+	int direction;
+
 
 	vector<int> occupyingMarkers;
 	vector<int> occupyingDroplets;

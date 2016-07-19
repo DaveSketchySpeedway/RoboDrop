@@ -34,6 +34,7 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include <QLabel >
 #include <QFileDialog >
 #include <QMessageBox >
+#include <QShortcut >
 #include <QTime >
 #include <QThread >
 #include <QMutex >
@@ -89,9 +90,9 @@ public:
 	void setCalib();
 	void setBkgd();
 	void maskOnOff();
-	void maskSettings();
+	void maskSetup();
 	void channelOnOff();
-	void channelSettings();
+	void channelSetup();
 	void sepSortOnOff();
 	void loadCtrl();
 	void changeTimerInterval();

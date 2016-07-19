@@ -74,19 +74,16 @@ Setup::Setup(QWidget *parent)
 		parent, SLOT(sepSortOnOff()));
 	
 	connect(thresholdSlider, SIGNAL(valueChanged(int)),
-		parent, SLOT(maskSettings()));
+		parent, SLOT(maskSetup()));
 	connect(blockSlider, SIGNAL(valueChanged(int)),
-		parent, SLOT(maskSettings()));
+		parent, SLOT(maskSetup()));
 	connect(openSizeSlider, SIGNAL(valueChanged(int)),
-		parent, SLOT(maskSettings()));
-	connect(openShapeSlider, SIGNAL(valueChanged(int)),
-		parent, SLOT(maskSettings()));
+		parent, SLOT(maskSetup()));
 	connect(erodeSizeSlider, SIGNAL(valueChanged(int)),
-		parent, SLOT(channelSettings()));
-	connect(erodeShapeSlider, SIGNAL(valueChanged(int)),
-		parent, SLOT(channelSettings()));
+
+		parent, SLOT(channelSetup()));
 	connect(cutThicknessSlider, SIGNAL(valueChanged(int)),
-		parent, SLOT(channelSettings()));
+		parent, SLOT(channelSetup()));
 
 
 	//// CTRL
@@ -114,46 +111,18 @@ void Setup::createChannelInfoWidgets(int numChan)
 void Setup::deleteChannelInfoWidgets(map<string, vector<int> > &channelInfo)
 {
 	vector<int> newIndices;
-	vector<int> horizontalMultipliers;
-	vector<int> verticalMultipliers;
+	vector<int> directions;
 	foreach(ChannelInfoWidget *channelInfoWidget, channelInfoWidgets)
 	{
 		newIndices.push_back(channelInfoWidget->newBox->currentIndex());
-		switch (channelInfoWidget->directionBox->currentIndex())
-		{
-		case 0:
-		{
-			horizontalMultipliers.push_back(0);
-			verticalMultipliers.push_back(-1);
-			break;
-		}
-		case 1:
-		{
-			horizontalMultipliers.push_back(0);
-			verticalMultipliers.push_back(1);
-			break;
-		}
-		case 2:
-		{
-			horizontalMultipliers.push_back(-1);
-			verticalMultipliers.push_back(0);
-			break;
-		}
-		case 3:
-		{
-			horizontalMultipliers.push_back(1);
-			verticalMultipliers.push_back(0);
-			break;
-		}
-		}
+		directions.push_back(channelInfoWidget->directionBox->currentIndex());
 		sepSortLayout->removeWidget(channelInfoWidget);
 		delete channelInfoWidget;
 	}
 	channelInfoWidgets.clear();
 
 	channelInfo["newIndices"] = newIndices;
-	channelInfo["horizontalMultipliers"] = horizontalMultipliers;
-	channelInfo["verticalMultipliers"] = verticalMultipliers;
+	channelInfo["directions"] = directions;
 }
 
 

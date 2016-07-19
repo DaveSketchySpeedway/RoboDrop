@@ -65,9 +65,6 @@ public:
     QGridLayout *gridLayout_5;
     QSlider *openSizeSlider;
     QLabel *openSizeLabel;
-    QLabel *label_12;
-    QSlider *openShapeSlider;
-    QLabel *openShapeLabel;
     QLabel *label_8;
     QSlider *thresholdSlider;
     QLabel *thresholdLabel;
@@ -77,16 +74,13 @@ public:
     QLabel *label_14;
     QPushButton *maskButton;
     QGridLayout *gridLayout_6;
-    QLabel *label_15;
     QLabel *erodeSizeLabel;
     QSlider *erodeSizeSlider;
     QLabel *label_13;
-    QLabel *erodeShapeLabel;
-    QSlider *erodeShapeSlider;
-    QLabel *label_16;
     QSlider *cutThicknessSlider;
     QLabel *cutThicknessLabel;
     QPushButton *channelButton;
+    QLabel *label_16;
     QVBoxLayout *sepSortLayout;
     QPushButton *sepSortButton;
     QHBoxLayout *horizontalLayout_3;
@@ -291,24 +285,6 @@ public:
 
         gridLayout_5->addWidget(openSizeLabel, 3, 2, 1, 1);
 
-        label_12 = new QLabel(imgprocTab);
-        label_12->setObjectName(QStringLiteral("label_12"));
-
-        gridLayout_5->addWidget(label_12, 4, 0, 1, 1);
-
-        openShapeSlider = new QSlider(imgprocTab);
-        openShapeSlider->setObjectName(QStringLiteral("openShapeSlider"));
-        openShapeSlider->setMaximum(2);
-        openShapeSlider->setPageStep(1);
-        openShapeSlider->setOrientation(Qt::Horizontal);
-
-        gridLayout_5->addWidget(openShapeSlider, 4, 1, 1, 1);
-
-        openShapeLabel = new QLabel(imgprocTab);
-        openShapeLabel->setObjectName(QStringLiteral("openShapeLabel"));
-
-        gridLayout_5->addWidget(openShapeLabel, 4, 2, 1, 1);
-
         label_8 = new QLabel(imgprocTab);
         label_8->setObjectName(QStringLiteral("label_8"));
 
@@ -365,11 +341,6 @@ public:
         gridLayout_6 = new QGridLayout();
         gridLayout_6->setSpacing(6);
         gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
-        label_15 = new QLabel(imgprocTab);
-        label_15->setObjectName(QStringLiteral("label_15"));
-
-        gridLayout_6->addWidget(label_15, 2, 0, 1, 1);
-
         erodeSizeLabel = new QLabel(imgprocTab);
         erodeSizeLabel->setObjectName(QStringLiteral("erodeSizeLabel"));
 
@@ -388,42 +359,29 @@ public:
 
         gridLayout_6->addWidget(label_13, 1, 0, 1, 1);
 
-        erodeShapeLabel = new QLabel(imgprocTab);
-        erodeShapeLabel->setObjectName(QStringLiteral("erodeShapeLabel"));
-
-        gridLayout_6->addWidget(erodeShapeLabel, 2, 2, 1, 1);
-
-        erodeShapeSlider = new QSlider(imgprocTab);
-        erodeShapeSlider->setObjectName(QStringLiteral("erodeShapeSlider"));
-        erodeShapeSlider->setMaximum(2);
-        erodeShapeSlider->setPageStep(1);
-        erodeShapeSlider->setOrientation(Qt::Horizontal);
-
-        gridLayout_6->addWidget(erodeShapeSlider, 2, 1, 1, 1);
-
-        label_16 = new QLabel(imgprocTab);
-        label_16->setObjectName(QStringLiteral("label_16"));
-
-        gridLayout_6->addWidget(label_16, 3, 0, 1, 1);
-
         cutThicknessSlider = new QSlider(imgprocTab);
         cutThicknessSlider->setObjectName(QStringLiteral("cutThicknessSlider"));
         cutThicknessSlider->setMaximum(10);
         cutThicknessSlider->setPageStep(1);
         cutThicknessSlider->setOrientation(Qt::Horizontal);
 
-        gridLayout_6->addWidget(cutThicknessSlider, 3, 1, 1, 1);
+        gridLayout_6->addWidget(cutThicknessSlider, 2, 1, 1, 1);
 
         cutThicknessLabel = new QLabel(imgprocTab);
         cutThicknessLabel->setObjectName(QStringLiteral("cutThicknessLabel"));
 
-        gridLayout_6->addWidget(cutThicknessLabel, 3, 2, 1, 1);
+        gridLayout_6->addWidget(cutThicknessLabel, 2, 2, 1, 1);
 
         channelButton = new QPushButton(imgprocTab);
         channelButton->setObjectName(QStringLiteral("channelButton"));
         channelButton->setCheckable(true);
 
         gridLayout_6->addWidget(channelButton, 0, 1, 1, 1);
+
+        label_16 = new QLabel(imgprocTab);
+        label_16->setObjectName(QStringLiteral("label_16"));
+
+        gridLayout_6->addWidget(label_16, 2, 0, 1, 1);
 
 
         verticalLayout_4->addLayout(gridLayout_6);
@@ -559,7 +517,7 @@ public:
 
         retranslateUi(Setup);
 
-        tabWidget->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(Setup);
@@ -583,21 +541,17 @@ public:
         calibButton->setText(QApplication::translate("Setup", "Set Calibration", 0));
         bkgdButton->setText(QApplication::translate("Setup", "Set Background", 0));
         openSizeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
-        label_12->setText(QApplication::translate("Setup", "Open Shape:", 0));
-        openShapeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
         label_8->setText(QApplication::translate("Setup", "Threshold:", 0));
         thresholdLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
         label_10->setText(QApplication::translate("Setup", "Block Size:", 0));
         blockLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
         label_14->setText(QApplication::translate("Setup", "Open Size:", 0));
         maskButton->setText(QApplication::translate("Setup", "Make Mask", 0));
-        label_15->setText(QApplication::translate("Setup", "Erode Shape:", 0));
         erodeSizeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
         label_13->setText(QApplication::translate("Setup", "Erode Size:", 0));
-        erodeShapeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
-        label_16->setText(QApplication::translate("Setup", "Cut Thickness:", 0));
         cutThicknessLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
         channelButton->setText(QApplication::translate("Setup", "Cut Channels", 0));
+        label_16->setText(QApplication::translate("Setup", "Cut Thickness:", 0));
         sepSortButton->setText(QApplication::translate("Setup", "Seperate Channels", 0));
         label_9->setText(QApplication::translate("Setup", "Old Index", 0));
         label_11->setText(QApplication::translate("Setup", "New Index", 0));
