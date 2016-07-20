@@ -65,6 +65,7 @@ struct UevaSettings
 	int channelCutThickness;
 	int imgprogThreshold;
 	int imgprogContourSize;
+	int imgprocConvexSize;
 	int ctrlMarkerSize;
 	int ctrlAutoCatch;
 };

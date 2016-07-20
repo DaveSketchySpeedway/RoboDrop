@@ -337,7 +337,11 @@ void S2EngineThread::run()
 								channels[j].occupyingDropletIndices.push_back(i);
 							}
 						}
-						// if detectKink, detectNeck
+						droplet.kink = detectKink(dropletContours[i], settings.imgprocConvexSize);
+						if (droplet.kink != Point_<int>(0, 0))
+						{
+							//neck
+						}
 						droplets.push_back(droplet);
 					}
 					// natural marker change
@@ -465,7 +469,16 @@ void S2EngineThread::run()
 					// draw kink and neck
 					if (settings.flag & UevaSettings::DRAW_NECK)
 					{
-
+						lineColor = Scalar(0, 255, 255); // yellow
+						lineThickness = 1;
+						lineType = 8;
+						for (int i = 0; i < droplets.size(); i++)
+						{
+							if (droplets[i].kink != Point_<int>(0, 0))
+							{
+								circle(data.drawnBgr, droplets[i].kink, 10, lineColor, lineThickness, lineType);
+							}
+						}
 					}
 					cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
 
@@ -492,7 +505,10 @@ void S2EngineThread::run()
 				//	}
 				//	cerr << dropletContours.size() << " " << markerContours.size() << endl;
 				//	cerr << endl;
-				//}
+
+
+
+				}
 			}
 
 			emit engineSignal(data);

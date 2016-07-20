@@ -58,6 +58,9 @@ public:
     QLabel *label_6;
     QSlider *contourSizeSlider;
     QLabel *contourSizeLabel;
+    QLabel *label_9;
+    QSlider *convexSizeSlider;
+    QLabel *convexSizeLabel;
     QGroupBox *groupBox_4;
     QGridLayout *gridLayout_4;
     QGridLayout *gridLayout_3;
@@ -239,7 +242,7 @@ public:
         contourSizeSlider->setObjectName(QStringLiteral("contourSizeSlider"));
         contourSizeSlider->setMinimum(0);
         contourSizeSlider->setMaximum(1000);
-        contourSizeSlider->setValue(50);
+        contourSizeSlider->setValue(30);
         contourSizeSlider->setOrientation(Qt::Horizontal);
 
         gridLayout->addWidget(contourSizeSlider, 1, 1, 1, 1);
@@ -248,6 +251,26 @@ public:
         contourSizeLabel->setObjectName(QStringLiteral("contourSizeLabel"));
 
         gridLayout->addWidget(contourSizeLabel, 1, 2, 1, 1);
+
+        label_9 = new QLabel(groupBox_3);
+        label_9->setObjectName(QStringLiteral("label_9"));
+
+        gridLayout->addWidget(label_9, 2, 0, 1, 1);
+
+        convexSizeSlider = new QSlider(groupBox_3);
+        convexSizeSlider->setObjectName(QStringLiteral("convexSizeSlider"));
+        convexSizeSlider->setMinimum(0);
+        convexSizeSlider->setMaximum(100);
+        convexSizeSlider->setPageStep(1);
+        convexSizeSlider->setValue(7);
+        convexSizeSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout->addWidget(convexSizeSlider, 2, 1, 1, 1);
+
+        convexSizeLabel = new QLabel(groupBox_3);
+        convexSizeLabel->setObjectName(QStringLiteral("convexSizeLabel"));
+
+        gridLayout->addWidget(convexSizeLabel, 2, 2, 1, 1);
 
 
         verticalLayout->addLayout(gridLayout);
@@ -304,7 +327,7 @@ public:
         markerSizeSlider->setMinimum(0);
         markerSizeSlider->setMaximum(200);
         markerSizeSlider->setPageStep(10);
-        markerSizeSlider->setValue(50);
+        markerSizeSlider->setValue(70);
         markerSizeSlider->setOrientation(Qt::Horizontal);
 
         gridLayout_3->addWidget(markerSizeSlider, 1, 1, 1, 1);
@@ -347,6 +370,8 @@ public:
         threshLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         label_6->setText(QApplication::translate("Dashboard", "Min Contour Size:", 0));
         contourSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
+        label_9->setText(QApplication::translate("Dashboard", "Min Neck Convex:", 0));
+        convexSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         groupBox_4->setTitle(QApplication::translate("Dashboard", "Controller", 0));
         autoCatchLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         markerSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));

@@ -112,7 +112,7 @@ public:
     {
         if (Setup->objectName().isEmpty())
             Setup->setObjectName(QStringLiteral("Setup"));
-        Setup->resize(600, 800);
+        Setup->resize(500, 800);
         Setup->setMinimumSize(QSize(350, 400));
         gridLayout = new QGridLayout(Setup);
         gridLayout->setSpacing(6);

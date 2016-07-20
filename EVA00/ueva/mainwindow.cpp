@@ -172,12 +172,15 @@ void MainWindow::imgprocSettings()
 {
 	int threshold = dashboard->threshSlider->value() + 1; // 0 threshold will leak memory and crash
 	int contourSize = dashboard->contourSizeSlider->value();
+	int convexSize = dashboard->convexSizeSlider->value();
 
 	settings.imgprogThreshold = threshold;
 	settings.imgprogContourSize = contourSize;
+	settings.imgprocConvexSize = convexSize;
 
 	dashboard->threshLabel->setText(QString::number(threshold));
 	dashboard->contourSizeLabel->setText(QString::number(contourSize));
+	dashboard->convexSizeLabel->setText(QString::number(convexSize));
 }
 
 void MainWindow::ctrlOnOff()

@@ -7,6 +7,7 @@
 #include "opencv2/imgcodecs.hpp"
 #include <QtGui >
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 using namespace cv;
@@ -25,6 +26,6 @@ bool isPointInMask(Point_<int> &point, Mat &mask);
 
 bool isMaskInMask(Mat &mask1, Mat &mask2);
 
-
+Point_<int> detectKink(vector< Point_<int>> &contour, const int &convexSize);
 
 #endif
