@@ -23,8 +23,6 @@ Mat qImage2cvMat(const QImage &qImage)
 	return cvMat;
 }
 
-
-
 QImage cvMat2qImage(const Mat &cvMat)
 {
 	// 8uc1 to indexed8 
@@ -45,7 +43,21 @@ QImage cvMat2qImage(const Mat &cvMat)
 	return qImage; // no deep copy
 }
 
+Mat contour2Mask(const vector<Point_<int>> &contour, const Size_<int> &sz)
+{
+	vector<vector< Point_<int> >> contours;
+	contours.push_back(contour);
+	Mat mask = Mat(sz, CV_8UC1, Scalar_<int>(0));
+	drawContours(mask, contours, -1, Scalar_<int>(255), -1);
+	return mask;
+}
 
+vector<Point_<int>> mask2Contour(const Mat &mask)
+{
+	vector<vector< Point_<int> >> contours;
+	findContours(mask, contours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
+	return contours[0];
+}
 
 void bigPassFilter(vector<vector< Point_<int> >> &contours, const int &size)
 {
@@ -70,7 +82,14 @@ bool isPointInMask(Point_<int> &point, Mat &mask)
 	uchar *p = mask.ptr<uchar>(point.y);
 	if (p[point.x])
 		return true;
-	
 	return false;
 }
 
+bool isMaskInMask(Mat &mask1, Mat &mask2)
+{
+	Mat mask3 = Mat(mask1.size(), CV_8UC1, Scalar_<int>(0));
+	bitwise_and(mask1, mask2, mask3);
+	if (countNonZero(mask3))
+		return true;
+	return false;
+}

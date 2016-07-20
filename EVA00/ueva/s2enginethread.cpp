@@ -147,12 +147,9 @@ void S2EngineThread::separateChannels(int &numChan)
 	// seprate into vector of UevaChannel
 	for (int i = 0; i < numChan; i++)
 	{
-		vector<vector< Point_<int> >> singleContourVector;
-		singleContourVector.push_back(channelContours[i]);
 		UevaChannel channel;
 		channel.index = i;
-		channel.mask = Mat(allChannels.rows, allChannels.cols, CV_8UC1, Scalar_<int>(0));
-		drawContours(channel.mask, singleContourVector, -1, Scalar_<int>(255), -1);
+		channel.mask = contour2Mask(channelContours[i], allChannels.size());
 		channels.push_back(channel);
 	}
 }
@@ -176,9 +173,7 @@ void S2EngineThread::sortChannels(map<string, vector<int> > &channelInfo)
 	channelContours.clear();
 	for (int i = 0; i < channels.size(); i++)
 	{
-		vector<vector< Point_<int> >> singleContourVector;
-		findContours(channels[i].mask, singleContourVector, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
-		channelContours.push_back(singleContourVector[0]);
+		channelContours.push_back(mask2Contour(channels[i].mask));
 	}
 }
 
@@ -283,7 +278,6 @@ void S2EngineThread::run()
 					findContours(allDroplets, dropletContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 					findContours(allMarkers, markerContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 					// filter contours base on size
-					dc = dropletContours.begin();
 					bigPassFilter(dropletContours, settings.imgprogContourSize);
 					bigPassFilter(markerContours, settings.imgprogContourSize);
 					// controller preparation
@@ -329,11 +323,23 @@ void S2EngineThread::run()
 						}
 						markers.push_back(marker);
 					}
-
 					// vector of droplet (necking)
-
-
-
+					droplets.clear();
+					for (int i = 0; i < dropletContours.size(); i++)
+					{
+						UevaDroplet droplet;
+						droplet.mask = contour2Mask(dropletContours[i], allDroplets.size());
+						for (int j = 0; j < channels.size(); j++)
+						{
+							if (isMaskInMask(droplet.mask, channels[j].mask))
+							{
+								droplet.accomodatingChannelIndices.push_back(j);
+								channels[j].occupyingDropletIndices.push_back(i);
+							}
+						}
+						// if detectKink, detectNeck
+						droplets.push_back(droplet);
+					}
 					// natural marker change
 
 
@@ -343,14 +349,12 @@ void S2EngineThread::run()
 
 
 
-
-
 				}
 
 				//// CTRL
 				if (settings.flag & UevaSettings::CTRL_ON)
 				{
-					QThread::msleep(80);
+
 				}
 
 				//// DRAW
@@ -464,7 +468,31 @@ void S2EngineThread::run()
 
 					}
 					cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
-				}
+
+
+
+					//// DEBUG
+				//	dropletContours.clear();
+				//	markerContours.clear();
+				//	for (int i = 0; i < channels.size(); i++)
+				//	{
+				//		cerr << "ch " << i << endl;
+				//		cerr << " d ";
+				//		for (int j = 0; j < channels[i].occupyingDropletIndices.size(); j++)
+				//		{
+				//			cerr << j << " ";
+				//		}
+				//		cerr << endl;
+				//		cerr << " m ";
+				//		for (int j = 0; j < channels[i].currentMarkerIndices.size(); j++)
+				//		{
+				//			cerr << j << " ";
+				//		}
+				//		cerr << endl;
+				//	}
+				//	cerr << dropletContours.size() << " " << markerContours.size() << endl;
+				//	cerr << endl;
+				//}
 			}
 
 			emit engineSignal(data);

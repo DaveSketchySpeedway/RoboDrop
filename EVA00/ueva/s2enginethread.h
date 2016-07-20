@@ -93,8 +93,6 @@ private:
 	Mat allMarkers;
 	vector<vector< Point_<int> >> dropletContours;
 	vector<vector< Point_<int> >> markerContours;
-	vector<vector< Point_<int> >>::iterator dc;
-	vector<vector< Point_<int> >>::iterator mc;
 	vector<UevaDroplet> droplets;
 	vector<UevaMarker> markers;
 

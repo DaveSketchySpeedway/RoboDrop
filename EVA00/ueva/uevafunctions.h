@@ -15,9 +15,15 @@ Mat qImage2cvMat(const QImage &qImage);
 
 QImage cvMat2qImage(const Mat &cvMat);
 
+Mat contour2Mask(const vector<Point_<int>> &contour, const Size_<int> &sz);
+
+vector<Point_<int>> mask2Contour(const Mat &mask);
+
 void bigPassFilter(vector<vector< Point_<int> >> &contours, const int &size);
 
 bool isPointInMask(Point_<int> &point, Mat &mask);
+
+bool isMaskInMask(Mat &mask1, Mat &mask2);
 
 
 
