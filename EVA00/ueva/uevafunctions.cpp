@@ -47,4 +47,30 @@ QImage cvMat2qImage(const Mat &cvMat)
 
 
 
+void bigPassFilter(vector<vector< Point_<int> >> &contours, const int &size)
+{
+	vector<vector< Point_<int> >>::iterator iter;
+	iter = contours.begin();
+	while (iter != contours.end())
+	{
+		Moments mom = moments(*iter);
+		if (mom.m00 < size)
+		{
+			iter = contours.erase(iter);
+		}
+		else
+		{
+			iter++;
+		}
+	}
+}
+
+bool isPointInMask(Point_<int> &point, Mat &mask)
+{
+	uchar *p = mask.ptr<uchar>(point.y);
+	if (p[point.x])
+		return true;
+	
+	return false;
+}
 

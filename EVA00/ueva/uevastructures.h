@@ -124,12 +124,35 @@ struct UevaChannel
 	int index;
 	Mat mask;
 	int direction;
+	int selectedMarkerIndex;
 
-
-	vector<int> occupyingMarkers;
-	vector<int> occupyingDroplets;
+	vector<int> currentMarkerIndices;
+	vector<int> previousMarkerIndices;
+	vector<int> occupyingDropletIndices;
 	
+};
 
+struct UevaDroplet
+{
+	UevaDroplet();
+
+	Mat mask;
+	Point_<int> kink;
+	double neck;
+	
+	vector<int> accomodatingChannelIndices;
+};
+
+struct UevaMarker
+{
+	UevaMarker();
+
+	int type;
+	double value;
+	Point_<int> centroid;
+	Rect_<int> rect;
+
+	int accomodatingChannelIndex;
 };
 
 
@@ -138,5 +161,7 @@ Q_DECLARE_METATYPE(UevaData)
 Q_DECLARE_METATYPE(UevaBuffer)
 Q_DECLARE_METATYPE(UevaCtrl)
 Q_DECLARE_METATYPE(UevaChannel)
+Q_DECLARE_METATYPE(UevaDroplet)
+Q_DECLARE_METATYPE(UevaMarker)
 
 #endif

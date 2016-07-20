@@ -185,6 +185,8 @@ void MainWindow::ctrlOnOff()
 	{
 		dashboard->ctrlButton->setText(tr("Off"));
 		settings.flag |= UevaSettings::CTRL_ON;
+		// initialize settings
+		ctrlSettings();
 	}
 	else
 	{

@@ -34,6 +34,7 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include "opencv2/imgcodecs.hpp"
 
 #include "uevastructures.h"
+#include "uevafunctions.h"
 
 using namespace std;
 using namespace cv;
@@ -76,14 +77,16 @@ private:
 	UevaData data;
 
 	//// PERSISTENT VARIABLES
+	vector<UevaCtrl> ctrls;
+	vector<int> actualCombination;
+	int ctrlIndex;
 	double micronPerPixel;
 	Mat bkgd;
 	Mat dropletMask;
 	Mat markerMask;
 	Mat allChannels;
-	vector<UevaChannel> channels;
 	vector<vector<Point_<int>>> channelContours;
-	vector<UevaCtrl> ctrls;
+	vector<UevaChannel> channels;
 
 	//// NON PERSISTANT VARIABLES
 	Mat allDroplets;
@@ -92,8 +95,10 @@ private:
 	vector<vector< Point_<int> >> markerContours;
 	vector<vector< Point_<int> >>::iterator dc;
 	vector<vector< Point_<int> >>::iterator mc;
+	vector<UevaDroplet> droplets;
+	vector<UevaMarker> markers;
 
-	//// IMGPROC PARAMETERS
+	//// CONVENIENT PARAMETERS
 	enum EngineConstants
 	{
 		LOW_VALUE = 0,
@@ -110,6 +115,13 @@ private:
 	Point_<int> anchor;
 	Moments mom;
 	Rect rect;
+	bool needReset;
+	vector<int> desiredCombination;
+	int vacancy;
+	Point_<int> mousePressLeft;
+	Point_<int> mousePressRight;
+	Point_<int> mousePressPrevious;
+	Point_<int> mousePressCurrent;
 
 	private slots:
 

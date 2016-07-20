@@ -193,23 +193,6 @@ void S2EngineThread::run()
 			//QTime entrance = QTime::currentTime();
 			data.map["inletWrite"] = settings.inletRequests;
 
-			//// DELETEME
-			if (!settings.rightPressPosition.isNull())
-			{
-				qDebug() << "right clicked at x:" << settings.rightPressPosition.x() <<
-					" y:" << settings.rightPressPosition.y();
-			}
-			if (!settings.leftPressPosition.isNull())
-			{
-				qDebug() << "left clicked at x:" << settings.leftPressPosition.x() <<
-					" y:" << settings.leftPressPosition.y();
-			}
-			if (!settings.leftPressMovement.isNull())
-			{
-				qDebug() << "left pressed movement dx:" << settings.leftPressMovement.dx() <<
-					" dy:" << settings.leftPressMovement.dy();
-			}
-
 			//// MASK MAKING
 			if (settings.flag & UevaSettings::MASK_MAKING)
 			{
@@ -301,36 +284,66 @@ void S2EngineThread::run()
 					findContours(allMarkers, markerContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 					// filter contours base on size
 					dc = dropletContours.begin();
-					while (dc != dropletContours.end())
+					bigPassFilter(dropletContours, settings.imgprogContourSize);
+					bigPassFilter(markerContours, settings.imgprogContourSize);
+					// controller preparation
+					needReset = false;
+					desiredCombination.clear();
+					for (int i = 0; i < channels.size(); i++)
 					{
-						mom = moments(*dc);
-						if (mom.m00 < settings.imgprogContourSize)
-						{
-							dc = dropletContours.erase(dc);
-						}
-						else
-						{
-							dc++;
-						}
+						channels[i].previousMarkerIndices.clear();
+						channels[i].previousMarkerIndices = channels[i].currentMarkerIndices;
+						channels[i].currentMarkerIndices.clear();
+						channels[i].occupyingDropletIndices.clear();
 					}
-					mc = markerContours.begin();
-					while (mc != markerContours.end())
+					vacancy = settings.ctrlAutoCatch - actualCombination.size();
+					mousePressLeft.x = settings.leftPressPosition.x();
+					mousePressLeft.y = settings.leftPressPosition.y();
+					mousePressRight.x = settings.rightPressPosition.x();
+					mousePressRight.y = settings.rightPressPosition.y();
+					mousePressPrevious.x = settings.leftPressMovement.x1();
+					mousePressPrevious.y = settings.leftPressMovement.y1();
+					mousePressCurrent.x = settings.leftPressMovement.x2();
+					mousePressCurrent.y = settings.leftPressMovement.y2();
+					// vector of marker
+					markers.clear();
+					for (int i = 0; i < markerContours.size(); i++)
 					{
-						mom = moments(*mc);
-						if (mom.m00 < settings.imgprogContourSize)
+						mom = moments(markerContours[i]);
+						UevaMarker marker;
+						marker.type = 0;
+						marker.centroid.x = mom.m10 / mom.m00;
+						marker.centroid.y = mom.m01 / mom.m00;
+						marker.rect = Rect_<int>(
+							marker.centroid.x - settings.ctrlMarkerSize / 2,
+							marker.centroid.y - settings.ctrlMarkerSize / 2,
+							settings.ctrlMarkerSize,
+							settings.ctrlMarkerSize);
+						for (int j = 0; j < channels.size(); j++)
 						{
-							mc = markerContours.erase(mc);
+							if (isPointInMask(marker.centroid, channels[j].mask))
+							{
+								marker.accomodatingChannelIndex = j;
+								channels[j].currentMarkerIndices.push_back(i);
+							}
 						}
-						else
-						{
-							mc++;
-						}
+						markers.push_back(marker);
 					}
-					// marker centroid
 
-					// channel occuying marker
+					// vector of droplet (necking)
 
-					// channel occupying droplets
+
+
+					// natural marker change
+
+
+
+					// auto catch
+
+
+
+
+
 
 				}
 
@@ -344,7 +357,7 @@ void S2EngineThread::run()
 				if (!data.rawGray.empty())
 				{
 					cvtColor(data.rawGray, data.drawnBgr, CV_GRAY2BGR);
-					// channel text
+					// draw channel text
 					for (int i = 0; i < channels.size(); i++)
 					{
 						string dir;
@@ -404,10 +417,21 @@ void S2EngineThread::run()
 						lineType = 8;
 						putText(data.drawnBgr, str, anchor,
 							FONT_HERSHEY_SIMPLEX, fontScale, lineColor, lineThickness, lineType);
-						// for each current marker draw cyan rectangle
-						// if isSelected draw red rectangle
+						// draw occupying markers
+						for (int j = 0; j < channels[i].currentMarkerIndices.size(); j++)
+						{;
+							if (j == channels[i].selectedMarkerIndex)
+								lineColor = Scalar(0, 0, 255); // red
+							else
+								lineColor = Scalar(255, 255, 0); // cyan
+							lineThickness = 1;
+							lineType = 8;
+							rectangle(data.drawnBgr,
+								markers[channels[i].currentMarkerIndices[j]].rect,
+								lineColor, lineThickness, lineThickness);
+						}
 					}
-					// channel
+					// draw channel contour
 					if (settings.flag & UevaSettings::DRAW_CHANNEL)
 					{
 						lineColor = Scalar(255, 255, 255); // white
@@ -416,7 +440,7 @@ void S2EngineThread::run()
 						drawContours(data.drawnBgr, channelContours, -1,
 							lineColor, lineThickness, lineType);
 					}
-					// droplet
+					// draw droplet contour
 					if (settings.flag & UevaSettings::DRAW_DROPLET)
 					{
 						lineColor = Scalar(255, 0, 255); // magenta
@@ -425,7 +449,7 @@ void S2EngineThread::run()
 						drawContours(data.drawnBgr, dropletContours, -1,
 							lineColor, lineThickness, lineType);
 					}
-					// marker
+					// draw marker contour
 					if (settings.flag & UevaSettings::DRAW_MARKER)
 					{
 						lineColor = Scalar(255, 255, 0); // cyan
@@ -434,7 +458,7 @@ void S2EngineThread::run()
 						drawContours(data.drawnBgr, markerContours, -1,
 							lineColor, lineThickness, lineType);
 					}
-					// neck
+					// draw kink and neck
 					if (settings.flag & UevaSettings::DRAW_NECK)
 					{
 

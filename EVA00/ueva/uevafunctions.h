@@ -15,4 +15,10 @@ Mat qImage2cvMat(const QImage &qImage);
 
 QImage cvMat2qImage(const Mat &cvMat);
 
+void bigPassFilter(vector<vector< Point_<int> >> &contours, const int &size);
+
+bool isPointInMask(Point_<int> &point, Mat &mask);
+
+
+
 #endif

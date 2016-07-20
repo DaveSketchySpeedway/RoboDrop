@@ -177,4 +177,19 @@ double UevaCtrl::samplePeriod = 0;
 UevaChannel::UevaChannel()
 {
 	direction = 0;
+	selectedMarkerIndex = -1;
+
 }
+
+//// DROPLET
+UevaDroplet::UevaDroplet()
+{
+
+}
+
+//// MARKER
+UevaMarker::UevaMarker()
+{
+
+}
+
