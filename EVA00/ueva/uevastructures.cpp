@@ -23,6 +23,11 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 UevaSettings::UevaSettings()
 {
 	flag = 0;
+	for (int i = 0; i < 10; i++)
+	{
+		linkChannels.push_back(false);
+		inverseLinkChannels.push_back(false);
+	}
 }
 
 //// DATA

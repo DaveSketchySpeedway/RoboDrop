@@ -48,9 +48,16 @@ struct UevaSettings
 		RECORD_DRAWN = 4096,
 	};
 	int flag;
+	QVector<bool> linkChannels;
+	QVector<bool> inverseLinkChannels;
+
 	QVector<QVector<int>> inletInfo;
 	QVector<qreal> inletRequests;
 	QVector<QLine> mouseLines;
+	QPoint rightPressPosition;
+	QPoint leftPressPosition;
+	QLine leftPressMovement;
+	
 	int maskBlockSize;
 	int maskThreshold;
 	int maskOpenSize;
@@ -59,7 +66,7 @@ struct UevaSettings
 	int imgprogThreshold;
 	int imgprogContourSize;
 	int ctrlMarkerSize;
-
+	int ctrlAutoCatch;
 };
 
 struct UevaData

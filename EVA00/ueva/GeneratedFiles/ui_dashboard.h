@@ -29,14 +29,16 @@ QT_BEGIN_NAMESPACE
 class Ui_Dashboard
 {
 public:
-    QGroupBox *groupBox_3;
-    QPushButton *imgprocButton;
-    QLabel *label_5;
-    QSlider *threshSlider;
-    QLabel *threshLabel;
-    QSlider *contourSizeSlider;
-    QLabel *label_6;
-    QLabel *contourSizeLabel;
+    QVBoxLayout *verticalLayout_3;
+    QGroupBox *groupBox_5;
+    QGridLayout *gridLayout_6;
+    QFormLayout *formLayout;
+    QLabel *label;
+    QPushButton *recordDataButton;
+    QLabel *label_3;
+    QLabel *label_4;
+    QPushButton *recordRawButton;
+    QPushButton *recordDrawnButton;
     QGroupBox *groupBox;
     QGridLayout *gridLayout_2;
     QHBoxLayout *pumpLayout;
@@ -45,70 +47,95 @@ public:
     QPushButton *zeroPumpButton;
     QLabel *label_2;
     QWidget *widget;
-    QGroupBox *groupBox_5;
-    QWidget *layoutWidget;
-    QFormLayout *formLayout;
-    QLabel *label;
-    QPushButton *recordDataButton;
-    QLabel *label_3;
-    QLabel *label_4;
-    QPushButton *recordRawButton;
-    QPushButton *recordDrawnButton;
+    QGroupBox *groupBox_3;
+    QGridLayout *gridLayout_5;
+    QVBoxLayout *verticalLayout;
+    QPushButton *imgprocButton;
+    QGridLayout *gridLayout;
+    QLabel *label_5;
+    QSlider *threshSlider;
+    QLabel *threshLabel;
+    QLabel *label_6;
+    QSlider *contourSizeSlider;
+    QLabel *contourSizeLabel;
     QGroupBox *groupBox_4;
-    QPushButton *ctrlButton;
+    QGridLayout *gridLayout_4;
+    QGridLayout *gridLayout_3;
+    QSlider *autoCatchSlider;
+    QLabel *autoCatchLabel;
     QLabel *markerSizeLabel;
-    QSlider *markerSizeSlider;
+    QLabel *label_8;
     QLabel *label_7;
+    QSlider *markerSizeSlider;
+    QPushButton *ctrlButton;
 
     void setupUi(QWidget *Dashboard)
     {
         if (Dashboard->objectName().isEmpty())
             Dashboard->setObjectName(QStringLiteral("Dashboard"));
-        Dashboard->resize(800, 800);
+        Dashboard->resize(721, 848);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(1);
         sizePolicy.setVerticalStretch(1);
         sizePolicy.setHeightForWidth(Dashboard->sizePolicy().hasHeightForWidth());
         Dashboard->setSizePolicy(sizePolicy);
-        Dashboard->setMinimumSize(QSize(600, 800));
-        groupBox_3 = new QGroupBox(Dashboard);
-        groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
-        groupBox_3->setGeometry(QRect(30, 350, 661, 191));
-        sizePolicy.setHeightForWidth(groupBox_3->sizePolicy().hasHeightForWidth());
-        groupBox_3->setSizePolicy(sizePolicy);
-        imgprocButton = new QPushButton(groupBox_3);
-        imgprocButton->setObjectName(QStringLiteral("imgprocButton"));
-        imgprocButton->setGeometry(QRect(30, 20, 75, 23));
-        imgprocButton->setCheckable(true);
-        label_5 = new QLabel(groupBox_3);
-        label_5->setObjectName(QStringLiteral("label_5"));
-        label_5->setGeometry(QRect(170, 40, 91, 16));
-        threshSlider = new QSlider(groupBox_3);
-        threshSlider->setObjectName(QStringLiteral("threshSlider"));
-        threshSlider->setGeometry(QRect(280, 40, 160, 16));
-        threshSlider->setMinimum(0);
-        threshSlider->setMaximum(99);
-        threshSlider->setValue(20);
-        threshSlider->setOrientation(Qt::Horizontal);
-        threshLabel = new QLabel(groupBox_3);
-        threshLabel->setObjectName(QStringLiteral("threshLabel"));
-        threshLabel->setGeometry(QRect(460, 40, 47, 13));
-        contourSizeSlider = new QSlider(groupBox_3);
-        contourSizeSlider->setObjectName(QStringLiteral("contourSizeSlider"));
-        contourSizeSlider->setGeometry(QRect(280, 90, 160, 16));
-        contourSizeSlider->setMinimum(0);
-        contourSizeSlider->setMaximum(1000);
-        contourSizeSlider->setValue(50);
-        contourSizeSlider->setOrientation(Qt::Horizontal);
-        label_6 = new QLabel(groupBox_3);
-        label_6->setObjectName(QStringLiteral("label_6"));
-        label_6->setGeometry(QRect(170, 90, 91, 16));
-        contourSizeLabel = new QLabel(groupBox_3);
-        contourSizeLabel->setObjectName(QStringLiteral("contourSizeLabel"));
-        contourSizeLabel->setGeometry(QRect(460, 90, 47, 13));
+        Dashboard->setMinimumSize(QSize(350, 400));
+        verticalLayout_3 = new QVBoxLayout(Dashboard);
+        verticalLayout_3->setSpacing(6);
+        verticalLayout_3->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        groupBox_5 = new QGroupBox(Dashboard);
+        groupBox_5->setObjectName(QStringLiteral("groupBox_5"));
+        sizePolicy.setHeightForWidth(groupBox_5->sizePolicy().hasHeightForWidth());
+        groupBox_5->setSizePolicy(sizePolicy);
+        gridLayout_6 = new QGridLayout(groupBox_5);
+        gridLayout_6->setSpacing(6);
+        gridLayout_6->setContentsMargins(11, 11, 11, 11);
+        gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
+        formLayout = new QFormLayout();
+        formLayout->setSpacing(6);
+        formLayout->setObjectName(QStringLiteral("formLayout"));
+        label = new QLabel(groupBox_5);
+        label->setObjectName(QStringLiteral("label"));
+
+        formLayout->setWidget(0, QFormLayout::LabelRole, label);
+
+        recordDataButton = new QPushButton(groupBox_5);
+        recordDataButton->setObjectName(QStringLiteral("recordDataButton"));
+        recordDataButton->setCheckable(true);
+
+        formLayout->setWidget(0, QFormLayout::FieldRole, recordDataButton);
+
+        label_3 = new QLabel(groupBox_5);
+        label_3->setObjectName(QStringLiteral("label_3"));
+
+        formLayout->setWidget(1, QFormLayout::LabelRole, label_3);
+
+        label_4 = new QLabel(groupBox_5);
+        label_4->setObjectName(QStringLiteral("label_4"));
+
+        formLayout->setWidget(2, QFormLayout::LabelRole, label_4);
+
+        recordRawButton = new QPushButton(groupBox_5);
+        recordRawButton->setObjectName(QStringLiteral("recordRawButton"));
+        recordRawButton->setCheckable(true);
+
+        formLayout->setWidget(1, QFormLayout::FieldRole, recordRawButton);
+
+        recordDrawnButton = new QPushButton(groupBox_5);
+        recordDrawnButton->setObjectName(QStringLiteral("recordDrawnButton"));
+        recordDrawnButton->setCheckable(true);
+
+        formLayout->setWidget(2, QFormLayout::FieldRole, recordDrawnButton);
+
+
+        gridLayout_6->addLayout(formLayout, 0, 0, 1, 1);
+
+
+        verticalLayout_3->addWidget(groupBox_5);
+
         groupBox = new QGroupBox(Dashboard);
         groupBox->setObjectName(QStringLiteral("groupBox"));
-        groupBox->setGeometry(QRect(20, 120, 741, 211));
         QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy1.setHorizontalStretch(2);
         sizePolicy1.setVerticalStretch(2);
@@ -161,74 +188,139 @@ public:
 
         gridLayout_2->addLayout(pumpLayout, 0, 0, 1, 1);
 
-        groupBox_5 = new QGroupBox(Dashboard);
-        groupBox_5->setObjectName(QStringLiteral("groupBox_5"));
-        groupBox_5->setGeometry(QRect(140, 10, 471, 111));
-        sizePolicy.setHeightForWidth(groupBox_5->sizePolicy().hasHeightForWidth());
-        groupBox_5->setSizePolicy(sizePolicy);
-        layoutWidget = new QWidget(groupBox_5);
-        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(60, 20, 201, 83));
-        formLayout = new QFormLayout(layoutWidget);
-        formLayout->setSpacing(6);
-        formLayout->setContentsMargins(11, 11, 11, 11);
-        formLayout->setObjectName(QStringLiteral("formLayout"));
-        formLayout->setContentsMargins(0, 0, 0, 0);
-        label = new QLabel(layoutWidget);
-        label->setObjectName(QStringLiteral("label"));
 
-        formLayout->setWidget(0, QFormLayout::LabelRole, label);
+        verticalLayout_3->addWidget(groupBox);
 
-        recordDataButton = new QPushButton(layoutWidget);
-        recordDataButton->setObjectName(QStringLiteral("recordDataButton"));
-        recordDataButton->setCheckable(true);
+        groupBox_3 = new QGroupBox(Dashboard);
+        groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
+        sizePolicy.setHeightForWidth(groupBox_3->sizePolicy().hasHeightForWidth());
+        groupBox_3->setSizePolicy(sizePolicy);
+        gridLayout_5 = new QGridLayout(groupBox_3);
+        gridLayout_5->setSpacing(6);
+        gridLayout_5->setContentsMargins(11, 11, 11, 11);
+        gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setSpacing(6);
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        imgprocButton = new QPushButton(groupBox_3);
+        imgprocButton->setObjectName(QStringLiteral("imgprocButton"));
+        imgprocButton->setCheckable(true);
 
-        formLayout->setWidget(0, QFormLayout::FieldRole, recordDataButton);
+        verticalLayout->addWidget(imgprocButton);
 
-        label_3 = new QLabel(layoutWidget);
-        label_3->setObjectName(QStringLiteral("label_3"));
+        gridLayout = new QGridLayout();
+        gridLayout->setSpacing(6);
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        label_5 = new QLabel(groupBox_3);
+        label_5->setObjectName(QStringLiteral("label_5"));
 
-        formLayout->setWidget(1, QFormLayout::LabelRole, label_3);
+        gridLayout->addWidget(label_5, 0, 0, 1, 1);
 
-        label_4 = new QLabel(layoutWidget);
-        label_4->setObjectName(QStringLiteral("label_4"));
+        threshSlider = new QSlider(groupBox_3);
+        threshSlider->setObjectName(QStringLiteral("threshSlider"));
+        threshSlider->setMinimum(0);
+        threshSlider->setMaximum(99);
+        threshSlider->setValue(20);
+        threshSlider->setOrientation(Qt::Horizontal);
 
-        formLayout->setWidget(2, QFormLayout::LabelRole, label_4);
+        gridLayout->addWidget(threshSlider, 0, 1, 1, 1);
 
-        recordRawButton = new QPushButton(layoutWidget);
-        recordRawButton->setObjectName(QStringLiteral("recordRawButton"));
-        recordRawButton->setCheckable(true);
+        threshLabel = new QLabel(groupBox_3);
+        threshLabel->setObjectName(QStringLiteral("threshLabel"));
 
-        formLayout->setWidget(1, QFormLayout::FieldRole, recordRawButton);
+        gridLayout->addWidget(threshLabel, 0, 2, 1, 1);
 
-        recordDrawnButton = new QPushButton(layoutWidget);
-        recordDrawnButton->setObjectName(QStringLiteral("recordDrawnButton"));
-        recordDrawnButton->setCheckable(true);
+        label_6 = new QLabel(groupBox_3);
+        label_6->setObjectName(QStringLiteral("label_6"));
 
-        formLayout->setWidget(2, QFormLayout::FieldRole, recordDrawnButton);
+        gridLayout->addWidget(label_6, 1, 0, 1, 1);
+
+        contourSizeSlider = new QSlider(groupBox_3);
+        contourSizeSlider->setObjectName(QStringLiteral("contourSizeSlider"));
+        contourSizeSlider->setMinimum(0);
+        contourSizeSlider->setMaximum(1000);
+        contourSizeSlider->setValue(50);
+        contourSizeSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout->addWidget(contourSizeSlider, 1, 1, 1, 1);
+
+        contourSizeLabel = new QLabel(groupBox_3);
+        contourSizeLabel->setObjectName(QStringLiteral("contourSizeLabel"));
+
+        gridLayout->addWidget(contourSizeLabel, 1, 2, 1, 1);
+
+
+        verticalLayout->addLayout(gridLayout);
+
+
+        gridLayout_5->addLayout(verticalLayout, 0, 0, 1, 1);
+
+
+        verticalLayout_3->addWidget(groupBox_3);
 
         groupBox_4 = new QGroupBox(Dashboard);
         groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
-        groupBox_4->setGeometry(QRect(30, 550, 671, 201));
-        sizePolicy1.setHeightForWidth(groupBox_4->sizePolicy().hasHeightForWidth());
-        groupBox_4->setSizePolicy(sizePolicy1);
-        ctrlButton = new QPushButton(groupBox_4);
-        ctrlButton->setObjectName(QStringLiteral("ctrlButton"));
-        ctrlButton->setGeometry(QRect(30, 40, 75, 23));
-        ctrlButton->setCheckable(true);
+        sizePolicy.setHeightForWidth(groupBox_4->sizePolicy().hasHeightForWidth());
+        groupBox_4->setSizePolicy(sizePolicy);
+        gridLayout_4 = new QGridLayout(groupBox_4);
+        gridLayout_4->setSpacing(6);
+        gridLayout_4->setContentsMargins(11, 11, 11, 11);
+        gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
+        gridLayout_3 = new QGridLayout();
+        gridLayout_3->setSpacing(6);
+        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
+        autoCatchSlider = new QSlider(groupBox_4);
+        autoCatchSlider->setObjectName(QStringLiteral("autoCatchSlider"));
+        autoCatchSlider->setMinimum(0);
+        autoCatchSlider->setMaximum(10);
+        autoCatchSlider->setPageStep(1);
+        autoCatchSlider->setValue(1);
+        autoCatchSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_3->addWidget(autoCatchSlider, 2, 1, 1, 1);
+
+        autoCatchLabel = new QLabel(groupBox_4);
+        autoCatchLabel->setObjectName(QStringLiteral("autoCatchLabel"));
+
+        gridLayout_3->addWidget(autoCatchLabel, 2, 2, 1, 1);
+
         markerSizeLabel = new QLabel(groupBox_4);
         markerSizeLabel->setObjectName(QStringLiteral("markerSizeLabel"));
-        markerSizeLabel->setGeometry(QRect(470, 70, 47, 13));
-        markerSizeSlider = new QSlider(groupBox_4);
-        markerSizeSlider->setObjectName(QStringLiteral("markerSizeSlider"));
-        markerSizeSlider->setGeometry(QRect(290, 70, 160, 16));
-        markerSizeSlider->setMinimum(0);
-        markerSizeSlider->setMaximum(200);
-        markerSizeSlider->setValue(50);
-        markerSizeSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_3->addWidget(markerSizeLabel, 1, 2, 1, 1);
+
+        label_8 = new QLabel(groupBox_4);
+        label_8->setObjectName(QStringLiteral("label_8"));
+
+        gridLayout_3->addWidget(label_8, 2, 0, 1, 1);
+
         label_7 = new QLabel(groupBox_4);
         label_7->setObjectName(QStringLiteral("label_7"));
-        label_7->setGeometry(QRect(140, 70, 131, 20));
+
+        gridLayout_3->addWidget(label_7, 1, 0, 1, 1);
+
+        markerSizeSlider = new QSlider(groupBox_4);
+        markerSizeSlider->setObjectName(QStringLiteral("markerSizeSlider"));
+        markerSizeSlider->setMinimum(0);
+        markerSizeSlider->setMaximum(200);
+        markerSizeSlider->setPageStep(10);
+        markerSizeSlider->setValue(50);
+        markerSizeSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_3->addWidget(markerSizeSlider, 1, 1, 1, 1);
+
+        ctrlButton = new QPushButton(groupBox_4);
+        ctrlButton->setObjectName(QStringLiteral("ctrlButton"));
+        ctrlButton->setCheckable(true);
+
+        gridLayout_3->addWidget(ctrlButton, 0, 0, 1, 3);
+
+
+        gridLayout_4->addLayout(gridLayout_3, 0, 0, 1, 1);
+
+
+        verticalLayout_3->addWidget(groupBox_4);
+
 
         retranslateUi(Dashboard);
 
@@ -238,16 +330,6 @@ public:
     void retranslateUi(QWidget *Dashboard)
     {
         Dashboard->setWindowTitle(QApplication::translate("Dashboard", "Dashboard", 0));
-        groupBox_3->setTitle(QApplication::translate("Dashboard", "Image Processing", 0));
-        imgprocButton->setText(QApplication::translate("Dashboard", "On", 0));
-        label_5->setText(QApplication::translate("Dashboard", "Threshold:", 0));
-        threshLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
-        label_6->setText(QApplication::translate("Dashboard", "Min Contour Size:", 0));
-        contourSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
-        groupBox->setTitle(QApplication::translate("Dashboard", "Pump", 0));
-        pumpButton->setText(QApplication::translate("Dashboard", "On", 0));
-        zeroPumpButton->setText(QApplication::translate("Dashboard", "Zero All", 0));
-        label_2->setText(QApplication::translate("Dashboard", "Request (mbar)", 0));
         groupBox_5->setTitle(QApplication::translate("Dashboard", "Record", 0));
         label->setText(QApplication::translate("Dashboard", "Record Data:", 0));
         recordDataButton->setText(QApplication::translate("Dashboard", "On", 0));
@@ -255,10 +337,22 @@ public:
         label_4->setText(QApplication::translate("Dashboard", "Record Drawn Footage:", 0));
         recordRawButton->setText(QApplication::translate("Dashboard", "On", 0));
         recordDrawnButton->setText(QApplication::translate("Dashboard", "On", 0));
+        groupBox->setTitle(QApplication::translate("Dashboard", "Pump", 0));
+        pumpButton->setText(QApplication::translate("Dashboard", "On", 0));
+        zeroPumpButton->setText(QApplication::translate("Dashboard", "Zero All", 0));
+        label_2->setText(QApplication::translate("Dashboard", "Request (mbar)", 0));
+        groupBox_3->setTitle(QApplication::translate("Dashboard", "Image Processing", 0));
+        imgprocButton->setText(QApplication::translate("Dashboard", "On", 0));
+        label_5->setText(QApplication::translate("Dashboard", "Threshold:", 0));
+        threshLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
+        label_6->setText(QApplication::translate("Dashboard", "Min Contour Size:", 0));
+        contourSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         groupBox_4->setTitle(QApplication::translate("Dashboard", "Controller", 0));
-        ctrlButton->setText(QApplication::translate("Dashboard", "On", 0));
+        autoCatchLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         markerSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
+        label_8->setText(QApplication::translate("Dashboard", "Auto Catch:", 0));
         label_7->setText(QApplication::translate("Dashboard", "Marker Rectangle  Size:", 0));
+        ctrlButton->setText(QApplication::translate("Dashboard", "On", 0));
     } // retranslateUi
 
 };

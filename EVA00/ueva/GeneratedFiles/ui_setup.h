@@ -89,7 +89,8 @@ public:
     QLabel *label_4;
     QSpacerItem *verticalSpacer_3;
     QWidget *ctrlTab;
-    QWidget *layoutWidget;
+    QGridLayout *gridLayout_10;
+    QVBoxLayout *verticalLayout_5;
     QGridLayout *gridLayout_4;
     QLabel *label_7;
     QLabel *numInLabel;
@@ -102,7 +103,7 @@ public:
     QLabel *numStateLabel;
     QLabel *label_6;
     QLabel *ctrlTsLabel;
-    QWidget *layoutWidget1;
+    QSpacerItem *verticalSpacer;
     QGridLayout *gridLayout_7;
     QLineEdit *timerIntervalEdit;
     QPushButton *timerIntervalButton;
@@ -112,7 +113,7 @@ public:
         if (Setup->objectName().isEmpty())
             Setup->setObjectName(QStringLiteral("Setup"));
         Setup->resize(600, 800);
-        Setup->setMinimumSize(QSize(600, 800));
+        Setup->setMinimumSize(QSize(350, 400));
         gridLayout = new QGridLayout(Setup);
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
@@ -429,86 +430,96 @@ public:
         tabWidget->addTab(imgprocTab, QString());
         ctrlTab = new QWidget();
         ctrlTab->setObjectName(QStringLiteral("ctrlTab"));
-        layoutWidget = new QWidget(ctrlTab);
-        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(53, 82, 481, 139));
-        gridLayout_4 = new QGridLayout(layoutWidget);
+        gridLayout_10 = new QGridLayout(ctrlTab);
+        gridLayout_10->setSpacing(6);
+        gridLayout_10->setContentsMargins(11, 11, 11, 11);
+        gridLayout_10->setObjectName(QStringLiteral("gridLayout_10"));
+        verticalLayout_5 = new QVBoxLayout();
+        verticalLayout_5->setSpacing(6);
+        verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
+        gridLayout_4 = new QGridLayout();
         gridLayout_4->setSpacing(6);
-        gridLayout_4->setContentsMargins(11, 11, 11, 11);
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
-        gridLayout_4->setContentsMargins(0, 0, 0, 0);
-        label_7 = new QLabel(layoutWidget);
+        label_7 = new QLabel(ctrlTab);
         label_7->setObjectName(QStringLiteral("label_7"));
 
         gridLayout_4->addWidget(label_7, 1, 0, 1, 1);
 
-        numInLabel = new QLabel(layoutWidget);
+        numInLabel = new QLabel(ctrlTab);
         numInLabel->setObjectName(QStringLiteral("numInLabel"));
 
         gridLayout_4->addWidget(numInLabel, 1, 1, 1, 1);
 
-        label = new QLabel(layoutWidget);
+        label = new QLabel(ctrlTab);
         label->setObjectName(QStringLiteral("label"));
 
         gridLayout_4->addWidget(label, 2, 0, 1, 1);
 
-        numOutLabel = new QLabel(layoutWidget);
+        numOutLabel = new QLabel(ctrlTab);
         numOutLabel->setObjectName(QStringLiteral("numOutLabel"));
 
         gridLayout_4->addWidget(numOutLabel, 2, 1, 1, 1);
 
-        label_5 = new QLabel(layoutWidget);
+        label_5 = new QLabel(ctrlTab);
         label_5->setObjectName(QStringLiteral("label_5"));
 
         gridLayout_4->addWidget(label_5, 4, 0, 1, 1);
 
-        numCtrlLabel = new QLabel(layoutWidget);
+        numCtrlLabel = new QLabel(ctrlTab);
         numCtrlLabel->setObjectName(QStringLiteral("numCtrlLabel"));
 
         gridLayout_4->addWidget(numCtrlLabel, 4, 1, 1, 1);
 
-        loadCtrlButton = new QPushButton(layoutWidget);
+        loadCtrlButton = new QPushButton(ctrlTab);
         loadCtrlButton->setObjectName(QStringLiteral("loadCtrlButton"));
 
         gridLayout_4->addWidget(loadCtrlButton, 7, 1, 1, 1);
 
-        label_3 = new QLabel(layoutWidget);
+        label_3 = new QLabel(ctrlTab);
         label_3->setObjectName(QStringLiteral("label_3"));
 
         gridLayout_4->addWidget(label_3, 0, 0, 1, 1);
 
-        numStateLabel = new QLabel(layoutWidget);
+        numStateLabel = new QLabel(ctrlTab);
         numStateLabel->setObjectName(QStringLiteral("numStateLabel"));
 
         gridLayout_4->addWidget(numStateLabel, 0, 1, 1, 1);
 
-        label_6 = new QLabel(layoutWidget);
+        label_6 = new QLabel(ctrlTab);
         label_6->setObjectName(QStringLiteral("label_6"));
 
         gridLayout_4->addWidget(label_6, 5, 0, 1, 1);
 
-        ctrlTsLabel = new QLabel(layoutWidget);
+        ctrlTsLabel = new QLabel(ctrlTab);
         ctrlTsLabel->setObjectName(QStringLiteral("ctrlTsLabel"));
 
         gridLayout_4->addWidget(ctrlTsLabel, 5, 1, 1, 1);
 
-        layoutWidget1 = new QWidget(ctrlTab);
-        layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
-        layoutWidget1->setGeometry(QRect(59, 540, 411, 25));
-        gridLayout_7 = new QGridLayout(layoutWidget1);
+
+        verticalLayout_5->addLayout(gridLayout_4);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_5->addItem(verticalSpacer);
+
+        gridLayout_7 = new QGridLayout();
         gridLayout_7->setSpacing(6);
-        gridLayout_7->setContentsMargins(11, 11, 11, 11);
         gridLayout_7->setObjectName(QStringLiteral("gridLayout_7"));
-        gridLayout_7->setContentsMargins(0, 0, 0, 0);
-        timerIntervalEdit = new QLineEdit(layoutWidget1);
+        timerIntervalEdit = new QLineEdit(ctrlTab);
         timerIntervalEdit->setObjectName(QStringLiteral("timerIntervalEdit"));
 
         gridLayout_7->addWidget(timerIntervalEdit, 0, 0, 1, 1);
 
-        timerIntervalButton = new QPushButton(layoutWidget1);
+        timerIntervalButton = new QPushButton(ctrlTab);
         timerIntervalButton->setObjectName(QStringLiteral("timerIntervalButton"));
 
         gridLayout_7->addWidget(timerIntervalButton, 0, 1, 1, 1);
+
+
+        verticalLayout_5->addLayout(gridLayout_7);
+
+
+        gridLayout_10->addLayout(verticalLayout_5, 0, 0, 1, 1);
 
         tabWidget->addTab(ctrlTab, QString());
 

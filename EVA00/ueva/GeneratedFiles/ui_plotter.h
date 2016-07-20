@@ -35,7 +35,7 @@ public:
         if (Plotter->objectName().isEmpty())
             Plotter->setObjectName(QStringLiteral("Plotter"));
         Plotter->resize(800, 600);
-        Plotter->setMinimumSize(QSize(800, 600));
+        Plotter->setMinimumSize(QSize(400, 300));
         gridLayout = new QGridLayout(Plotter);
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);

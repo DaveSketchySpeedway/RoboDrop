@@ -151,3 +151,11 @@ void Plotter::setPlot(const UevaBuffer &b)
 	//// BUFFER INDEX
 	plot->setPlotCursor(b.index);
 }
+
+void Plotter::keyPressEvent(QKeyEvent *event)
+{
+	if (event->key() == Qt::Key_Escape)
+	{
+		this->hide();
+	}
+}

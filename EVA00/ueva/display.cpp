@@ -24,17 +24,19 @@ Display::Display(QWidget *parent)
 {
 	setMouseTracking(true);
 
-	mousePressed = false;
+	leftPressed = false;
+	lastLeftPressed = false;
 	mousePosition = QPoint(0, 0);
-	lastMousePressed = false;
 	lastMousePosition = QPoint(0, 0);
-	linePoint1 = QPoint(0, 0);
-	linePoint2 = QPoint(0, 0);
+	lineStartPosition = QPoint(0, 0);
+	lineEndPosition = QPoint(0, 0);
+	leftPressPosition = QPoint(0, 0);
+	rightPressPosition = QPoint(0, 0);
 
 	connect(this, SIGNAL(sendMouseLine(QLine)),
 		parent, SLOT(receiveMouseLine(QLine)));
 
-	QLine line = QLine(linePoint1, linePoint2);
+	QLine line = QLine(lineStartPosition, lineEndPosition);
 	emit sendMouseLine(line);
 }
 
@@ -54,15 +56,29 @@ QPoint Display::getMousePosition()
 	return mousePosition;
 }
 
-QLine Display::getMousePressedMovement()
+QPoint Display::getLeftPress()
+{
+	QPoint lpp = leftPressPosition;
+	leftPressPosition = QPoint(0, 0);
+	return lpp;
+}
+
+QPoint Display::getRightPress()
+{
+	QPoint rpp = rightPressPosition;
+	rightPressPosition = QPoint(0, 0);
+	return rpp;
+}
+
+QLine Display::getLeftPressMovement()
 {
 	QLine movement = QLine(0, 0, 0, 0);
-	if (mousePressed && lastMousePressed)
+	if (leftPressed && lastLeftPressed)
 	{
 		movement = QLine(lastMousePosition, mousePosition);
 	}
 	lastMousePosition = mousePosition;
-	lastMousePressed = mousePressed;
+	lastLeftPressed = leftPressed;
 	return movement;
 }
 
@@ -71,39 +87,52 @@ QLine Display::getMousePressedMovement()
 void Display::mousePressEvent(QMouseEvent *event)
 {
 	mousePosition = event->pos();
-	mousePressed = false;
+	leftPressed = false;
+
 	if (event->button() & Qt::LeftButton)
 	{
-		linePoint1 = event->pos();
-		mousePressed = true;
-		update();
+		leftPressed = true;
+		lineStartPosition = event->pos();
+		leftPressPosition = event->pos();
 	}
+	if (event->button() & Qt::RightButton)
+	{
+		rightPressPosition = event->pos();
+	}
+	update();
 }
 
 void Display::mouseMoveEvent(QMouseEvent *event)
 {
 	mousePosition = event->pos();
-	mousePressed = false;
+	leftPressed = false;
+
 	if (event->buttons() & Qt::LeftButton) // must use buttons() instead of button()
 	{
-	linePoint2 = event->pos();
-	mousePressed = true;
-	// update(); // call update() everytime mouse move will cost up to 30 ping
+		leftPressed = true;
+		lineEndPosition = event->pos();
 	}
+	//update(); 
+	// cost up to 50ms in GUI when moving mouse
+	// jam up gui so much that timer event will be delayed
+	// engine duty cycle will appear to spike, but not actually when timed inside thread
+	// relies on gui timer (10hz default) to update mouse movement
 }
 
 void Display::mouseReleaseEvent(QMouseEvent *event)
 {
 	mousePosition = event->pos();
-	mousePressed = false;
+	leftPressed = false;
+
 	if (event->button() & Qt::LeftButton)
 	{
-		linePoint2 = event->pos();
-		mousePressed = false;
-		QLine line = QLine(linePoint1, linePoint2);
+		leftPressed = false;
+		lineEndPosition = event->pos();
+		
+		QLine line = QLine(lineStartPosition, lineEndPosition);
 		emit sendMouseLine(line);
-		update();
 	}
+	update();
 }
 
 void Display::paintEvent(QPaintEvent *event)
@@ -111,6 +140,6 @@ void Display::paintEvent(QPaintEvent *event)
 	QPainter painter(this);
 	painter.drawImage(0, 0, image);
 	painter.setPen(QPen(Qt::green, 3));
-	painter.drawLine(linePoint1, linePoint2);
+	painter.drawLine(lineStartPosition, lineEndPosition);
 }
 

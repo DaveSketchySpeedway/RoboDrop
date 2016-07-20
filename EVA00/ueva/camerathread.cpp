@@ -121,7 +121,7 @@ void CameraThread::run()
 		if (cameraAcquiring)
 		{
 			camera->process(currentImage);
-			//qDebug() << QThread::currentThreadId <<
+			//qDebug() <<
 			//	currentImage.total() << " " <<
 			//	currentImage.type() << " " << // 0 means CV_8U
 			//	currentImage.rows << " " <<

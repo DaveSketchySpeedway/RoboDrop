@@ -125,6 +125,13 @@ void Setup::deleteChannelInfoWidgets(map<string, vector<int> > &channelInfo)
 	channelInfo["directions"] = directions;
 }
 
+void Setup::keyPressEvent(QKeyEvent *event)
+{
+	if (event->key() == Qt::Key_Escape)
+	{
+		this->hide();
+	}
+}
 
 void Setup::addPump()
 {

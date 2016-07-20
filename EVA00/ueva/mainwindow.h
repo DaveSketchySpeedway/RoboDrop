@@ -106,6 +106,7 @@ protected:
 	//// REIMPLEMENTATION
 	void timerEvent(QTimerEvent *event);
 	void closeEvent(QCloseEvent *event);
+	void keyPressEvent(QKeyEvent *event);
 
 private:
 	//// CONSTRUCTOR FUNCTIONS
@@ -114,6 +115,7 @@ private:
 	void createContextMenu();
 	void createToolBars();
 	void createStatusBar();
+	void createShortcuts();
 	void createThreads();
 	void startTimers();
 
@@ -197,9 +199,11 @@ private:
 	QAction *useRefAction;
 	QAction *dropRefAction;
 
+
+
 	private slots:
 
-	//// TRIGGERED BY ACTIONS
+	//// TRIGGERED BY ACTIONS AND SHORTCUTS
 	void clear(); // check unsave and close image file
 	void open(); // check unsave and get open file name dialog
 	bool save(); // redirect to save as

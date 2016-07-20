@@ -190,7 +190,25 @@ void S2EngineThread::run()
 		if (!idle)
 		{
 			mutex.lock();
+			//QTime entrance = QTime::currentTime();
 			data.map["inletWrite"] = settings.inletRequests;
+
+			//// DELETEME
+			if (!settings.rightPressPosition.isNull())
+			{
+				qDebug() << "right clicked at x:" << settings.rightPressPosition.x() <<
+					" y:" << settings.rightPressPosition.y();
+			}
+			if (!settings.leftPressPosition.isNull())
+			{
+				qDebug() << "left clicked at x:" << settings.leftPressPosition.x() <<
+					" y:" << settings.leftPressPosition.y();
+			}
+			if (!settings.leftPressMovement.isNull())
+			{
+				qDebug() << "left pressed movement dx:" << settings.leftPressMovement.dx() <<
+					" dy:" << settings.leftPressMovement.dy();
+			}
 
 			//// MASK MAKING
 			if (settings.flag & UevaSettings::MASK_MAKING)
@@ -334,26 +352,47 @@ void S2EngineThread::run()
 						{
 						case 0:
 						{
-							dir = "^";
+							if (settings.inverseLinkChannels[i])
+								dir = "(v)";
+							else
+								dir = "^";
 							break;
 						}
 						case 1:
 						{
-							dir = "v";
+							if (settings.inverseLinkChannels[i])
+								dir = "(^)";
+							else
+								dir = "v";
 							break;
 						}
 						case 2:
 						{
-							dir = "<";
+							if (settings.inverseLinkChannels[i])
+								dir = "(>)";
+							else
+								dir = "<";
 							break;
 						}
 						case 3:
 						{
-							dir = ">";
+							if (settings.inverseLinkChannels[i])
+								dir = "(<)";
+							else
+								dir = ">";
 							break;
 						}
 						}
-
+						if (settings.linkChannels[i])
+						{
+							fontScale = 1;
+							lineColor = Scalar(0, 0, 255); // red
+						}
+						else
+						{
+							fontScale = 0.8;
+							lineColor = Scalar(255, 255, 255); // white
+						}
 						ostringstream oss;
 						oss << "CH" << i << " " << dir;
 						string str = oss.str();
@@ -361,14 +400,12 @@ void S2EngineThread::run()
 						anchor.x = rect.x + 60; // offset right from leftmost
 						mom = moments(channelContours[i]);
 						anchor.y = mom.m01 / mom.m00 - 30; // offset up from center
-						fontScale = 0.8;
-						lineColor = Scalar(255, 255, 255); // white
 						lineThickness = 1;
 						lineType = 8;
 						putText(data.drawnBgr, str, anchor,
 							FONT_HERSHEY_SIMPLEX, fontScale, lineColor, lineThickness, lineType);
-						// for each occupying marker draw rectangle cyan
-						// for each reference marker draw rectangle red
+						// for each current marker draw cyan rectangle
+						// if isSelected draw red rectangle
 					}
 					// channel
 					if (settings.flag & UevaSettings::DRAW_CHANNEL)
@@ -408,7 +445,11 @@ void S2EngineThread::run()
 
 			emit engineSignal(data);
 			idle = true;
+			//QTime exit = QTime::currentTime();
+			//int ms = entrance.msecsTo(exit);
+			//qDebug() << "engine used (ms)" << ms;
 			mutex.unlock();
+
 
 		}
 	}

@@ -196,10 +196,13 @@ void MainWindow::ctrlOnOff()
 void MainWindow::ctrlSettings()
 {
 	int markerSize = dashboard->markerSizeSlider->value();
+	int autoCatch = dashboard->autoCatchSlider->value();
 
 	settings.ctrlMarkerSize = markerSize;
+	settings.ctrlAutoCatch = autoCatch;
 
 	dashboard->markerSizeLabel->setText(QString::number(markerSize));
+	dashboard->autoCatchLabel->setText(QString::number(autoCatch));
 }
 
 //// COMMUNICATE WITH SETUP
@@ -513,9 +516,16 @@ void MainWindow::timerEvent(QTimerEvent *event)
 		}
 		videoWriterSize = temp8uc1.size();
 
-		//// WAKE ENGINE THREAD
+		//// COLLECT SETTINGS (SOME ARE ALREADY SET THROUG SIGNAL SLOT)
+		settings.rightPressPosition = display->getRightPress();
+		settings.leftPressPosition = display->getLeftPress();
+		settings.leftPressMovement = display->getLeftPressMovement();
+
+		//// CREATE AN EMPTY DATA STRUCTURE 
 		UevaData data = UevaData();
 		data.rawGray = temp8uc1;
+
+		//// WAKE ENGINE THREAD
 		engineThread->setSettings(settings); 
 		engineThread->setData(data);
 		engineThread->wake();
@@ -537,6 +547,154 @@ void MainWindow::closeEvent(QCloseEvent *event)
 	else
 	{
 		event->ignore(); // doesn't work
+	}
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+	if (!event->isAutoRepeat())
+	{
+		// hide stuff
+		if (event->key() == Qt::Key_Escape)
+		{
+			setup->hide();
+			dashboard->hide();
+			plotter->hide();
+		}
+		// channel linking
+		switch (event->key())
+		{
+		case Qt::Key_0:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[0] = !settings.linkChannels[0];
+				settings.inverseLinkChannels[0] = settings.linkChannels[0];
+			}
+			else
+			{
+				settings.linkChannels[0] = !settings.linkChannels[0];
+			}
+			break;
+		}
+		case Qt::Key_1:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[1] = !settings.linkChannels[1];
+				settings.inverseLinkChannels[1] = settings.linkChannels[1];
+			}
+			else
+			{
+				settings.linkChannels[1] = !settings.linkChannels[1];
+			}
+			break;
+		}
+		case Qt::Key_2:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[2] = !settings.linkChannels[2];
+				settings.inverseLinkChannels[2] = settings.linkChannels[2];
+			}
+			else
+			{
+				settings.linkChannels[2] = !settings.linkChannels[2];
+			}
+			break;
+		}
+		case Qt::Key_3:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[3] = !settings.linkChannels[3];
+				settings.inverseLinkChannels[3] = settings.linkChannels[3];
+			}
+			else
+			{
+				settings.linkChannels[3] = !settings.linkChannels[3];
+			}
+			break;
+		}
+		case Qt::Key_4:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[4] = !settings.linkChannels[4];
+				settings.inverseLinkChannels[4] = settings.linkChannels[4];
+			}
+			else
+			{
+				settings.linkChannels[4] = !settings.linkChannels[4];
+			}
+			break;
+		}
+		case Qt::Key_5:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[5] = !settings.linkChannels[5];
+				settings.inverseLinkChannels[5] = settings.linkChannels[5];
+			}
+			else
+			{
+				settings.linkChannels[5] = !settings.linkChannels[5];
+			}
+			break;
+		}
+		case Qt::Key_6:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[6] = !settings.linkChannels[6];
+				settings.inverseLinkChannels[6] = settings.linkChannels[6];
+			}
+			else
+			{
+				settings.linkChannels[6] = !settings.linkChannels[6];
+			}
+			break;
+		}
+		case Qt::Key_7:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[7] = !settings.linkChannels[7];
+				settings.inverseLinkChannels[7] = settings.linkChannels[7];
+			}
+			else
+			{
+				settings.linkChannels[7] = !settings.linkChannels[7];
+			}
+			break;
+		}
+		case Qt::Key_8:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[8] = !settings.linkChannels[8];
+				settings.inverseLinkChannels[8] = settings.linkChannels[8];
+			}
+			else
+			{
+				settings.linkChannels[8] = !settings.linkChannels[8];
+			}
+			break;
+		}
+		case Qt::Key_9:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[9] = !settings.linkChannels[9];
+				settings.inverseLinkChannels[9] = settings.linkChannels[9];
+			}
+			else
+			{
+				settings.linkChannels[9] = !settings.linkChannels[9];
+			}
+			break;
+		}
+		}
 	}
 }
 

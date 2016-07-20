@@ -41,6 +41,7 @@ signals:
 	void sendInletRequests(const QVector<qreal> &values);
 
 protected:
+	void keyPressEvent(QKeyEvent *event);
 
 private:
 	QVector<InletWidget*> inlets;

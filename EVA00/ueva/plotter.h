@@ -41,6 +41,7 @@ public:
 signals:
 
 protected:
+	void keyPressEvent(QKeyEvent *event);
 
 private:
 	QVector<QColor> colors;

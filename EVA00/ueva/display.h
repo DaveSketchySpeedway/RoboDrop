@@ -34,11 +34,13 @@ public:
 
 	//// REGULAR CALLS
 	void setImage(const QImage &i);
-	QPoint getMousePosition(); // used by mask picking, ref set
-	QLine getMousePressedMovement(); // used by ref update
+	QPoint getMousePosition(); // return instantaneous mouse position
+	QPoint getLeftPress(); // return point if there is left click since last get
+	QPoint getRightPress(); // return point if there is right click since last get
+	QLine getLeftPressMovement(); // return line start at last get
 
 signals:
-	void sendMouseLine(QLine line);
+	void sendMouseLine(QLine line); // send line start at button press
 	
 protected:
 	void mousePressEvent(QMouseEvent *event); // used by cut and calib
@@ -49,12 +51,14 @@ protected:
 private:
 	QImage image;
 
-	bool mousePressed;
+	bool leftPressed;
+	bool lastLeftPressed;
 	QPoint mousePosition;
-	bool lastMousePressed;
 	QPoint lastMousePosition;
-	QPoint linePoint1;
-	QPoint linePoint2;
+	QPoint lineStartPosition;
+	QPoint lineEndPosition;
+	QPoint leftPressPosition;
+	QPoint rightPressPosition;
 
 	private slots:
 

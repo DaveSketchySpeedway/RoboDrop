@@ -47,6 +47,7 @@ public:
 signals:
 
 protected:
+	void keyPressEvent(QKeyEvent *event);
 
 private:
 	QVector<ChannelInfoWidget*> channelInfoWidgets;

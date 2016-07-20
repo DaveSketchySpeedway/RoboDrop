@@ -54,6 +54,8 @@ Dashboard::Dashboard(QWidget *parent)
 		parent, SLOT(ctrlOnOff()));
 	connect(markerSizeSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(ctrlSettings()));
+	connect(autoCatchSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(ctrlSettings()));
 }
 
 Dashboard::~Dashboard()
@@ -90,6 +92,14 @@ void Dashboard::resetInletWidgets(
 	pumpLayout->addStretch();
 }
 
+
+void Dashboard::keyPressEvent(QKeyEvent *event)
+{
+	if (event->key() == Qt::Key_Escape)
+	{
+		this->hide();
+	}
+}
 
 void Dashboard::zeroPump()
 {
