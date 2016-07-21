@@ -94,7 +94,7 @@ bool isMaskInMask(Mat &mask1, Mat &mask2)
 	return false;
 }
 
-Point_<int> detectKink(vector< Point_<int>> &contour, const int &convexSize)
+int detectKink(vector< Point_<int>> &contour, const int &convexSize)
 {
 	vector<int> hull;
 	convexHull(contour, hull);
@@ -102,7 +102,7 @@ Point_<int> detectKink(vector< Point_<int>> &contour, const int &convexSize)
 	vector<Vec4i> defects;
 	convexityDefects(contour, hull, defects);
 
-	Point_<int> kink = Point_<int>(0, 0);
+	int kinkIndex = -1;
 	int depth = 0;
 	for (int i = 1; i < defects.size(); i++) // defects[0] is not real
 	{
@@ -111,9 +111,18 @@ Point_<int> detectKink(vector< Point_<int>> &contour, const int &convexSize)
 			if (defects[i][3] > depth)
 			{
 				depth = defects[i][3];
-				kink = contour[defects[i][2]];
+				kinkIndex = defects[i][2];
 			}
 		}
 	}
-	return kink; 
+	return kinkIndex; 
+}
+
+int detectNeck(vector< Point_<int>> &contour, int &kinkIndex, double &neck)
+{
+	int neckIndex = 0;
+
+	neck = 0.0;
+
+	return neckIndex;
 }

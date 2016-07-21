@@ -138,8 +138,8 @@ struct UevaDroplet
 	UevaDroplet();
 
 	Mat mask;
-	Point_<int> kink;
-	double neck;
+	int kinkIndex;
+	int neckIndex;
 	
 	vector<int> accomodatingChannelIndices;
 };

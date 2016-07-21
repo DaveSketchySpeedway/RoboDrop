@@ -323,7 +323,7 @@ void S2EngineThread::run()
 						}
 						markers.push_back(marker);
 					}
-					// vector of droplet (necking)
+					// vector of droplet
 					droplets.clear();
 					for (int i = 0; i < dropletContours.size(); i++)
 					{
@@ -337,10 +337,24 @@ void S2EngineThread::run()
 								channels[j].occupyingDropletIndices.push_back(i);
 							}
 						}
-						droplet.kink = detectKink(dropletContours[i], settings.imgprocConvexSize);
-						if (droplet.kink != Point_<int>(0, 0))
+						// make marker if neck is detected
+						droplet.kinkIndex = detectKink(dropletContours[i], settings.imgprocConvexSize);
+						if (droplet.kinkIndex > 0)
 						{
-							//neck
+							mom = moments(dropletContours[i]);
+							UevaMarker marker;
+							marker.type = 1;
+							marker.centroid.x = mom.m10 / mom.m00;
+							marker.centroid.y = mom.m01 / mom.m00;
+							marker.rect = Rect_<int>(
+								marker.centroid.x - settings.ctrlMarkerSize / 2,
+								marker.centroid.y - settings.ctrlMarkerSize / 2,
+								settings.ctrlMarkerSize,
+								settings.ctrlMarkerSize);
+							droplet.neckIndex = detectNeck(dropletContours[i], droplet.kinkIndex, marker.value);
+							marker.accomodatingChannelIndex = droplet.accomodatingChannelIndices[0];
+							channels[marker.accomodatingChannelIndex].currentMarkerIndices.push_back(markers.size());
+							markers.push_back(marker);
 						}
 						droplets.push_back(droplet);
 					}
@@ -427,11 +441,19 @@ void S2EngineThread::run()
 							FONT_HERSHEY_SIMPLEX, fontScale, lineColor, lineThickness, lineType);
 						// draw occupying markers
 						for (int j = 0; j < channels[i].currentMarkerIndices.size(); j++)
-						{;
-							if (j == channels[i].selectedMarkerIndex)
-								lineColor = Scalar(0, 0, 255); // red
-							else
-								lineColor = Scalar(255, 255, 0); // cyan
+						{
+						if (j == channels[i].selectedMarkerIndex)
+						{
+							lineColor = Scalar(0, 0, 255); // red 
+						}
+						else if (markers[channels[i].currentMarkerIndices[j]].type == 1)
+						{
+							lineColor = Scalar(0, 255, 255); // yellow
+						}
+						else
+						{
+							lineColor = Scalar(255, 255, 0); // cyan
+						}
 							lineThickness = 1;
 							lineType = 8;
 							rectangle(data.drawnBgr,
@@ -474,9 +496,15 @@ void S2EngineThread::run()
 						lineType = 8;
 						for (int i = 0; i < droplets.size(); i++)
 						{
-							if (droplets[i].kink != Point_<int>(0, 0))
+							if (droplets[i].kinkIndex > 0)
 							{
-								circle(data.drawnBgr, droplets[i].kink, 10, lineColor, lineThickness, lineType);
+								line(data.drawnBgr,
+									dropletContours[i][droplets[i].kinkIndex],
+									dropletContours[i][droplets[i].neckIndex],
+									lineColor, lineThickness, lineType);
+								//circle(data.drawnBgr,
+								//	dropletContours[i][droplets[i].kinkIndex],
+								//	10, lineColor, lineThickness, lineType);
 							}
 						}
 					}
