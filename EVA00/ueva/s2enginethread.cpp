@@ -63,7 +63,7 @@ void S2EngineThread::loadCtrl(string fileName,
 	int *numState, int *numIn, int *numOut, int *numCtrl, double *ctrlTs)
 {
 	mutex.lock();
-
+	ctrls.clear();
 	FileStorage fs(fileName, FileStorage::READ);
 	*numCtrl = (int)fs["numCtrl"];
 	*ctrlTs = (double)fs["samplePeriod"];
@@ -91,6 +91,8 @@ void S2EngineThread::loadCtrl(string fileName,
 		c["K1"] >> ctrl.K1;
 		c["K2"] >> ctrl.K2;
 		c["H"] >> ctrl.H;
+
+		ctrls.push_back(ctrl);
 
 		cerr << "controller " << ctrlName << endl;
 		cerr << "unco unob " << ctrl.uncoUnob << endl;
@@ -355,24 +357,78 @@ void S2EngineThread::run()
 							droplet.neckIndex = detectNeck(dropletContours[i], droplet.kinkIndex, marker.value);
 							if (droplet.accomodatingChannelIndex != -1)
 							{
-								cerr << marker.accomodatingChannelIndex;
 								marker.accomodatingChannelIndex = droplet.accomodatingChannelIndex;
-								cerr << marker.accomodatingChannelIndex << endl;
 								channels[marker.accomodatingChannelIndex].currentMarkerIndices.push_back(markers.size());
 							}
 							markers.push_back(marker);
 						}
 						droplets.push_back(droplet);
 					}
+					// user change marker
+					for (int i = 0; i < channels.size(); i++)
+					{
+						for (int j = 0; j < channels[i].currentMarkerIndices.size(); j++)
+						{
+							if (mousePressLeft.inside(
+								markers[channels[i].currentMarkerIndices[j]].rect))
+							{
+								desiredCombination = actualCombination;
+								desiredCombination.push_back(i);
+								if (isCombinationPossible(desiredCombination, ctrls))
+								{
+									actualCombination = desiredCombination;
+									channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[j];
+									needReset = 1;
+									vacancy--;
+								}
+							}
+							if (mousePressRight.inside(
+								markers[channels[i].currentMarkerIndices[j]].rect))
+							{
+								if (channels[i].selectedMarkerIndex == channels[i].currentMarkerIndices[j])
+								{
+									channels[i].selectedMarkerIndex = -1;
+									deleteFromCombination(actualCombination, i);
+									needReset = 1;
+									vacancy++;
+								}
+							}
+						}
+					}
+					cerr << endl;
+					for (int k = 0; k < actualCombination.size(); k++)
+						cerr << actualCombination[k] << " ";
+
+
 					// natural marker change
-
-
-
+					//for (int i = 0; i < channels.size(); i++)
+					//{
+					//	if (channels[i].currentMarkerIndices != channels[i].previousMarkerIndices)
+					//	{
+					//		channels[i].selectedMarkerIndex = -1;
+					//		deleteFromCombination(actualCombination, i);
+					//		needReset = 1;
+					//		vacancy--;
+					//	}
+					//}
 					// auto catch
-
-
-
-
+					//for (int i = 0; i < channels.size(); i++)
+					//{
+					//	if (vacancy > 0 &&
+					//		channels[i].selectedMarkerIndex == -1 &&
+					//		channels[i].currentMarkerIndices.size() > 0)
+					//	{
+					//		desiredCombination = actualCombination;
+					//		desiredCombination.push_back(i);
+					//		if (isCombinationPossible(desiredCombination, ctrls))
+					//		{
+					//			actualCombination = desiredCombination;
+					//			channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[0];
+					//			needReset = 1;
+					//			vacancy--;
+					//		}
+					//	}
+					//}
 				}
 
 				//// CTRL
@@ -506,7 +562,7 @@ void S2EngineThread::run()
 							{
 								line(data.drawnBgr,
 									dropletContours[i][droplets[i].kinkIndex],
-									dropletContours[i][droplets[i].neckIndex],
+									Point_<int>(0,0),
 									lineColor, lineThickness, lineType);
 								//circle(data.drawnBgr,
 								//	dropletContours[i][droplets[i].kinkIndex],
@@ -515,33 +571,6 @@ void S2EngineThread::run()
 						}
 					}
 					cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
-
-
-
-					//// DEBUG
-				//	dropletContours.clear();
-				//	markerContours.clear();
-				//	for (int i = 0; i < channels.size(); i++)
-				//	{
-				//		cerr << "ch " << i << endl;
-				//		cerr << " d ";
-				//		for (int j = 0; j < channels[i].occupyingDropletIndices.size(); j++)
-				//		{
-				//			cerr << j << " ";
-				//		}
-				//		cerr << endl;
-				//		cerr << " m ";
-				//		for (int j = 0; j < channels[i].currentMarkerIndices.size(); j++)
-				//		{
-				//			cerr << j << " ";
-				//		}
-				//		cerr << endl;
-				//	}
-				//	cerr << dropletContours.size() << " " << markerContours.size() << endl;
-				//	cerr << endl;
-
-
-
 				}
 			}
 

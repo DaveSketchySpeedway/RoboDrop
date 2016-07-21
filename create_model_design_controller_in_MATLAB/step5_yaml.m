@@ -20,10 +20,52 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 
 
 % this script parse the designed controllers into yaml
+% MATLAB linear indexing is down a column first, so transpose before stream
+% MATLAB is one indiced, hence -1
 
-% MATLAB linear indexing is down a column first
-% openCV linear indexing is across a row first
+%% erase redundant controllers
+combinations.channel_idx = 0; 
+i = 1;
+while i <= length(ctrl_c)
+    sorted_combination = sort(ctrl_c(i).channel_idx);
+    is_duplicated = 0;
+    for j = 1:length(combinations)
+        if isequal(sorted_combination, combinations(j).channel_idx)
+            is_duplicated = 1;
+        end
+    end
+    if is_duplicated == 1
+        ctrl_c(i) = [];        
+    else
+        next = length(combinations) + 1;
+        combinations(next).channel_idx = sorted_combination;
+        i = i + 1;
+    end
+end
 clearvars -except ctrl_c ctrl_d model
+
+
+
+combinations.channel_idx = 0; 
+i = 1;
+while i <= length(ctrl_d)
+    sorted_combination = sort(ctrl_d(i).channel_idx);
+    is_duplicated = 0;
+    for j = 1:length(combinations)
+        if isequal(sorted_combination, combinations(j).channel_idx)
+            is_duplicated = 1;
+        end
+    end
+    if is_duplicated == 1
+        ctrl_d(i) = [];        
+    else
+        next = length(combinations) + 1;
+        combinations(next).channel_idx = sorted_combination;
+        i = i + 1;
+    end
+end
+clearvars -except ctrl_c ctrl_d model
+%%
 
 filename = strrep(ctrl_d(1).name, 'model', 'ctrl');
 filename = [filename '.yaml'];
@@ -53,7 +95,7 @@ for i = 1:length(ctrl_d)
         fprintf(file, '    dt: u\n'); % unsigned char
         fprintf(file, '    data: [ ');
         for k = 1:rows*cols
-            fprintf(file, '%d', matrix(k));
+            fprintf(file, '%d', matrix(k)-1 );
             if (k == rows*cols)
                 break;
             end

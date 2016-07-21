@@ -124,3 +124,40 @@ int detectNeck(vector< Point_<int>> &contour, int &kinkIndex, double &neck)
 
 	return neckIndex;
 }
+
+bool isCombinationPossible(vector<int> &combination, vector<UevaCtrl> &ctrls)
+{
+	cerr << endl;
+	std::sort(combination.begin(), combination.end());
+	for (int i = 0; i < ctrls.size(); i++)
+	{
+		vector<int> ctrlOutputIdx;
+		for (int j = 0; j < ctrls[i].outputIdx.cols; j++)
+		{
+			ctrlOutputIdx.push_back(ctrls[i].outputIdx.at<uchar>(j));
+		}
+		if (combination == ctrlOutputIdx &&
+			ctrls[i].uncoUnob == 0)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void deleteFromCombination(vector<int> &combination, const int &value)
+{
+	vector<int>::iterator iter;
+	iter = combination.begin();
+	while (iter != combination.end())
+	{
+		if (*iter == value)
+		{
+			iter = combination.erase(iter);
+		}
+		else
+		{
+			iter++;
+		}
+	}
+}

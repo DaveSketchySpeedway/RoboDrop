@@ -38,12 +38,12 @@ TS = 0.1; % sampling period for discretization
 load('pump_fit_tf_avg_freq.mat')
 % load('pump_fit_tf_avg_time_step.mat')
 
-MODEL = 'model_i3_c3_f2_valid'; 
+% MODEL = 'model_i3_c3_f2_valid'; 
 % MODEL = 'model_i3_c3_f2_equal_oil'; 
 % MODEL = 'model_i3_c3_f2_equal_h2o'; 
 % MODEL = 'model_i3_c3_f2_50';
 % MODEL = 'model_i4_c4_f3_50';
-% MODEL = 'model_i4_c5_f3_50a';
+MODEL = 'model_i4_c5_f3_50a';
 % MODEL = 'model_i4_c5_f3_50b';
 % MODEL = 'model_i4_c8_f3_50';
 % MODEL = 'model_i5_c6_f4_50';

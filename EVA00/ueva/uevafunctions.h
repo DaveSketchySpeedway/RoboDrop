@@ -9,6 +9,8 @@
 #include <iostream>
 #include <algorithm>
 
+#include "uevastructures.h"
+
 using namespace std;
 using namespace cv;
 
@@ -30,6 +32,7 @@ int detectKink(vector< Point_<int>> &contour, const int &convexSize);
 
 int detectNeck(vector< Point_<int>> &contour, int &kinkIndex, double &neck);
 
+bool isCombinationPossible(vector<int> &combination, vector<UevaCtrl> &ctrls);
 
-
+void deleteFromCombination(vector<int> &combination, const int &value);
 #endif

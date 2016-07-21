@@ -89,12 +89,16 @@ private:
 	vector<UevaChannel> channels;
 
 	//// NON PERSISTANT VARIABLES
+	bool needReset;
+	int vacancy;
+	vector<int> desiredCombination;
 	Mat allDroplets;
 	Mat allMarkers;
 	vector<vector< Point_<int> >> dropletContours;
 	vector<vector< Point_<int> >> markerContours;
 	vector<UevaDroplet> droplets;
 	vector<UevaMarker> markers;
+
 
 	//// CONVENIENT PARAMETERS
 	enum EngineConstants
@@ -113,16 +117,12 @@ private:
 	Point_<int> anchor;
 	Moments mom;
 	Rect rect;
-	bool needReset;
-	vector<int> desiredCombination;
-	int vacancy;
 	Point_<int> mousePressLeft;
 	Point_<int> mousePressRight;
 	Point_<int> mousePressPrevious;
 	Point_<int> mousePressCurrent;
 
 	private slots:
-
 
 };
 
