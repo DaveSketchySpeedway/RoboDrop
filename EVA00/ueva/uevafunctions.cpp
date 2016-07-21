@@ -85,13 +85,11 @@ bool isPointInMask(Point_<int> &point, Mat &mask)
 	return false;
 }
 
-bool isMaskInMask(Mat &mask1, Mat &mask2)
+int masksOverlap(Mat &mask1, Mat &mask2)
 {
 	Mat mask3 = Mat(mask1.size(), CV_8UC1, Scalar_<int>(0));
 	bitwise_and(mask1, mask2, mask3);
-	if (countNonZero(mask3))
-		return true;
-	return false;
+	return countNonZero(mask3);
 }
 
 int detectKink(vector< Point_<int>> &contour, const int &convexSize)

@@ -288,7 +288,6 @@ void S2EngineThread::run()
 						channels[i].previousMarkerIndices.clear();
 						channels[i].previousMarkerIndices = channels[i].currentMarkerIndices;
 						channels[i].currentMarkerIndices.clear();
-						channels[i].occupyingDropletIndices.clear();
 					}
 					vacancy = settings.ctrlAutoCatch - actualCombination.size();
 					mousePressLeft.x = settings.leftPressPosition.x();
@@ -329,12 +328,14 @@ void S2EngineThread::run()
 					{
 						UevaDroplet droplet;
 						droplet.mask = contour2Mask(dropletContours[i], allDroplets.size());
+						int maxOverlap = 0;
 						for (int j = 0; j < channels.size(); j++)
 						{
-							if (isMaskInMask(droplet.mask, channels[j].mask))
+							int overlap = masksOverlap(droplet.mask, channels[j].mask);
+							if (overlap > maxOverlap)
 							{
-								droplet.accomodatingChannelIndices.push_back(j);
-								channels[j].occupyingDropletIndices.push_back(i);
+								maxOverlap = overlap;
+								droplet.accomodatingChannelIndex = j;
 							}
 						}
 						// make marker if neck is detected
@@ -352,8 +353,13 @@ void S2EngineThread::run()
 								settings.ctrlMarkerSize,
 								settings.ctrlMarkerSize);
 							droplet.neckIndex = detectNeck(dropletContours[i], droplet.kinkIndex, marker.value);
-							marker.accomodatingChannelIndex = droplet.accomodatingChannelIndices[0];
-							channels[marker.accomodatingChannelIndex].currentMarkerIndices.push_back(markers.size());
+							if (droplet.accomodatingChannelIndex != -1)
+							{
+								cerr << marker.accomodatingChannelIndex;
+								marker.accomodatingChannelIndex = droplet.accomodatingChannelIndex;
+								cerr << marker.accomodatingChannelIndex << endl;
+								channels[marker.accomodatingChannelIndex].currentMarkerIndices.push_back(markers.size());
+							}
 							markers.push_back(marker);
 						}
 						droplets.push_back(droplet);

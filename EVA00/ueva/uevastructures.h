@@ -128,9 +128,7 @@ struct UevaChannel
 	int selectedMarkerIndex;
 
 	vector<int> currentMarkerIndices;
-	vector<int> previousMarkerIndices;
-	vector<int> occupyingDropletIndices;
-	
+	vector<int> previousMarkerIndices;	
 };
 
 struct UevaDroplet
@@ -141,7 +139,7 @@ struct UevaDroplet
 	int kinkIndex;
 	int neckIndex;
 	
-	vector<int> accomodatingChannelIndices;
+	int accomodatingChannelIndex;
 };
 
 struct UevaMarker

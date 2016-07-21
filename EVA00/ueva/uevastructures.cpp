@@ -184,12 +184,12 @@ UevaChannel::UevaChannel()
 //// DROPLET
 UevaDroplet::UevaDroplet()
 {
-
+	accomodatingChannelIndex = -1;
 }
 
 //// MARKER
 UevaMarker::UevaMarker()
 {
-
+	accomodatingChannelIndex = -1;
 }
 

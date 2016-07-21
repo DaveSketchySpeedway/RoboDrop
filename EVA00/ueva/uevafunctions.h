@@ -24,7 +24,7 @@ void bigPassFilter(vector<vector< Point_<int> >> &contours, const int &size);
 
 bool isPointInMask(Point_<int> &point, Mat &mask);
 
-bool isMaskInMask(Mat &mask1, Mat &mask2);
+int masksOverlap(Mat &mask1, Mat &mask2);
 
 int detectKink(vector< Point_<int>> &contour, const int &convexSize);
 
