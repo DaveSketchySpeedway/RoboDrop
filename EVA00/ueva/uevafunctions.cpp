@@ -127,7 +127,6 @@ int detectNeck(vector< Point_<int>> &contour, int &kinkIndex, double &neck)
 
 bool isCombinationPossible(vector<int> &combination, vector<UevaCtrl> &ctrls)
 {
-	cerr << endl;
 	std::sort(combination.begin(), combination.end());
 	for (int i = 0; i < ctrls.size(); i++)
 	{

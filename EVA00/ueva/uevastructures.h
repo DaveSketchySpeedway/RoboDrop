@@ -150,6 +150,7 @@ struct UevaMarker
 	double value;
 	Point_<int> centroid;
 	Rect_<int> rect;
+	Size_<int> imageSize;
 
 	int accomodatingChannelIndex;
 };

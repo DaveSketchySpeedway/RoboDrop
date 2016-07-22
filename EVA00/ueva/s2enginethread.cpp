@@ -314,15 +314,32 @@ void S2EngineThread::run()
 							marker.centroid.y - settings.ctrlMarkerSize / 2,
 							settings.ctrlMarkerSize,
 							settings.ctrlMarkerSize);
+						marker.imageSize = allMarkers.size();
+
+						markers.push_back(marker);
+					}
+					// sort markers by x/width*10 + y/height to create continuity
+					sort(markers.begin(), markers.end(), 
+						[](const UevaMarker &a, const UevaMarker &b)
+						{
+							double sizeOfA =
+								(double)a.centroid.x / (double)a.imageSize.width * 10.0 +
+								(double)a.centroid.y / (double)a.imageSize.height;
+							double sizeOfB = 
+								(double)b.centroid.x / (double)b.imageSize.width * 10.0 +
+								(double)b.centroid.y / (double)b.imageSize.height;
+							return sizeOfA < sizeOfB;
+						});
+					for (int i = 0; i < markers.size(); i++)
+					{
 						for (int j = 0; j < channels.size(); j++)
 						{
-							if (isPointInMask(marker.centroid, channels[j].mask))
+							if (isPointInMask(markers[i].centroid, channels[j].mask))
 							{
-								marker.accomodatingChannelIndex = j;
+								markers[i].accomodatingChannelIndex = j;
 								channels[j].currentMarkerIndices.push_back(i);
 							}
 						}
-						markers.push_back(marker);
 					}
 					// vector of droplet
 					droplets.clear();
@@ -372,14 +389,24 @@ void S2EngineThread::run()
 							if (mousePressLeft.inside(
 								markers[channels[i].currentMarkerIndices[j]].rect))
 							{
-								desiredCombination = actualCombination;
-								desiredCombination.push_back(i);
-								if (isCombinationPossible(desiredCombination, ctrls))
+								if (channels[i].selectedMarkerIndex != -1)
 								{
-									actualCombination = desiredCombination;
 									channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[j];
+									cerr << "ch " << i << " select " << channels[i].selectedMarkerIndex << endl;////
 									needReset = 1;
-									vacancy--;
+								}
+								else
+								{
+									desiredCombination = actualCombination;
+									desiredCombination.push_back(i);
+									if (isCombinationPossible(desiredCombination, ctrls))
+									{
+										actualCombination = desiredCombination;
+										channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[j];
+										cerr << "ch " << i << " select " << channels[i].selectedMarkerIndex << endl;////
+										needReset = 1;
+										vacancy--;
+									}
 								}
 							}
 							if (mousePressRight.inside(
@@ -387,6 +414,7 @@ void S2EngineThread::run()
 							{
 								if (channels[i].selectedMarkerIndex == channels[i].currentMarkerIndices[j])
 								{
+									cerr << "ch " << i << " release " << channels[i].selectedMarkerIndex << endl;////
 									channels[i].selectedMarkerIndex = -1;
 									deleteFromCombination(actualCombination, i);
 									needReset = 1;
@@ -395,40 +423,41 @@ void S2EngineThread::run()
 							}
 						}
 					}
-					cerr << endl;
+					// natural marker change
+					for (int i = 0; i < channels.size(); i++)
+					{
+						if (channels[i].currentMarkerIndices != channels[i].previousMarkerIndices)
+						{
+							cerr << "ch " << i << " release " << channels[i].selectedMarkerIndex << endl;////
+							channels[i].selectedMarkerIndex = -1;
+							deleteFromCombination(actualCombination, i);
+							needReset = 1;
+							vacancy--;
+						}
+					}
+					// auto catch marker
+					for (int i = 0; i < channels.size(); i++)
+					{
+						if (vacancy > 0 &&
+							channels[i].selectedMarkerIndex == -1 &&
+							channels[i].currentMarkerIndices.size() > 0)
+						{
+							desiredCombination = actualCombination;
+							desiredCombination.push_back(i);
+							if (isCombinationPossible(desiredCombination, ctrls))
+							{
+								actualCombination = desiredCombination;
+								channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[0];
+								cerr << "ch " << i << " select " << channels[i].selectedMarkerIndex << endl;////
+								needReset = 1;
+								vacancy--;
+							}
+						}
+					}
+					////
 					for (int k = 0; k < actualCombination.size(); k++)
 						cerr << actualCombination[k] << " ";
-
-
-					// natural marker change
-					//for (int i = 0; i < channels.size(); i++)
-					//{
-					//	if (channels[i].currentMarkerIndices != channels[i].previousMarkerIndices)
-					//	{
-					//		channels[i].selectedMarkerIndex = -1;
-					//		deleteFromCombination(actualCombination, i);
-					//		needReset = 1;
-					//		vacancy--;
-					//	}
-					//}
-					// auto catch
-					//for (int i = 0; i < channels.size(); i++)
-					//{
-					//	if (vacancy > 0 &&
-					//		channels[i].selectedMarkerIndex == -1 &&
-					//		channels[i].currentMarkerIndices.size() > 0)
-					//	{
-					//		desiredCombination = actualCombination;
-					//		desiredCombination.push_back(i);
-					//		if (isCombinationPossible(desiredCombination, ctrls))
-					//		{
-					//			actualCombination = desiredCombination;
-					//			channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[0];
-					//			needReset = 1;
-					//			vacancy--;
-					//		}
-					//	}
-					//}
+					cerr << endl;////
 				}
 
 				//// CTRL
@@ -504,7 +533,7 @@ void S2EngineThread::run()
 						// draw occupying markers
 						for (int j = 0; j < channels[i].currentMarkerIndices.size(); j++)
 						{
-						if (j == channels[i].selectedMarkerIndex)
+						if (channels[i].currentMarkerIndices[j] == channels[i].selectedMarkerIndex)
 						{
 							lineColor = Scalar(0, 0, 255); // red 
 						}
