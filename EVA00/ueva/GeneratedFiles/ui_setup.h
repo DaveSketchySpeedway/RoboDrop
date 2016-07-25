@@ -63,16 +63,19 @@ public:
     QVBoxLayout *verticalLayout_3;
     QPushButton *bkgdButton;
     QGridLayout *gridLayout_5;
+    QSlider *blockSlider;
+    QLabel *blockLabel;
+    QLabel *label_14;
+    QPushButton *maskButton;
     QSlider *openSizeSlider;
     QLabel *openSizeLabel;
     QLabel *label_8;
     QSlider *thresholdSlider;
     QLabel *thresholdLabel;
     QLabel *label_10;
-    QSlider *blockSlider;
-    QLabel *blockLabel;
-    QLabel *label_14;
-    QPushButton *maskButton;
+    QLabel *label_15;
+    QSlider *cleanEdgeSlider;
+    QLabel *cleanEdgeLabel;
     QGridLayout *gridLayout_6;
     QLabel *erodeSizeLabel;
     QSlider *erodeSizeSlider;
@@ -271,6 +274,32 @@ public:
         gridLayout_5 = new QGridLayout();
         gridLayout_5->setSpacing(6);
         gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
+        blockSlider = new QSlider(imgprocTab);
+        blockSlider->setObjectName(QStringLiteral("blockSlider"));
+        blockSlider->setMaximum(10);
+        blockSlider->setPageStep(1);
+        blockSlider->setValue(5);
+        blockSlider->setSliderPosition(5);
+        blockSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_5->addWidget(blockSlider, 2, 1, 1, 1);
+
+        blockLabel = new QLabel(imgprocTab);
+        blockLabel->setObjectName(QStringLiteral("blockLabel"));
+
+        gridLayout_5->addWidget(blockLabel, 2, 2, 1, 1);
+
+        label_14 = new QLabel(imgprocTab);
+        label_14->setObjectName(QStringLiteral("label_14"));
+
+        gridLayout_5->addWidget(label_14, 3, 0, 1, 1);
+
+        maskButton = new QPushButton(imgprocTab);
+        maskButton->setObjectName(QStringLiteral("maskButton"));
+        maskButton->setCheckable(true);
+
+        gridLayout_5->addWidget(maskButton, 0, 1, 1, 1);
+
         openSizeSlider = new QSlider(imgprocTab);
         openSizeSlider->setObjectName(QStringLiteral("openSizeSlider"));
         openSizeSlider->setMaximum(10);
@@ -310,31 +339,25 @@ public:
 
         gridLayout_5->addWidget(label_10, 2, 0, 1, 1);
 
-        blockSlider = new QSlider(imgprocTab);
-        blockSlider->setObjectName(QStringLiteral("blockSlider"));
-        blockSlider->setMaximum(10);
-        blockSlider->setPageStep(1);
-        blockSlider->setValue(5);
-        blockSlider->setSliderPosition(5);
-        blockSlider->setOrientation(Qt::Horizontal);
+        label_15 = new QLabel(imgprocTab);
+        label_15->setObjectName(QStringLiteral("label_15"));
 
-        gridLayout_5->addWidget(blockSlider, 2, 1, 1, 1);
+        gridLayout_5->addWidget(label_15, 4, 0, 1, 1);
 
-        blockLabel = new QLabel(imgprocTab);
-        blockLabel->setObjectName(QStringLiteral("blockLabel"));
+        cleanEdgeSlider = new QSlider(imgprocTab);
+        cleanEdgeSlider->setObjectName(QStringLiteral("cleanEdgeSlider"));
+        cleanEdgeSlider->setMaximum(5);
+        cleanEdgeSlider->setPageStep(1);
+        cleanEdgeSlider->setValue(0);
+        cleanEdgeSlider->setSliderPosition(0);
+        cleanEdgeSlider->setOrientation(Qt::Horizontal);
 
-        gridLayout_5->addWidget(blockLabel, 2, 2, 1, 1);
+        gridLayout_5->addWidget(cleanEdgeSlider, 4, 1, 1, 1);
 
-        label_14 = new QLabel(imgprocTab);
-        label_14->setObjectName(QStringLiteral("label_14"));
+        cleanEdgeLabel = new QLabel(imgprocTab);
+        cleanEdgeLabel->setObjectName(QStringLiteral("cleanEdgeLabel"));
 
-        gridLayout_5->addWidget(label_14, 3, 0, 1, 1);
-
-        maskButton = new QPushButton(imgprocTab);
-        maskButton->setObjectName(QStringLiteral("maskButton"));
-        maskButton->setCheckable(true);
-
-        gridLayout_5->addWidget(maskButton, 0, 1, 1, 1);
+        gridLayout_5->addWidget(cleanEdgeLabel, 4, 2, 1, 1);
 
 
         verticalLayout_4->addLayout(gridLayout_5);
@@ -551,13 +574,15 @@ public:
         calibLengthEdit->setText(QApplication::translate("Setup", "500", 0));
         calibButton->setText(QApplication::translate("Setup", "Set Calibration", 0));
         bkgdButton->setText(QApplication::translate("Setup", "Set Background", 0));
+        blockLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
+        label_14->setText(QApplication::translate("Setup", "Open Size:", 0));
+        maskButton->setText(QApplication::translate("Setup", "Make Mask", 0));
         openSizeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
         label_8->setText(QApplication::translate("Setup", "Threshold:", 0));
         thresholdLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
         label_10->setText(QApplication::translate("Setup", "Block Size:", 0));
-        blockLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
-        label_14->setText(QApplication::translate("Setup", "Open Size:", 0));
-        maskButton->setText(QApplication::translate("Setup", "Make Mask", 0));
+        label_15->setText(QApplication::translate("Setup", "Clean Edges:", 0));
+        cleanEdgeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
         erodeSizeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
         label_13->setText(QApplication::translate("Setup", "Erode Size:", 0));
         cutThicknessLabel->setText(QApplication::translate("Setup", "TextLabel", 0));

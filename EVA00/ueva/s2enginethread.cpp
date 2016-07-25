@@ -214,9 +214,14 @@ void S2EngineThread::run()
 				}
 				floodFillReturn = floodFill(dropletMask, seed, MID_VALUE);
 				// eliminate noise by morphological opening (second most time consuming)
+				//morphologyEx(dropletMask, dropletMask, cv::MORPH_OPEN, structuringElement);
+				structuringElement = getStructuringElement(MORPH_RECT,
+					Size_<int>(settings.maskCleanEdge + settings.maskOpenSize, 
+					settings.maskCleanEdge + settings.maskOpenSize));
+				erode(dropletMask, dropletMask, structuringElement);
 				structuringElement = getStructuringElement(MORPH_RECT,
 					Size_<int>(settings.maskOpenSize, settings.maskOpenSize));
-				morphologyEx(dropletMask, dropletMask, cv::MORPH_OPEN, structuringElement);
+				dilate(dropletMask, dropletMask, structuringElement);
 				// draw
 				cvtColor(dropletMask, data.drawnBgr, CV_GRAY2BGR);
 				cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
@@ -305,6 +310,8 @@ void S2EngineThread::run()
 					mousePressCurrent.y = settings.leftPressMovement.y2();
 					// vector of marker
 					markers.clear();
+					UevaMarker::imageSize = allMarkers.size();
+					UevaMarker::sortRatio = settings.imgprogSortRatio;
 					for (int i = 0; i < markerContours.size(); i++)
 					{
 						mom = moments(markerContours[i]);
@@ -317,19 +324,17 @@ void S2EngineThread::run()
 							marker.centroid.y - settings.ctrlMarkerSize / 2,
 							settings.ctrlMarkerSize,
 							settings.ctrlMarkerSize);
-						marker.imageSize = allMarkers.size();
-
 						markers.push_back(marker);
 					}
-					// sort markers by x/width*10 + y/height to create continuity
+					// sort markers by k * x/width + y/height to fake continuity
 					sort(markers.begin(), markers.end(), 
 						[](const UevaMarker &a, const UevaMarker &b)
 						{
 							double sizeOfA =
-								(double)a.centroid.x / (double)a.imageSize.width * 10.0 +
+								(double)a.centroid.x / (double)a.imageSize.width * (double)a.sortRatio +
 								(double)a.centroid.y / (double)a.imageSize.height;
 							double sizeOfB = 
-								(double)b.centroid.x / (double)b.imageSize.width * 10.0 +
+								(double)b.centroid.x / (double)b.imageSize.width * (double)b.sortRatio +
 								(double)b.centroid.y / (double)b.imageSize.height;
 							return sizeOfA < sizeOfB;
 						});
@@ -396,8 +401,8 @@ void S2EngineThread::run()
 								// user try to select different marker in already active channel
 								if (channels[i].selectedMarkerIndex != -1)
 								{
+									//cerr << "ch " << i << " select " << channels[i].selectedMarkerIndex << endl;////
 									channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[j];
-									cerr << "ch " << i << " select " << channels[i].selectedMarkerIndex << endl;////
 									needReset = 1;
 								}
 								// user try to select marker in inactive channel
@@ -407,9 +412,9 @@ void S2EngineThread::run()
 									desiredChannels.push_back(i);
 									if (isCombinationPossible(desiredChannels, ctrls))
 									{
+										//cerr << "ch " << i << " select " << channels[i].selectedMarkerIndex << endl;////
 										activatedChannels = desiredChannels;
 										channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[j];
-										cerr << "ch " << i << " select " << channels[i].selectedMarkerIndex << endl;////
 										needReset = 1;
 										vacancy--;
 									}
@@ -421,7 +426,7 @@ void S2EngineThread::run()
 							{
 								if (channels[i].selectedMarkerIndex == channels[i].currentMarkerIndices[j])
 								{
-									cerr << "ch " << i << " release " << channels[i].selectedMarkerIndex << endl;////
+									//cerr << "ch " << i << " release " << channels[i].selectedMarkerIndex << endl;////
 									channels[i].selectedMarkerIndex = -1;
 									deleteFromCombination(activatedChannels, i);
 									needReset = 1;
@@ -444,7 +449,7 @@ void S2EngineThread::run()
 						{
 							if (channels[i].selectedMarkerIndex != -1)
 							{
-								cerr << "ch " << i << " release " << channels[i].selectedMarkerIndex << endl;////
+								//cerr << "ch " << i << " release " << channels[i].selectedMarkerIndex << endl;
 								channels[i].selectedMarkerIndex = -1;
 								deleteFromCombination(activatedChannels, i);
 							}
@@ -463,18 +468,17 @@ void S2EngineThread::run()
 							desiredChannels.push_back(i);
 							if (isCombinationPossible(desiredChannels, ctrls))
 							{
+								//cerr << "ch " << i << " select " << channels[i].selectedMarkerIndex << endl;
 								activatedChannels = desiredChannels;
 								channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[0];
-								cerr << "ch " << i << " select " << channels[i].selectedMarkerIndex << endl;////
 								needReset = 1;
 								vacancy--;
 							}
 						}
 					}
-					////
 					for (int k = 0; k < activatedChannels.size(); k++)
 						cerr << activatedChannels[k] << " ";
-					cerr << endl;////
+					cerr << endl;
 				}
 
 				//// CTRL

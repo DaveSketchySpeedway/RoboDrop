@@ -61,10 +61,12 @@ struct UevaSettings
 	int maskBlockSize;
 	int maskThreshold;
 	int maskOpenSize;
+	int maskCleanEdge;
 	int channelErodeSize;
 	int channelCutThickness;
 	int imgprogThreshold;
 	int imgprogContourSize;
+	int imgprogSortRatio;
 	int imgprocConvexSize;
 	int ctrlMarkerSize;
 	int ctrlAutoCatch;
@@ -147,6 +149,7 @@ struct UevaMarker
 	UevaMarker();
 
 	static Size_<int> imageSize;
+	static int sortRatio;
 
 	int type;
 	double value;

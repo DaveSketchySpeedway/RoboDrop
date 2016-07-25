@@ -35,7 +35,6 @@ Setup::Setup(QWidget *parent)
 	connect(getCameraButton, SIGNAL(clicked()),
 		parent, SLOT(getCamera()));
 
-
 	cameraTree->setColumnCount(2);
 	cameraTree->header()->resizeSection(0, 300);
 	cameraTree->setSortingEnabled(true);
@@ -79,8 +78,10 @@ Setup::Setup(QWidget *parent)
 		parent, SLOT(maskSetup()));
 	connect(openSizeSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(maskSetup()));
-	connect(erodeSizeSlider, SIGNAL(valueChanged(int)),
+	connect(cleanEdgeSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(maskSetup()));
 
+	connect(erodeSizeSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(channelSetup()));
 	connect(cutThicknessSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(channelSetup()));

@@ -194,4 +194,4 @@ UevaMarker::UevaMarker()
 }
 
 Size_<int> UevaMarker::imageSize = Size_<int>(0, 0);
-
+int UevaMarker::sortRatio = 0;

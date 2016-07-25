@@ -102,14 +102,17 @@ int detectKink(vector< Point_<int>> &contour, const int &convexSize)
 
 	int kinkIndex = -1;
 	int depth = 0;
-	for (int i = 1; i < defects.size(); i++) 
+	for (int i = 0; i < defects.size(); i++) 
 	{
-		if (defects[i][3] > convexSize*256)
+		if (defects[i][2] > defects[i][0] && defects[i][2] < defects[i][1]) // filter opencv bug
 		{
-			if (defects[i][3] > depth)
+			if (defects[i][3] > convexSize * 256) // filter small defects
 			{
-				depth = defects[i][3];
-				kinkIndex = defects[i][2];
+				if (defects[i][3] > depth) // get deepest defect
+				{
+					depth = defects[i][3];
+					kinkIndex = defects[i][2];
+				}
 			}
 		}
 	}

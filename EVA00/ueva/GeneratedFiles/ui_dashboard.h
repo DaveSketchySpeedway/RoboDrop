@@ -52,8 +52,6 @@ public:
     QVBoxLayout *verticalLayout;
     QPushButton *imgprocButton;
     QGridLayout *gridLayout;
-    QLabel *label_5;
-    QSlider *threshSlider;
     QLabel *threshLabel;
     QLabel *label_6;
     QSlider *contourSizeSlider;
@@ -61,6 +59,11 @@ public:
     QLabel *label_9;
     QSlider *convexSizeSlider;
     QLabel *convexSizeLabel;
+    QLabel *label_5;
+    QSlider *threshSlider;
+    QLabel *label_10;
+    QSlider *sortRatioSlider;
+    QLabel *sorRatioLabel;
     QGroupBox *groupBox_4;
     QGridLayout *gridLayout_4;
     QGridLayout *gridLayout_3;
@@ -214,20 +217,6 @@ public:
         gridLayout = new QGridLayout();
         gridLayout->setSpacing(6);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        label_5 = new QLabel(groupBox_3);
-        label_5->setObjectName(QStringLiteral("label_5"));
-
-        gridLayout->addWidget(label_5, 0, 0, 1, 1);
-
-        threshSlider = new QSlider(groupBox_3);
-        threshSlider->setObjectName(QStringLiteral("threshSlider"));
-        threshSlider->setMinimum(0);
-        threshSlider->setMaximum(99);
-        threshSlider->setValue(20);
-        threshSlider->setOrientation(Qt::Horizontal);
-
-        gridLayout->addWidget(threshSlider, 0, 1, 1, 1);
-
         threshLabel = new QLabel(groupBox_3);
         threshLabel->setObjectName(QStringLiteral("threshLabel"));
 
@@ -255,7 +244,7 @@ public:
         label_9 = new QLabel(groupBox_3);
         label_9->setObjectName(QStringLiteral("label_9"));
 
-        gridLayout->addWidget(label_9, 2, 0, 1, 1);
+        gridLayout->addWidget(label_9, 3, 0, 1, 1);
 
         convexSizeSlider = new QSlider(groupBox_3);
         convexSizeSlider->setObjectName(QStringLiteral("convexSizeSlider"));
@@ -265,12 +254,47 @@ public:
         convexSizeSlider->setValue(7);
         convexSizeSlider->setOrientation(Qt::Horizontal);
 
-        gridLayout->addWidget(convexSizeSlider, 2, 1, 1, 1);
+        gridLayout->addWidget(convexSizeSlider, 3, 1, 1, 1);
 
         convexSizeLabel = new QLabel(groupBox_3);
         convexSizeLabel->setObjectName(QStringLiteral("convexSizeLabel"));
 
-        gridLayout->addWidget(convexSizeLabel, 2, 2, 1, 1);
+        gridLayout->addWidget(convexSizeLabel, 3, 2, 1, 1);
+
+        label_5 = new QLabel(groupBox_3);
+        label_5->setObjectName(QStringLiteral("label_5"));
+
+        gridLayout->addWidget(label_5, 0, 0, 1, 1);
+
+        threshSlider = new QSlider(groupBox_3);
+        threshSlider->setObjectName(QStringLiteral("threshSlider"));
+        threshSlider->setMinimum(0);
+        threshSlider->setMaximum(99);
+        threshSlider->setPageStep(5);
+        threshSlider->setValue(20);
+        threshSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout->addWidget(threshSlider, 0, 1, 1, 1);
+
+        label_10 = new QLabel(groupBox_3);
+        label_10->setObjectName(QStringLiteral("label_10"));
+
+        gridLayout->addWidget(label_10, 2, 0, 1, 1);
+
+        sortRatioSlider = new QSlider(groupBox_3);
+        sortRatioSlider->setObjectName(QStringLiteral("sortRatioSlider"));
+        sortRatioSlider->setMinimum(0);
+        sortRatioSlider->setMaximum(100);
+        sortRatioSlider->setPageStep(1);
+        sortRatioSlider->setValue(25);
+        sortRatioSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout->addWidget(sortRatioSlider, 2, 1, 1, 1);
+
+        sorRatioLabel = new QLabel(groupBox_3);
+        sorRatioLabel->setObjectName(QStringLiteral("sorRatioLabel"));
+
+        gridLayout->addWidget(sorRatioLabel, 2, 2, 1, 1);
 
 
         verticalLayout->addLayout(gridLayout);
@@ -366,12 +390,14 @@ public:
         label_2->setText(QApplication::translate("Dashboard", "Request (mbar)", 0));
         groupBox_3->setTitle(QApplication::translate("Dashboard", "Image Processing", 0));
         imgprocButton->setText(QApplication::translate("Dashboard", "On", 0));
-        label_5->setText(QApplication::translate("Dashboard", "Threshold:", 0));
         threshLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         label_6->setText(QApplication::translate("Dashboard", "Min Contour Size:", 0));
         contourSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         label_9->setText(QApplication::translate("Dashboard", "Min Neck Convex:", 0));
         convexSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
+        label_5->setText(QApplication::translate("Dashboard", "Threshold:", 0));
+        label_10->setText(QApplication::translate("Dashboard", "Sort Ratio:", 0));
+        sorRatioLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         groupBox_4->setTitle(QApplication::translate("Dashboard", "Controller", 0));
         autoCatchLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         markerSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
