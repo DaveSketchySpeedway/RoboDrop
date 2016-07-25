@@ -44,6 +44,9 @@ UevaData::UevaData()
 	//// xxx
 }
 
+ofstream UevaData::fileStream;
+QTime UevaData::startTime;
+
 void UevaData::headerToFile() const
 {
 	QMapIterator<QString, QVector<qreal>> i(map);
@@ -82,9 +85,6 @@ void UevaData::writeToFile() const
 
 	fileStream << endl;
 }
-
-ofstream UevaData::fileStream;
-QTime UevaData::startTime;
 
 //// BUFFER
 UevaBuffer::UevaBuffer()
@@ -192,4 +192,6 @@ UevaMarker::UevaMarker()
 {
 	accomodatingChannelIndex = -1;
 }
+
+Size_<int> UevaMarker::imageSize = Size_<int>(0, 0);
 

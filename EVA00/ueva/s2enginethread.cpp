@@ -141,9 +141,11 @@ void S2EngineThread::setBkgd()
 void S2EngineThread::separateChannels(int &numChan)
 {
 	CV_Assert(!allChannels.empty());
-	// find all channel contours
-	channels.clear();
+	// clean up
+	activatedChannels.clear();
 	channelContours.clear();
+	channels.clear();
+	// find all channel contours
 	findContours(allChannels, channelContours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
 	numChan = channelContours.size();
 	// seprate into vector of UevaChannel
@@ -171,7 +173,7 @@ void S2EngineThread::sortChannels(map<string, vector<int> > &channelInfo)
 	{
 		return a.index < b.index;
 	});
-	// update channel contours 
+	// update channel contours after sort
 	channelContours.clear();
 	for (int i = 0; i < channels.size(); i++)
 	{
@@ -283,15 +285,16 @@ void S2EngineThread::run()
 					bigPassFilter(dropletContours, settings.imgprogContourSize);
 					bigPassFilter(markerContours, settings.imgprogContourSize);
 					// controller preparation
+					needInactivateAll = false;
 					needReset = false;
-					desiredCombination.clear();
+					desiredChannels.clear();
 					for (int i = 0; i < channels.size(); i++)
 					{
 						channels[i].previousMarkerIndices.clear();
 						channels[i].previousMarkerIndices = channels[i].currentMarkerIndices;
 						channels[i].currentMarkerIndices.clear();
 					}
-					vacancy = settings.ctrlAutoCatch - actualCombination.size();
+					vacancy = settings.ctrlAutoCatch - activatedChannels.size();
 					mousePressLeft.x = settings.leftPressPosition.x();
 					mousePressLeft.y = settings.leftPressPosition.y();
 					mousePressRight.x = settings.rightPressPosition.x();
@@ -330,6 +333,7 @@ void S2EngineThread::run()
 								(double)b.centroid.y / (double)b.imageSize.height;
 							return sizeOfA < sizeOfB;
 						});
+					// link markers with channels after sort
 					for (int i = 0; i < markers.size(); i++)
 					{
 						for (int j = 0; j < channels.size(); j++)
@@ -389,19 +393,21 @@ void S2EngineThread::run()
 							if (mousePressLeft.inside(
 								markers[channels[i].currentMarkerIndices[j]].rect))
 							{
+								// user try to select different marker in already active channel
 								if (channels[i].selectedMarkerIndex != -1)
 								{
 									channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[j];
 									cerr << "ch " << i << " select " << channels[i].selectedMarkerIndex << endl;////
 									needReset = 1;
 								}
+								// user try to select marker in inactive channel
 								else
 								{
-									desiredCombination = actualCombination;
-									desiredCombination.push_back(i);
-									if (isCombinationPossible(desiredCombination, ctrls))
+									desiredChannels = activatedChannels;
+									desiredChannels.push_back(i);
+									if (isCombinationPossible(desiredChannels, ctrls))
 									{
-										actualCombination = desiredCombination;
+										activatedChannels = desiredChannels;
 										channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[j];
 										cerr << "ch " << i << " select " << channels[i].selectedMarkerIndex << endl;////
 										needReset = 1;
@@ -409,6 +415,7 @@ void S2EngineThread::run()
 									}
 								}
 							}
+							// user release marker
 							if (mousePressRight.inside(
 								markers[channels[i].currentMarkerIndices[j]].rect))
 							{
@@ -416,24 +423,34 @@ void S2EngineThread::run()
 								{
 									cerr << "ch " << i << " release " << channels[i].selectedMarkerIndex << endl;////
 									channels[i].selectedMarkerIndex = -1;
-									deleteFromCombination(actualCombination, i);
+									deleteFromCombination(activatedChannels, i);
 									needReset = 1;
 									vacancy++;
 								}
 							}
 						}
 					}
-					// natural marker change
+					// inactivate all channels when marker appear or diappear due to flow
 					for (int i = 0; i < channels.size(); i++)
 					{
 						if (channels[i].currentMarkerIndices != channels[i].previousMarkerIndices)
 						{
-							cerr << "ch " << i << " release " << channels[i].selectedMarkerIndex << endl;////
-							channels[i].selectedMarkerIndex = -1;
-							deleteFromCombination(actualCombination, i);
-							needReset = 1;
-							vacancy--;
+							needInactivateAll = true;
 						}
+					}
+					if (needInactivateAll)
+					{
+						for (int i = 0; i < channels.size(); i++)
+						{
+							if (channels[i].selectedMarkerIndex != -1)
+							{
+								cerr << "ch " << i << " release " << channels[i].selectedMarkerIndex << endl;////
+								channels[i].selectedMarkerIndex = -1;
+								deleteFromCombination(activatedChannels, i);
+							}
+						}
+						needReset = 1;
+						vacancy = settings.ctrlAutoCatch;
 					}
 					// auto catch marker
 					for (int i = 0; i < channels.size(); i++)
@@ -442,11 +459,11 @@ void S2EngineThread::run()
 							channels[i].selectedMarkerIndex == -1 &&
 							channels[i].currentMarkerIndices.size() > 0)
 						{
-							desiredCombination = actualCombination;
-							desiredCombination.push_back(i);
-							if (isCombinationPossible(desiredCombination, ctrls))
+							desiredChannels = activatedChannels;
+							desiredChannels.push_back(i);
+							if (isCombinationPossible(desiredChannels, ctrls))
 							{
-								actualCombination = desiredCombination;
+								activatedChannels = desiredChannels;
 								channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[0];
 								cerr << "ch " << i << " select " << channels[i].selectedMarkerIndex << endl;////
 								needReset = 1;
@@ -455,8 +472,8 @@ void S2EngineThread::run()
 						}
 					}
 					////
-					for (int k = 0; k < actualCombination.size(); k++)
-						cerr << actualCombination[k] << " ";
+					for (int k = 0; k < activatedChannels.size(); k++)
+						cerr << activatedChannels[k] << " ";
 					cerr << endl;////
 				}
 

@@ -78,7 +78,7 @@ private:
 
 	//// PERSISTENT VARIABLES
 	vector<UevaCtrl> ctrls;
-	vector<int> actualCombination;
+	vector<int> activatedChannels;
 	int ctrlIndex;
 	double micronPerPixel;
 	Mat bkgd;
@@ -90,8 +90,9 @@ private:
 
 	//// NON PERSISTANT VARIABLES
 	bool needReset;
+	bool needInactivateAll;
 	int vacancy;
-	vector<int> desiredCombination;
+	vector<int> desiredChannels;
 	Mat allDroplets;
 	Mat allMarkers;
 	vector<vector< Point_<int> >> dropletContours;

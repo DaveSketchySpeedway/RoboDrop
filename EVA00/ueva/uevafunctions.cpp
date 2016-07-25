@@ -102,7 +102,7 @@ int detectKink(vector< Point_<int>> &contour, const int &convexSize)
 
 	int kinkIndex = -1;
 	int depth = 0;
-	for (int i = 1; i < defects.size(); i++) // defects[0] is not real
+	for (int i = 1; i < defects.size(); i++) 
 	{
 		if (defects[i][3] > convexSize*256)
 		{

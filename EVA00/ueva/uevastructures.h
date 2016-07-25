@@ -146,12 +146,13 @@ struct UevaMarker
 {
 	UevaMarker();
 
+	static Size_<int> imageSize;
+
 	int type;
 	double value;
 	Point_<int> centroid;
 	Rect_<int> rect;
-	Size_<int> imageSize;
-
+	
 	int accomodatingChannelIndex;
 };
 
