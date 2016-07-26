@@ -241,10 +241,33 @@
              </property>
             </widget>
            </item>
+           <item row="3" column="2">
+            <widget class="QLabel" name="openSizeLabel">
+             <property name="text">
+              <string>TextLabel</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QSlider" name="thresholdSlider">
+             <property name="maximum">
+              <number>255</number>
+             </property>
+             <property name="pageStep">
+              <number>5</number>
+             </property>
+             <property name="value">
+              <number>127</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
            <item row="3" column="0">
             <widget class="QLabel" name="label_14">
              <property name="text">
-              <string>Open Size:</string>
+              <string>Mask Open Size:</string>
              </property>
             </widget>
            </item>
@@ -277,33 +300,10 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="2">
-            <widget class="QLabel" name="openSizeLabel">
-             <property name="text">
-              <string>TextLabel</string>
-             </property>
-            </widget>
-           </item>
            <item row="1" column="0">
             <widget class="QLabel" name="label_8">
              <property name="text">
-              <string>Threshold:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QSlider" name="thresholdSlider">
-             <property name="maximum">
-              <number>255</number>
-             </property>
-             <property name="pageStep">
-              <number>5</number>
-             </property>
-             <property name="value">
-              <number>127</number>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+              <string>Mask Threshold:</string>
              </property>
             </widget>
            </item>
@@ -317,40 +317,7 @@
            <item row="2" column="0">
             <widget class="QLabel" name="label_10">
              <property name="text">
-              <string>Block Size:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="label_15">
-             <property name="text">
-              <string>Clean Edges:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1">
-            <widget class="QSlider" name="cleanEdgeSlider">
-             <property name="maximum">
-              <number>5</number>
-             </property>
-             <property name="pageStep">
-              <number>1</number>
-             </property>
-             <property name="value">
-              <number>0</number>
-             </property>
-             <property name="sliderPosition">
-              <number>0</number>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="2">
-            <widget class="QLabel" name="cleanEdgeLabel">
-             <property name="text">
-              <string>TextLabel</string>
+              <string>Threshold Block Size:</string>
              </property>
             </widget>
            </item>
@@ -381,7 +348,7 @@
            <item row="1" column="0">
             <widget class="QLabel" name="label_13">
              <property name="text">
-              <string>Erode Size:</string>
+              <string>Channel Erode Size:</string>
              </property>
             </widget>
            </item>
@@ -418,7 +385,7 @@
            <item row="2" column="0">
             <widget class="QLabel" name="label_16">
              <property name="text">
-              <string>Cut Thickness:</string>
+              <string>Channel Cut Thickness:</string>
              </property>
             </widget>
            </item>

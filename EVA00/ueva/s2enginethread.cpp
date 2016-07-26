@@ -213,11 +213,10 @@ void S2EngineThread::run()
 					seed.y = settings.mouseLines[0].y1();
 				}
 				floodFillReturn = floodFill(dropletMask, seed, MID_VALUE);
-				// eliminate noise by morphological opening (second most time consuming)
+				// eliminate noise and wall by morphological opening (second most time consuming)
 				//morphologyEx(dropletMask, dropletMask, cv::MORPH_OPEN, structuringElement);
 				structuringElement = getStructuringElement(MORPH_RECT,
-					Size_<int>(settings.maskCleanEdge + settings.maskOpenSize, 
-					settings.maskCleanEdge + settings.maskOpenSize));
+					Size_<int>(settings.maskOpenSize + 3, settings.maskOpenSize + 3));
 				erode(dropletMask, dropletMask, structuringElement);
 				structuringElement = getStructuringElement(MORPH_RECT,
 					Size_<int>(settings.maskOpenSize, settings.maskOpenSize));
@@ -278,17 +277,22 @@ void S2EngineThread::run()
 					allDroplets = HIGH_VALUE - allDroplets;
 					// combine edges and internals to get whole droplets 
 					bitwise_or(allMarkers, allDroplets, allDroplets);
-					// clean up noise using masks
+					// Exclude noise with masks
 					bitwise_and(allMarkers, markerMask, allMarkers);
 					bitwise_and(allDroplets, dropletMask, allDroplets);
+					// polish droplets with erosion
+					structuringElement = getStructuringElement(MORPH_RECT,
+						Size_<int>(settings.imgprogErodeSize, settings.imgprogErodeSize));
+					erode(allDroplets, allDroplets, structuringElement);
 					// find countours
 					dropletContours.clear();
 					markerContours.clear();
-					findContours(allDroplets, dropletContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 					findContours(allMarkers, markerContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
-					// filter contours base on size
-					bigPassFilter(dropletContours, settings.imgprogContourSize);
+					findContours(allDroplets, dropletContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+						//findContours(allDroplets, dropletContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+					// filter contours base on size	
 					bigPassFilter(markerContours, settings.imgprogContourSize);
+					bigPassFilter(dropletContours, settings.imgprogContourSize);
 					// controller preparation
 					needInactivateAll = false;
 					needReset = false;
@@ -326,7 +330,7 @@ void S2EngineThread::run()
 							settings.ctrlMarkerSize);
 						markers.push_back(marker);
 					}
-					// sort markers by k * x/width + y/height to fake continuity
+					// sort markers to fake continuity
 					sort(markers.begin(), markers.end(), 
 						[](const UevaMarker &a, const UevaMarker &b)
 						{
@@ -389,6 +393,10 @@ void S2EngineThread::run()
 							markers.push_back(marker);
 						}
 						droplets.push_back(droplet);
+					}
+					if (UevaDroplet::fileStream.is_open())
+					{
+						UevaDroplet::fileStream << endl;
 					}
 					// user change marker
 					for (int i = 0; i < channels.size(); i++)
@@ -556,15 +564,15 @@ void S2EngineThread::run()
 						{
 						if (channels[i].currentMarkerIndices[j] == channels[i].selectedMarkerIndex)
 						{
-							lineColor = Scalar(0, 0, 255); // red 
+							lineColor = Scalar(0, 0, 255); // red if selected 
 						}
 						else if (markers[channels[i].currentMarkerIndices[j]].type == 1)
 						{
-							lineColor = Scalar(0, 255, 255); // yellow
+							lineColor = Scalar(0, 255, 255); // yellow if neck not selected
 						}
 						else
 						{
-							lineColor = Scalar(255, 255, 0); // cyan
+							lineColor = Scalar(255, 0, 0); // blue if not selected
 						}
 							lineThickness = 1;
 							lineType = 8;

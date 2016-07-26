@@ -121,10 +121,31 @@ int detectKink(vector< Point_<int>> &contour, const int &convexSize)
 
 int detectNeck(vector< Point_<int>> &contour, int &kinkIndex, double &neck)
 {
+	for (int i = kinkIndex; i < contour.size(); i++)
+	{
+		double l2Norm = sqrt(
+			pow(double(contour[i].x - contour[kinkIndex].x), 2) +
+			pow(double(contour[i].y - contour[kinkIndex].y), 2)
+			);
+		if (UevaDroplet::fileStream.is_open())
+		{
+			UevaDroplet::fileStream << l2Norm << ",";
+		}
+	}
+	for (int i = 0; i < kinkIndex; i++)
+	{
+		double l2Norm = sqrt(
+			pow(double(contour[i].x - contour[kinkIndex].x), 2) +
+			pow(double(contour[i].y - contour[kinkIndex].y), 2)
+			);
+		if (UevaDroplet::fileStream.is_open())
+		{
+			UevaDroplet::fileStream << l2Norm << ",";
+		}
+	}
+
 	int neckIndex = 0;
-
 	neck = 0.0;
-
 	return neckIndex;
 }
 

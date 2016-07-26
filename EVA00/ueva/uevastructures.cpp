@@ -187,6 +187,8 @@ UevaDroplet::UevaDroplet()
 	accomodatingChannelIndex = -1;
 }
 
+ofstream UevaDroplet::fileStream;
+
 //// MARKER
 UevaMarker::UevaMarker()
 {

@@ -73,6 +73,7 @@ public:
 	void recordDataOnOff();
 	void recordRawOnOff();
 	void recordDrawnOnOff();
+	void recordNeckOnOff();
 	void pumpOnOff();
 	void receiveInletRequests(const QVector<qreal> &values);
 	void imgprocOnOff();

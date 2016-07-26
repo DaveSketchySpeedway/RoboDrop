@@ -131,6 +131,30 @@ void MainWindow::recordDrawnOnOff()
 	}
 }
 
+void MainWindow::recordNeckOnOff()
+{
+	if (dashboard->recordNeckButton->isChecked())
+	{
+		dashboard->recordNeckButton->setText(tr("Off"));
+		if (!UevaDroplet::fileStream.is_open())
+		{
+			QDateTime now = QDateTime::currentDateTime();
+			QString filename = "record/ueva_neck_";
+			filename.append(now.toString("yyyy_MM_dd_HH_mm_ss"));
+			filename.append(".csv");
+			UevaDroplet::fileStream.open(filename.toStdString());
+		}
+	}
+	else
+	{
+		dashboard->recordNeckButton->setText(tr("On"));
+		if (UevaDroplet::fileStream.is_open())
+		{
+			UevaDroplet::fileStream.close();
+		}
+	}
+}
+
 void MainWindow::pumpOnOff()
 {
 	if (dashboard->pumpButton->isChecked())
@@ -170,17 +194,20 @@ void MainWindow::imgprocOnOff()
 
 void MainWindow::imgprocSettings()
 {
-	int threshold = dashboard->threshSlider->value() + 1; // 0 threshold will leak memory and crash
+	int threshold = dashboard->threshSlider->value() + 1; // 0 threshold will leak memory and crash.
+	int erodeSize = dashboard->erodeSizeSlider->value() * 2 + 3;
 	int contourSize = dashboard->contourSizeSlider->value();
 	int sortRatio = dashboard->sortRatioSlider->value();
 	int convexSize = dashboard->convexSizeSlider->value();
 
 	settings.imgprogThreshold = threshold;
+	settings.imgprogErodeSize = erodeSize;
 	settings.imgprogContourSize = contourSize;
 	settings.imgprogSortRatio = sortRatio;
 	settings.imgprocConvexSize = convexSize;
 
 	dashboard->threshLabel->setText(QString::number(threshold));
+	dashboard->erodeSizeLabel->setText(QString::number(erodeSize));
 	dashboard->contourSizeLabel->setText(QString::number(contourSize));
 	dashboard->sorRatioLabel->setText(QString::number(sortRatio));
 	dashboard->convexSizeLabel->setText(QString::number(convexSize));
@@ -391,17 +418,14 @@ void MainWindow::maskSetup()
 	int block = setup->blockSlider->value() * 2 + 3;
 	int threshold = (127 - setup->thresholdSlider->value());
 	int openSize = setup->openSizeSlider->value() * 2 + 3;
-	int cleanEdge = setup->cleanEdgeSlider->value() * 2 + 3;
 
 	settings.maskBlockSize = block;
 	settings.maskThreshold = threshold;
 	settings.maskOpenSize = openSize;
-	settings.maskCleanEdge = cleanEdge;
 
 	setup->blockLabel->setText(QString::number(block));
 	setup->thresholdLabel->setText(QString::number(threshold));
 	setup->openSizeLabel->setText(QString::number(openSize));
-	setup->cleanEdgeLabel->setText(QString::number(cleanEdge));
 }
 
 void MainWindow::channelOnOff()

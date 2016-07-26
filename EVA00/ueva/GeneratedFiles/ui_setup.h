@@ -65,17 +65,14 @@ public:
     QGridLayout *gridLayout_5;
     QSlider *blockSlider;
     QLabel *blockLabel;
+    QLabel *openSizeLabel;
+    QSlider *thresholdSlider;
     QLabel *label_14;
     QPushButton *maskButton;
     QSlider *openSizeSlider;
-    QLabel *openSizeLabel;
     QLabel *label_8;
-    QSlider *thresholdSlider;
     QLabel *thresholdLabel;
     QLabel *label_10;
-    QLabel *label_15;
-    QSlider *cleanEdgeSlider;
-    QLabel *cleanEdgeLabel;
     QGridLayout *gridLayout_6;
     QLabel *erodeSizeLabel;
     QSlider *erodeSizeSlider;
@@ -289,6 +286,20 @@ public:
 
         gridLayout_5->addWidget(blockLabel, 2, 2, 1, 1);
 
+        openSizeLabel = new QLabel(imgprocTab);
+        openSizeLabel->setObjectName(QStringLiteral("openSizeLabel"));
+
+        gridLayout_5->addWidget(openSizeLabel, 3, 2, 1, 1);
+
+        thresholdSlider = new QSlider(imgprocTab);
+        thresholdSlider->setObjectName(QStringLiteral("thresholdSlider"));
+        thresholdSlider->setMaximum(255);
+        thresholdSlider->setPageStep(5);
+        thresholdSlider->setValue(127);
+        thresholdSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_5->addWidget(thresholdSlider, 1, 1, 1, 1);
+
         label_14 = new QLabel(imgprocTab);
         label_14->setObjectName(QStringLiteral("label_14"));
 
@@ -310,24 +321,10 @@ public:
 
         gridLayout_5->addWidget(openSizeSlider, 3, 1, 1, 1);
 
-        openSizeLabel = new QLabel(imgprocTab);
-        openSizeLabel->setObjectName(QStringLiteral("openSizeLabel"));
-
-        gridLayout_5->addWidget(openSizeLabel, 3, 2, 1, 1);
-
         label_8 = new QLabel(imgprocTab);
         label_8->setObjectName(QStringLiteral("label_8"));
 
         gridLayout_5->addWidget(label_8, 1, 0, 1, 1);
-
-        thresholdSlider = new QSlider(imgprocTab);
-        thresholdSlider->setObjectName(QStringLiteral("thresholdSlider"));
-        thresholdSlider->setMaximum(255);
-        thresholdSlider->setPageStep(5);
-        thresholdSlider->setValue(127);
-        thresholdSlider->setOrientation(Qt::Horizontal);
-
-        gridLayout_5->addWidget(thresholdSlider, 1, 1, 1, 1);
 
         thresholdLabel = new QLabel(imgprocTab);
         thresholdLabel->setObjectName(QStringLiteral("thresholdLabel"));
@@ -338,26 +335,6 @@ public:
         label_10->setObjectName(QStringLiteral("label_10"));
 
         gridLayout_5->addWidget(label_10, 2, 0, 1, 1);
-
-        label_15 = new QLabel(imgprocTab);
-        label_15->setObjectName(QStringLiteral("label_15"));
-
-        gridLayout_5->addWidget(label_15, 4, 0, 1, 1);
-
-        cleanEdgeSlider = new QSlider(imgprocTab);
-        cleanEdgeSlider->setObjectName(QStringLiteral("cleanEdgeSlider"));
-        cleanEdgeSlider->setMaximum(5);
-        cleanEdgeSlider->setPageStep(1);
-        cleanEdgeSlider->setValue(0);
-        cleanEdgeSlider->setSliderPosition(0);
-        cleanEdgeSlider->setOrientation(Qt::Horizontal);
-
-        gridLayout_5->addWidget(cleanEdgeSlider, 4, 1, 1, 1);
-
-        cleanEdgeLabel = new QLabel(imgprocTab);
-        cleanEdgeLabel->setObjectName(QStringLiteral("cleanEdgeLabel"));
-
-        gridLayout_5->addWidget(cleanEdgeLabel, 4, 2, 1, 1);
 
 
         verticalLayout_4->addLayout(gridLayout_5);
@@ -575,19 +552,17 @@ public:
         calibButton->setText(QApplication::translate("Setup", "Set Calibration", 0));
         bkgdButton->setText(QApplication::translate("Setup", "Set Background", 0));
         blockLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
-        label_14->setText(QApplication::translate("Setup", "Open Size:", 0));
-        maskButton->setText(QApplication::translate("Setup", "Make Mask", 0));
         openSizeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
-        label_8->setText(QApplication::translate("Setup", "Threshold:", 0));
+        label_14->setText(QApplication::translate("Setup", "Mask Open Size:", 0));
+        maskButton->setText(QApplication::translate("Setup", "Make Mask", 0));
+        label_8->setText(QApplication::translate("Setup", "Mask Threshold:", 0));
         thresholdLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
-        label_10->setText(QApplication::translate("Setup", "Block Size:", 0));
-        label_15->setText(QApplication::translate("Setup", "Clean Edges:", 0));
-        cleanEdgeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
+        label_10->setText(QApplication::translate("Setup", "Threshold Block Size:", 0));
         erodeSizeLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
-        label_13->setText(QApplication::translate("Setup", "Erode Size:", 0));
+        label_13->setText(QApplication::translate("Setup", "Channel Erode Size:", 0));
         cutThicknessLabel->setText(QApplication::translate("Setup", "TextLabel", 0));
         channelButton->setText(QApplication::translate("Setup", "Cut Channels", 0));
-        label_16->setText(QApplication::translate("Setup", "Cut Thickness:", 0));
+        label_16->setText(QApplication::translate("Setup", "Channel Cut Thickness:", 0));
         sepSortButton->setText(QApplication::translate("Setup", "Seperate Channels", 0));
         label_9->setText(QApplication::translate("Setup", "Old Index", 0));
         label_11->setText(QApplication::translate("Setup", "New Index", 0));

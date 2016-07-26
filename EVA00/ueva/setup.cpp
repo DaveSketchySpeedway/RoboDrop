@@ -78,8 +78,6 @@ Setup::Setup(QWidget *parent)
 		parent, SLOT(maskSetup()));
 	connect(openSizeSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(maskSetup()));
-	connect(cleanEdgeSlider, SIGNAL(valueChanged(int)),
-		parent, SLOT(maskSetup()));
 
 	connect(erodeSizeSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(channelSetup()));

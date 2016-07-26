@@ -32,6 +32,8 @@ Dashboard::Dashboard(QWidget *parent)
 		parent, SLOT(recordRawOnOff()));
 	connect(recordDrawnButton, SIGNAL(clicked()),
 		parent, SLOT(recordDrawnOnOff()));
+	connect(recordNeckButton, SIGNAL(clicked()),
+		parent, SLOT(recordNeckOnOff()));
 
 	// pump
 	connect(pumpButton, SIGNAL(clicked()),
@@ -44,6 +46,8 @@ Dashboard::Dashboard(QWidget *parent)
 	// imgproc
 	connect(imgprocButton, SIGNAL(clicked()),
 		parent, SLOT(imgprocOnOff()));
+	connect(erodeSizeSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(imgprocSettings()));
 	connect(threshSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(imgprocSettings()));
 	connect(contourSizeSlider, SIGNAL(valueChanged(int)),

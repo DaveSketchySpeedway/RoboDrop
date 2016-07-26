@@ -7,12 +7,13 @@
 #include "opencv2/imgcodecs.hpp"
 #include <QtGui >
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 
 #include "uevastructures.h"
 
-using namespace std;
 using namespace cv;
+using namespace std;
 
 Mat qImage2cvMat(const QImage &qImage);
 

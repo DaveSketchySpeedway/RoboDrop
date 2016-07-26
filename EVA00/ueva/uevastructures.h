@@ -61,10 +61,10 @@ struct UevaSettings
 	int maskBlockSize;
 	int maskThreshold;
 	int maskOpenSize;
-	int maskCleanEdge;
 	int channelErodeSize;
 	int channelCutThickness;
 	int imgprogThreshold;
+	int imgprogErodeSize;
 	int imgprogContourSize;
 	int imgprogSortRatio;
 	int imgprocConvexSize;
@@ -137,6 +137,8 @@ struct UevaDroplet
 {
 	UevaDroplet();
 
+	static ofstream fileStream;
+
 	Mat mask;
 	int kinkIndex;
 	int neckIndex;
@@ -158,7 +160,6 @@ struct UevaMarker
 	
 	int accomodatingChannelIndex;
 };
-
 
 Q_DECLARE_METATYPE(UevaSettings)
 Q_DECLARE_METATYPE(UevaData)
