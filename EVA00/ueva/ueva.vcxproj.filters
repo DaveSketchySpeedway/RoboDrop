@@ -255,6 +255,9 @@
     <ClInclude Include="GeneratedFiles\ui_channelinfowidget.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="persistence1d.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ueva.rc" />
