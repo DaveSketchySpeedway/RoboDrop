@@ -372,25 +372,30 @@ void S2EngineThread::run()
 						}
 						// make marker if neck is detected
 						droplet.kinkIndex = detectKink(dropletContours[i], settings.imgprocConvexSize);
-						if (droplet.kinkIndex > 0)
+						if (droplet.kinkIndex >= 0)
 						{
-							mom = moments(dropletContours[i]);
-							UevaMarker marker;
-							marker.type = 1;
-							marker.centroid.x = mom.m10 / mom.m00;
-							marker.centroid.y = mom.m01 / mom.m00;
-							marker.rect = Rect_<int>(
-								marker.centroid.x - settings.ctrlMarkerSize / 2,
-								marker.centroid.y - settings.ctrlMarkerSize / 2,
-								settings.ctrlMarkerSize,
-								settings.ctrlMarkerSize);
-							droplet.neckIndex = detectNeck(dropletContours[i], droplet.kinkIndex, marker.value);
-							if (droplet.accomodatingChannelIndex != -1)
+							float neck;
+							droplet.neckIndex = detectNeck(dropletContours[i], droplet.kinkIndex, neck);
+							if (droplet.neckIndex >= 0)
 							{
-								marker.accomodatingChannelIndex = droplet.accomodatingChannelIndex;
-								channels[marker.accomodatingChannelIndex].currentMarkerIndices.push_back(markers.size());
+								UevaMarker marker;
+								marker.type = 1;
+								marker.value = (double)neck;
+								mom = moments(dropletContours[i]);
+								marker.centroid.x = mom.m10 / mom.m00;
+								marker.centroid.y = mom.m01 / mom.m00;
+								marker.rect = Rect_<int>(
+									marker.centroid.x - settings.ctrlMarkerSize / 2,
+									marker.centroid.y - settings.ctrlMarkerSize / 2,
+									settings.ctrlMarkerSize,
+									settings.ctrlMarkerSize);
+								if (droplet.accomodatingChannelIndex != -1)
+								{
+									marker.accomodatingChannelIndex = droplet.accomodatingChannelIndex;
+									channels[marker.accomodatingChannelIndex].currentMarkerIndices.push_back(markers.size());
+								}
+								markers.push_back(marker);
 							}
-							markers.push_back(marker);
 						}
 						droplets.push_back(droplet);
 					}
@@ -616,7 +621,7 @@ void S2EngineThread::run()
 						lineType = 8;
 						for (int i = 0; i < droplets.size(); i++)
 						{
-							if (droplets[i].kinkIndex > 0)
+							if (droplets[i].kinkIndex >= 0 && droplets[i].neckIndex >= 0)
 							{
 								line(data.drawnBgr,
 									dropletContours[i][droplets[i].kinkIndex],
@@ -638,8 +643,6 @@ void S2EngineThread::run()
 			//int ms = entrance.msecsTo(exit);
 			//qDebug() << "engine used (ms)" << ms;
 			mutex.unlock();
-
-
 		}
 	}
 }
