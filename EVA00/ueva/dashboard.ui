@@ -198,31 +198,27 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Min Contour Size:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QSlider" name="contourSizeSlider">
+          <item row="2" column="1">
+           <widget class="QSlider" name="erodeSizeSlider">
             <property name="minimum">
              <number>0</number>
             </property>
             <property name="maximum">
-             <number>1000</number>
+             <number>3</number>
+            </property>
+            <property name="pageStep">
+             <number>1</number>
             </property>
             <property name="value">
-             <number>30</number>
+             <number>0</number>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="3" column="2">
-           <widget class="QLabel" name="contourSizeLabel">
+          <item row="2" column="2">
+           <widget class="QLabel" name="erodeSizeLabel">
             <property name="text">
              <string>TextLabel</string>
             </property>
@@ -231,7 +227,7 @@
           <item row="5" column="0">
            <widget class="QLabel" name="label_9">
             <property name="text">
-             <string>Min Neck Convex:</string>
+             <string>Neck Min Convex:</string>
             </property>
            </widget>
           </item>
@@ -334,27 +330,64 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QSlider" name="erodeSizeSlider">
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Min Contour Size:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QSlider" name="contourSizeSlider">
             <property name="minimum">
              <number>0</number>
             </property>
             <property name="maximum">
-             <number>3</number>
-            </property>
-            <property name="pageStep">
-             <number>1</number>
+             <number>1000</number>
             </property>
             <property name="value">
-             <number>0</number>
+             <number>30</number>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
-           <widget class="QLabel" name="erodeSizeLabel">
+          <item row="3" column="2">
+           <widget class="QLabel" name="contourSizeLabel">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>Neck Persistence:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QSlider" name="persistenceSlider">
+            <property name="minimum">
+             <number>0</number>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="pageStep">
+             <number>1</number>
+            </property>
+            <property name="value">
+             <number>7</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="2">
+           <widget class="QLabel" name="persistenceLabel">
             <property name="text">
              <string>TextLabel</string>
             </property>

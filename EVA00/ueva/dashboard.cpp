@@ -56,6 +56,8 @@ Dashboard::Dashboard(QWidget *parent)
 		parent, SLOT(imgprocSettings()));
 	connect(convexSizeSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(imgprocSettings()));
+	connect(persistenceSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(imgprocSettings()));
 
 	// ctrl
 	connect(ctrlButton, SIGNAL(clicked()),

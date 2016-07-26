@@ -375,7 +375,8 @@ void S2EngineThread::run()
 						if (droplet.kinkIndex >= 0)
 						{
 							float neck;
-							droplet.neckIndex = detectNeck(dropletContours[i], droplet.kinkIndex, neck);
+							droplet.neckIndex = detectNeck(dropletContours[i], droplet.kinkIndex, neck,
+								settings.imgprocPersistence);
 							if (droplet.neckIndex >= 0)
 							{
 								UevaMarker marker;
@@ -625,7 +626,7 @@ void S2EngineThread::run()
 							{
 								line(data.drawnBgr,
 									dropletContours[i][droplets[i].kinkIndex],
-									Point_<int>(0,0),
+									dropletContours[i][droplets[i].neckIndex],
 									lineColor, lineThickness, lineType);
 								//circle(data.drawnBgr,
 								//	dropletContours[i][droplets[i].kinkIndex],

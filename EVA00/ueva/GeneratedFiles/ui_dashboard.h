@@ -53,9 +53,8 @@ public:
     QVBoxLayout *verticalLayout;
     QPushButton *imgprocButton;
     QGridLayout *gridLayout;
-    QLabel *label_6;
-    QSlider *contourSizeSlider;
-    QLabel *contourSizeLabel;
+    QSlider *erodeSizeSlider;
+    QLabel *erodeSizeLabel;
     QLabel *label_9;
     QSlider *convexSizeSlider;
     QLabel *convexSizeLabel;
@@ -66,8 +65,12 @@ public:
     QLabel *threshLabel;
     QLabel *sorRatioLabel;
     QLabel *label_12;
-    QSlider *erodeSizeSlider;
-    QLabel *erodeSizeLabel;
+    QLabel *label_6;
+    QSlider *contourSizeSlider;
+    QLabel *contourSizeLabel;
+    QLabel *label_13;
+    QSlider *persistenceSlider;
+    QLabel *persistenceLabel;
     QGroupBox *groupBox_4;
     QGridLayout *gridLayout_4;
     QGridLayout *gridLayout_3;
@@ -226,24 +229,20 @@ public:
         gridLayout = new QGridLayout();
         gridLayout->setSpacing(6);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        label_6 = new QLabel(groupBox_3);
-        label_6->setObjectName(QStringLiteral("label_6"));
+        erodeSizeSlider = new QSlider(groupBox_3);
+        erodeSizeSlider->setObjectName(QStringLiteral("erodeSizeSlider"));
+        erodeSizeSlider->setMinimum(0);
+        erodeSizeSlider->setMaximum(3);
+        erodeSizeSlider->setPageStep(1);
+        erodeSizeSlider->setValue(0);
+        erodeSizeSlider->setOrientation(Qt::Horizontal);
 
-        gridLayout->addWidget(label_6, 3, 0, 1, 1);
+        gridLayout->addWidget(erodeSizeSlider, 2, 1, 1, 1);
 
-        contourSizeSlider = new QSlider(groupBox_3);
-        contourSizeSlider->setObjectName(QStringLiteral("contourSizeSlider"));
-        contourSizeSlider->setMinimum(0);
-        contourSizeSlider->setMaximum(1000);
-        contourSizeSlider->setValue(30);
-        contourSizeSlider->setOrientation(Qt::Horizontal);
+        erodeSizeLabel = new QLabel(groupBox_3);
+        erodeSizeLabel->setObjectName(QStringLiteral("erodeSizeLabel"));
 
-        gridLayout->addWidget(contourSizeSlider, 3, 1, 1, 1);
-
-        contourSizeLabel = new QLabel(groupBox_3);
-        contourSizeLabel->setObjectName(QStringLiteral("contourSizeLabel"));
-
-        gridLayout->addWidget(contourSizeLabel, 3, 2, 1, 1);
+        gridLayout->addWidget(erodeSizeLabel, 2, 2, 1, 1);
 
         label_9 = new QLabel(groupBox_3);
         label_9->setObjectName(QStringLiteral("label_9"));
@@ -310,20 +309,44 @@ public:
 
         gridLayout->addWidget(label_12, 2, 0, 1, 1);
 
-        erodeSizeSlider = new QSlider(groupBox_3);
-        erodeSizeSlider->setObjectName(QStringLiteral("erodeSizeSlider"));
-        erodeSizeSlider->setMinimum(0);
-        erodeSizeSlider->setMaximum(3);
-        erodeSizeSlider->setPageStep(1);
-        erodeSizeSlider->setValue(0);
-        erodeSizeSlider->setOrientation(Qt::Horizontal);
+        label_6 = new QLabel(groupBox_3);
+        label_6->setObjectName(QStringLiteral("label_6"));
 
-        gridLayout->addWidget(erodeSizeSlider, 2, 1, 1, 1);
+        gridLayout->addWidget(label_6, 3, 0, 1, 1);
 
-        erodeSizeLabel = new QLabel(groupBox_3);
-        erodeSizeLabel->setObjectName(QStringLiteral("erodeSizeLabel"));
+        contourSizeSlider = new QSlider(groupBox_3);
+        contourSizeSlider->setObjectName(QStringLiteral("contourSizeSlider"));
+        contourSizeSlider->setMinimum(0);
+        contourSizeSlider->setMaximum(1000);
+        contourSizeSlider->setValue(30);
+        contourSizeSlider->setOrientation(Qt::Horizontal);
 
-        gridLayout->addWidget(erodeSizeLabel, 2, 2, 1, 1);
+        gridLayout->addWidget(contourSizeSlider, 3, 1, 1, 1);
+
+        contourSizeLabel = new QLabel(groupBox_3);
+        contourSizeLabel->setObjectName(QStringLiteral("contourSizeLabel"));
+
+        gridLayout->addWidget(contourSizeLabel, 3, 2, 1, 1);
+
+        label_13 = new QLabel(groupBox_3);
+        label_13->setObjectName(QStringLiteral("label_13"));
+
+        gridLayout->addWidget(label_13, 6, 0, 1, 1);
+
+        persistenceSlider = new QSlider(groupBox_3);
+        persistenceSlider->setObjectName(QStringLiteral("persistenceSlider"));
+        persistenceSlider->setMinimum(0);
+        persistenceSlider->setMaximum(100);
+        persistenceSlider->setPageStep(1);
+        persistenceSlider->setValue(7);
+        persistenceSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout->addWidget(persistenceSlider, 6, 1, 1, 1);
+
+        persistenceLabel = new QLabel(groupBox_3);
+        persistenceLabel->setObjectName(QStringLiteral("persistenceLabel"));
+
+        gridLayout->addWidget(persistenceLabel, 6, 2, 1, 1);
 
 
         verticalLayout->addLayout(gridLayout);
@@ -421,16 +444,18 @@ public:
         label_2->setText(QApplication::translate("Dashboard", "Request (mbar)", 0));
         groupBox_3->setTitle(QApplication::translate("Dashboard", "Image Processing", 0));
         imgprocButton->setText(QApplication::translate("Dashboard", "On", 0));
-        label_6->setText(QApplication::translate("Dashboard", "Min Contour Size:", 0));
-        contourSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
-        label_9->setText(QApplication::translate("Dashboard", "Min Neck Convex:", 0));
+        erodeSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
+        label_9->setText(QApplication::translate("Dashboard", "Neck Min Convex:", 0));
         convexSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         label_5->setText(QApplication::translate("Dashboard", "Droplet Threshold:", 0));
         label_10->setText(QApplication::translate("Dashboard", "Sort Ratio:", 0));
         threshLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         sorRatioLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         label_12->setText(QApplication::translate("Dashboard", "Droplet Erode Size::", 0));
-        erodeSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
+        label_6->setText(QApplication::translate("Dashboard", "Min Contour Size:", 0));
+        contourSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
+        label_13->setText(QApplication::translate("Dashboard", "Neck Persistence:", 0));
+        persistenceLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         groupBox_4->setTitle(QApplication::translate("Dashboard", "Controller", 0));
         autoCatchLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         markerSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));

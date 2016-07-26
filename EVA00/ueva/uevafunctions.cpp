@@ -119,14 +119,16 @@ int detectKink(vector< Point_<int>> &contour, const int &convexSize)
 	return kinkIndex; 
 }
 
-int detectNeck(vector< Point_<int>> &contour, int &kinkIndex, float &neck)
+int detectNeck(vector< Point_<int>> &contour, int &kinkIndex, float &neck, const int threshold)
 {
+	vector<float> profile;
 	for (int i = kinkIndex; i < contour.size(); i++)
 	{
 		float l2Norm = sqrt(
 			pow(float(contour[i].x - contour[kinkIndex].x), 2) +
 			pow(float(contour[i].y - contour[kinkIndex].y), 2)
 			);
+		profile.push_back(l2Norm);
 		if (UevaDroplet::fileStream.is_open())
 		{
 			UevaDroplet::fileStream << l2Norm << ",";
@@ -138,14 +140,55 @@ int detectNeck(vector< Point_<int>> &contour, int &kinkIndex, float &neck)
 			pow(float(contour[i].x - contour[kinkIndex].x), 2) +
 			pow(float(contour[i].y - contour[kinkIndex].y), 2)
 			);
+		profile.push_back(l2Norm);
 		if (UevaDroplet::fileStream.is_open())
 		{
 			UevaDroplet::fileStream << l2Norm << ",";
 		}
 	}
+	
+	p1d::Persistence1D persistence;
+	persistence.RunPersistence(profile);
 
-	int neckIndex = 0;
+	vector< p1d::TPairedExtrema > extremas;
+	persistence.GetPairedExtrema(extremas, float(threshold));
+
+	int neckIndex = -1;
 	neck = 0.0;
+	if (extremas.size() == 2) // 2 maxima droplet is healthy, 1st minima is neck
+	{
+		sort(extremas.begin(), extremas.end(),
+			[](const p1d::TPairedExtrema &a, const p1d::TPairedExtrema &b)
+		{
+			return a.MinIndex < b.MinIndex;
+		});
+		if (extremas[0].MinIndex < (contour.size() - kinkIndex))
+		{
+			neckIndex = kinkIndex + extremas[0].MinIndex;
+		}
+		else
+		{
+			neckIndex = extremas[0].MinIndex - (contour.size() - kinkIndex);
+		}
+		neck = profile[extremas[0].MinIndex];
+	}
+	else if (extremas.size() >= 3)  // 3 or more maxima droplet is overgrown, 2nd maxima is neck
+	{
+		sort(extremas.begin(), extremas.end(),
+			[](const p1d::TPairedExtrema &a, const p1d::TPairedExtrema &b)
+		{
+			return a.MaxIndex < b.MaxIndex;
+		});
+		if (extremas[1].MaxIndex < (contour.size() - kinkIndex))
+		{
+			neckIndex = kinkIndex + extremas[0].MaxIndex;
+		}
+		else
+		{
+			neckIndex = extremas[1].MaxIndex - (contour.size() - kinkIndex);
+		}
+		neck = profile[extremas[1].MaxIndex];
+	}
 	return neckIndex;
 }
 

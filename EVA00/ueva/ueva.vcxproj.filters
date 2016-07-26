@@ -256,7 +256,7 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="persistence1d.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -199,18 +199,21 @@ void MainWindow::imgprocSettings()
 	int contourSize = dashboard->contourSizeSlider->value();
 	int sortRatio = dashboard->sortRatioSlider->value();
 	int convexSize = dashboard->convexSizeSlider->value();
+	int persistence = dashboard->persistenceSlider->value();
 
 	settings.imgprogThreshold = threshold;
 	settings.imgprogErodeSize = erodeSize;
 	settings.imgprogContourSize = contourSize;
 	settings.imgprogSortRatio = sortRatio;
 	settings.imgprocConvexSize = convexSize;
+	settings.imgprocPersistence = persistence;
 
 	dashboard->threshLabel->setText(QString::number(threshold));
 	dashboard->erodeSizeLabel->setText(QString::number(erodeSize));
 	dashboard->contourSizeLabel->setText(QString::number(contourSize));
 	dashboard->sorRatioLabel->setText(QString::number(sortRatio));
 	dashboard->convexSizeLabel->setText(QString::number(convexSize));
+	dashboard->persistenceLabel->setText(QString::number(persistence));
 }
 
 void MainWindow::ctrlOnOff()

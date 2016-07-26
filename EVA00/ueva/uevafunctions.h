@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include "persistence1d.hpp"
 
 #include "uevastructures.h"
 
@@ -31,9 +32,11 @@ int masksOverlap(Mat &mask1, Mat &mask2);
 
 int detectKink(vector< Point_<int>> &contour, const int &convexSize);
 
-int detectNeck(vector< Point_<int>> &contour, int &kinkIndex, float &neck);
+int detectNeck(vector< Point_<int>> &contour, int &kinkIndex, float &neck, const int threshold);
 
 bool isCombinationPossible(vector<int> &combination, vector<UevaCtrl> &ctrls);
 
 void deleteFromCombination(vector<int> &combination, const int &value);
+
+
 #endif

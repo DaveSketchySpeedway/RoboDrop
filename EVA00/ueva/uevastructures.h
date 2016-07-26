@@ -68,6 +68,7 @@ struct UevaSettings
 	int imgprogContourSize;
 	int imgprogSortRatio;
 	int imgprocConvexSize;
+	int imgprocPersistence;
 	int ctrlMarkerSize;
 	int ctrlAutoCatch;
 };
