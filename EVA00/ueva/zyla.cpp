@@ -80,34 +80,34 @@ void ZylaSettings::print()
 		boolMapIterator != boolMap.end();
 		boolMapIterator++)
 	{
-		wcout << boolMapIterator->first << " = " <<
-			boolMapIterator->second << endl;
+		std::wcout << boolMapIterator->first << " = " <<
+			boolMapIterator->second << std::endl;
 	}
-	cout << endl;
+	std::cout << std::endl;
 	for (intMapIterator = intMap.begin();
 		intMapIterator != intMap.end();
 		intMapIterator++)
 	{
-		wcout << intMapIterator->first << " = " <<
-			intMapIterator->second << endl;
+		std::wcout << intMapIterator->first << " = " <<
+			intMapIterator->second << std::endl;
 	}
-	cout << endl;
+	std::cout << std::endl;
 	for (floatMapIterator = floatMap.begin();
 		floatMapIterator != floatMap.end();
 		floatMapIterator++)
 	{
-		wcout << floatMapIterator->first << " = " <<
-			floatMapIterator->second << endl;
+		std::wcout << floatMapIterator->first << " = " <<
+			floatMapIterator->second << std::endl;
 	}
-	cout << endl;
+	std::cout << std::endl;
 	for (enumMapIterator = enumMap.begin();
 		enumMapIterator != enumMap.end();
 		enumMapIterator++)
 	{
-		wcout << enumMapIterator->first << " = " <<
-			enumMapIterator->second << endl;
+		std::wcout << enumMapIterator->first << " = " <<
+			enumMapIterator->second << std::endl;
 	}
-	cout << endl;
+	std::cout << std::endl;
 }
 
 void ZylaSettings::collapse()
@@ -227,38 +227,38 @@ Zyla::Zyla(int i) : cameraIndex(i)
 	returnCode = AT_InitialiseLibrary();
 	if (returnCode != AT_SUCCESS)
 	{
-		cout << "FAIL: zyla can not initialise library, return " <<
-			returnCode << endl;
+		std::cout << "FAIL: zyla can not initialise library, return " <<
+			returnCode << std::endl;
 		return;
 	}
 	else
 	{
-		cout << "zyla initialized library" << endl;
+		std::cout << "zyla initialized library" << std::endl;
 	}
 	returnCode = AT_InitialiseUtilityLibrary();
 	if (returnCode != AT_SUCCESS)
 	{
-		cout << "FAIL: zyla can not initialise utility library, return " << 
-			returnCode << endl;
+		std::cout << "FAIL: zyla can not initialise utility library, return " <<
+			returnCode << std::endl;
 		return;
 	}
 	else
 	{
-		cout << "zyla initialized utility library" << endl;
+		std::cout << "zyla initialized utility library" << std::endl;
 	}
 	//// handle
 	returnCode = AT_Open(cameraIndex, &handle);
 	if (returnCode != AT_SUCCESS)
 	{
-		cout << "FAIL: zyla can not open, return " <<
-			returnCode << endl;
+		std::cout << "FAIL: zyla can not open, return " <<
+			returnCode << std::endl;
 		return;
 	}
 	else
 	{
-		cout << "zyla opened with handle " << handle << endl;
+		std::cout << "zyla opened with handle " << handle << std::endl;
 	}
-	cout << endl;
+	std::cout << std::endl;
 }
 
 Zyla::~Zyla()
@@ -267,37 +267,37 @@ Zyla::~Zyla()
 	returnCode = AT_Close(handle);
 	if (returnCode != AT_SUCCESS)
 	{
-		cout << "FAIL: zyla can not close, return " <<
-			returnCode << endl;
+		std::cout << "FAIL: zyla can not close, return " <<
+			returnCode << std::endl;
 	}
 	else
 	{
-		cout << "zyla closed" << endl;
+		std::cout << "zyla closed" << std::endl;
 	}
 	//// library
 	returnCode = AT_FinaliseLibrary();
 	if (returnCode != AT_SUCCESS)
 	{
-		cout << "FAIL: zyla can not finalise library, return " <<
-			returnCode << endl;
+		std::cout << "FAIL: zyla can not finalise library, return " <<
+			returnCode << std::endl;
 	}
 	else
 	{
-		cout << "zyla finalized library" << endl;
+		std::cout << "zyla finalized library" << std::endl;
 	}
-	cout << endl;
+	std::cout << std::endl;
 	//// utility library
 	returnCode = AT_FinaliseUtilityLibrary();
 	if (returnCode != AT_SUCCESS)
 	{
-		cout << "FAIL: zyla can not finalise utility library, return " <<
-			returnCode << endl;
+		std::cout << "FAIL: zyla can not finalise utility library, return " <<
+			returnCode << std::endl;
 	}
 	else
 	{
-		cout << "zyla finalized utility library" << endl;
+		std::cout << "zyla finalized utility library" << std::endl;
 	}
-	cout << endl;
+	std::cout << std::endl;
 }
 
 void Zyla::get(ZylaSettings &s)
@@ -321,11 +321,11 @@ void Zyla::get(ZylaSettings &s)
 			&writable);
 		if (returnCode != AT_SUCCESS)
 		{
-			wcout << "FAIL: can not get " << s.boolMapIterator->first << endl;
+			std::wcout << "FAIL: can not get " << s.boolMapIterator->first << std::endl;
 		}
 		else
 		{
-			wcout << "i" << implemented << "o" << readOnly <<
+			std::wcout << "i" << implemented << "o" << readOnly <<
 				"r" << readable << "w" << writable << "\t" <<
 				s.boolMapIterator->first;
 			if (readable)
@@ -334,12 +334,12 @@ void Zyla::get(ZylaSettings &s)
 				returnCode = AT_GetBool(handle, s.boolMapIterator->first,
 					&value);
 				s.boolMapIterator->second = value;
-				wcout << " = " << value;
+				std::wcout << " = " << value;
 			}
-			wcout << endl;
+			std::wcout << std::endl;
 		}
 	}
-	cout << endl;
+	std::cout << std::endl;
 	//// int
 	for (s.intMapIterator = s.intMap.begin();
 		s.intMapIterator != s.intMap.end();
@@ -359,11 +359,11 @@ void Zyla::get(ZylaSettings &s)
 			&writable);
 		if (returnCode != AT_SUCCESS)
 		{
-			wcout << "FAIL: can not get " << s.intMapIterator->first << endl;
+			std::wcout << "FAIL: can not get " << s.intMapIterator->first << std::endl;
 		}
 		else
 		{
-			wcout << "i" << implemented << "o" << readOnly <<
+			std::wcout << "i" << implemented << "o" << readOnly <<
 				"r" << readable << "w" << writable << "\t" <<
 				s.intMapIterator->first;
 			if (readable)
@@ -372,12 +372,12 @@ void Zyla::get(ZylaSettings &s)
 				returnCode = AT_GetInt(handle, s.intMapIterator->first,
 					&value);
 				s.intMapIterator->second = value;
-				wcout << " = " << value;
+				std::wcout << " = " << value;
 			}
-			wcout << endl;
+			std::wcout << std::endl;
 		}
 	}
-	cout << endl;
+	std::cout << std::endl;
 	//// float
 	for (s.floatMapIterator = s.floatMap.begin();
 		s.floatMapIterator != s.floatMap.end();
@@ -397,11 +397,11 @@ void Zyla::get(ZylaSettings &s)
 			&writable);
 		if (returnCode != AT_SUCCESS)
 		{
-			wcout << "FAIL: can not get " << s.floatMapIterator->first << endl;
+			std::wcout << "FAIL: can not get " << s.floatMapIterator->first << std::endl;
 		}
 		else
 		{
-			wcout << "i" << implemented << "o" << readOnly <<
+			std::wcout << "i" << implemented << "o" << readOnly <<
 				"r" << readable << "w" << writable << "\t" <<
 				s.floatMapIterator->first;
 			if (readable)
@@ -410,12 +410,12 @@ void Zyla::get(ZylaSettings &s)
 				returnCode = AT_GetFloat(handle, s.floatMapIterator->first,
 					&value);
 				s.floatMapIterator->second = value;
-				wcout << " = " << value;
+				std::wcout << " = " << value;
 			}
-			wcout << endl;
+			std::wcout << std::endl;
 		}
 	}
-	cout << endl;
+	std::cout << std::endl;
 	//// enum
 	for (s.enumMapIterator = s.enumMap.begin();
 		s.enumMapIterator != s.enumMap.end();
@@ -435,11 +435,11 @@ void Zyla::get(ZylaSettings &s)
 			&writable);
 		if (returnCode != AT_SUCCESS)
 		{
-			wcout << "FAIL: can not get " << s.enumMapIterator->first << endl;
+			std::wcout << "FAIL: can not get " << s.enumMapIterator->first << std::endl;
 		}
 		else
 		{
-			wcout << "i" << implemented << "o" << readOnly <<
+			std::wcout << "i" << implemented << "o" << readOnly <<
 				"r" << readable << "w" << writable << "\t" <<
 				s.enumMapIterator->first;
 			if (readable)
@@ -454,12 +454,12 @@ void Zyla::get(ZylaSettings &s)
 					index, str, 256);
 				//delete[] s.enumMapIterator->second; // small leak
 				s.enumMapIterator->second = str;
-				wcout << " = " << str;
+				std::wcout << " = " << str;
 			}
-			wcout << endl;
+			std::wcout << std::endl;
 		}
 	}
-	cout << endl;
+	std::cout << std::endl;
 }
 
 void Zyla::set(ZylaSettings &s)
@@ -483,11 +483,11 @@ void Zyla::set(ZylaSettings &s)
 			&writable);
 		if (returnCode != AT_SUCCESS)
 		{
-			wcout << "FAIL: can not set " << s.boolMapIterator->first << endl;
+			std::wcout << "FAIL: can not set " << s.boolMapIterator->first << std::endl;
 		}
 		else
 		{
-			wcout << "i" << implemented << "o" << readOnly <<
+			std::wcout << "i" << implemented << "o" << readOnly <<
 				"r" << readable << "w" << writable << "\t" <<
 				s.boolMapIterator->first;
 			if (writable)
@@ -496,12 +496,12 @@ void Zyla::set(ZylaSettings &s)
 					s.boolMapIterator->first,
 					s.boolMapIterator->second);
 				if (returnCode != AT_SUCCESS)
-					wcout << " can NOT set";
+					std::wcout << " can NOT set";
 			}
-			wcout << endl;
+			std::wcout << std::endl;
 		}
 	}
-	cout << endl;
+	std::cout << std::endl;
 	//// int
 	for (s.intMapIterator = s.intMap.begin();
 		s.intMapIterator != s.intMap.end();
@@ -521,11 +521,11 @@ void Zyla::set(ZylaSettings &s)
 			&writable);
 		if (returnCode != AT_SUCCESS)
 		{
-			wcout << "FAIL: can not set " << s.intMapIterator->first << endl;
+			std::wcout << "FAIL: can not set " << s.intMapIterator->first << std::endl;
 		}
 		else
 		{
-			wcout << "i" << implemented << "o" << readOnly <<
+			std::wcout << "i" << implemented << "o" << readOnly <<
 				"r" << readable << "w" << writable << "\t" <<
 				s.intMapIterator->first;
 			if (writable)
@@ -534,12 +534,12 @@ void Zyla::set(ZylaSettings &s)
 					s.intMapIterator->first,
 					s.intMapIterator->second);
 				if (returnCode != AT_SUCCESS)
-					wcout << " can NOT set";
+					std::wcout << " can NOT set";
 			}
-			wcout << endl;
+			std::wcout << std::endl;
 		}
 	}
-	cout << endl;
+	std::cout << std::endl;
 	//// float
 	for (s.floatMapIterator = s.floatMap.begin();
 		s.floatMapIterator != s.floatMap.end();
@@ -559,11 +559,11 @@ void Zyla::set(ZylaSettings &s)
 			&writable);
 		if (returnCode != AT_SUCCESS)
 		{
-			wcout << "FAIL: can not set " << s.floatMapIterator->first << endl;
+			std::wcout << "FAIL: can not set " << s.floatMapIterator->first << std::endl;
 		}
 		else
 		{
-			wcout << "i" << implemented << "o" << readOnly <<
+			std::wcout << "i" << implemented << "o" << readOnly <<
 				"r" << readable << "w" << writable << "\t" <<
 				s.floatMapIterator->first;
 			if (writable)
@@ -572,12 +572,12 @@ void Zyla::set(ZylaSettings &s)
 					s.floatMapIterator->first,
 					s.floatMapIterator->second);
 				if (returnCode != AT_SUCCESS)
-					wcout << " can NOT set";
+					std::wcout << " can NOT set";
 			}
-			wcout << endl;
+			std::wcout << std::endl;
 		}
 	}
-	cout << endl;
+	std::cout << std::endl;
 	//// enum
 	for (s.enumMapIterator = s.enumMap.begin();
 		s.enumMapIterator != s.enumMap.end();
@@ -597,11 +597,11 @@ void Zyla::set(ZylaSettings &s)
 			&writable);
 		if (returnCode != AT_SUCCESS)
 		{
-			wcout << "FAIL: can not set " << s.enumMapIterator->first << endl;
+			std::wcout << "FAIL: can not set " << s.enumMapIterator->first << std::endl;
 		}
 		else
 		{
-			wcout << "i" << implemented << "o" << readOnly <<
+			std::wcout << "i" << implemented << "o" << readOnly <<
 				"r" << readable << "w" << writable << "\t" <<
 				s.enumMapIterator->first;
 			if (writable)
@@ -610,12 +610,12 @@ void Zyla::set(ZylaSettings &s)
 					s.enumMapIterator->first,
 					s.enumMapIterator->second);
 				if (returnCode != AT_SUCCESS)
-					wcout << " can NOT set";
+					std::wcout << " can NOT set";
 			}
-			wcout << endl;
+			std::wcout << std::endl;
 		}
 	}
-	cout << endl;
+	std::cout << std::endl;
 }
 
 void Zyla::start(const int &Ts)
@@ -671,7 +671,7 @@ void Zyla::stop()
 	delete[] alignedBuffers;
 }
 
-void Zyla::process(Mat &image)
+void Zyla::process(cv::Mat &image)
 {
 	//// grab buffer
 	unsigned char* pointer;
@@ -685,7 +685,7 @@ void Zyla::process(Mat &image)
 		//cerr << "re-queue returns " << returnCode << endl;
 		accumNumFrames++;
 		//// clean up buffer
-		image = Mat(imageHeight, imageWidth, CV_16UC1);
+		image = cv::Mat(imageHeight, imageWidth, CV_16UC1);
 		returnCode = AT_ConvertBuffer(pointer, reinterpret_cast<unsigned char*>(image.data),
 			imageWidth, imageHeight, imageStride, imageEncode, L"Mono16");
 		//cerr << "convert returns " << returnCode << endl;

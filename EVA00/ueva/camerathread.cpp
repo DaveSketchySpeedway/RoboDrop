@@ -26,7 +26,7 @@ CameraThread::CameraThread(QObject *parent)
 	settings = ZylaSettings();
 	cameraConnected = 0;
 	cameraAcquiring = 0;
-	currentImage = Mat(0, 0, CV_16UC1);
+	currentImage = cv::Mat(0, 0, CV_16UC1);
 	mutex.unlock();
 }
 
@@ -37,7 +37,7 @@ CameraThread::~CameraThread()
 	mutex.unlock();
 }
 
-void CameraThread::getCurrentImage(Mat &image)
+void CameraThread::getCurrentImage(cv::Mat &image)
 {
 	mutex.lock();
 	//// make 8 bit clone out of 16 bit 
@@ -109,7 +109,7 @@ void CameraThread::stopCamera()
 	mutex.lock();
 	camera->stop();
 	cameraAcquiring = 0;
-	currentImage = Mat(0, 0, CV_16UC1);
+	currentImage = cv::Mat(0, 0, CV_16UC1);
 	mutex.unlock();
 }
 

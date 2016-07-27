@@ -88,7 +88,7 @@ void MainWindow::recordRawOnOff()
 			filename.append(now.toString("yyyy_MM_dd_HH_mm_ss"));
 			filename.append(".avi");
 			double fps = 1.0 / (timerInterval / 1000.0);
-			rawVideoWriter = VideoWriter(filename.toStdString(), 
+			rawVideoWriter = cv::VideoWriter(filename.toStdString(), 
 				CV_FOURCC('M', 'S', 'V', 'C'), fps, videoWriterSize, 0);
 		}
 	}
@@ -116,7 +116,7 @@ void MainWindow::recordDrawnOnOff()
 			filename.append(now.toString("yyyy_MM_dd_HH_mm_ss"));
 			filename.append(".avi");
 			double fps = 1.0 / (timerInterval / 1000.0);
-			drawnVideoWriter = VideoWriter(filename.toStdString(),
+			drawnVideoWriter = cv::VideoWriter(filename.toStdString(),
 				CV_FOURCC('M', 'S', 'V', 'C'), fps, videoWriterSize, 1);
 		}
 	}
@@ -311,7 +311,7 @@ void MainWindow::cameraOnOff()
 		setup->cameraButton->setText(tr("On"));
 		settings.flag ^= UevaSettings::CAMERA_ON;
 		cameraThread->stopCamera();
-		file8uc1 = Mat(0, 0, CV_8UC1);
+		file8uc1 = cv::Mat(0, 0, CV_8UC1);
 	}
 }
 
@@ -378,7 +378,7 @@ void MainWindow::setPump()
 	}
 
 	// sort inlet info
-	sort(settings.inletInfo.begin(), settings.inletInfo.end(),
+	std::sort(settings.inletInfo.begin(), settings.inletInfo.end(),
 		[](const QVector<int>& a, const QVector<int>& b)
 	{
 		return a[2] < b[2];
@@ -479,7 +479,7 @@ void MainWindow::sepSortOnOff()
 	{
 		setup->sepSortButton->setText(tr("Separate Channels"));
 		// get channel info 
-		map<string, vector<int> > channelInfo;
+		std::map<std::string, std::vector<int> > channelInfo;
 		setup->deleteChannelInfoWidgets(channelInfo);
 		// sort channel objects
 		engineThread->sortChannels(channelInfo);
@@ -545,7 +545,7 @@ void MainWindow::timerEvent(QTimerEvent *event)
 		pingTimeStamps.enqueue(now);
 		
 		//// INTERUPT CAMERA THREAD
-		Mat temp8uc1;
+		cv::Mat temp8uc1;
 		if (settings.flag & UevaSettings::CAMERA_ON)
 		{
 			cameraThread->getCurrentImage(temp8uc1); // 16uc1 to 8uc1, 1 deep copy
@@ -1036,7 +1036,7 @@ void MainWindow::clear()
 {
 	if (noUnsavedFile())
 	{
-		file8uc1 = Mat(0, 0, CV_8UC1);
+		file8uc1 = cv::Mat(0, 0, CV_8UC1);
 		setCurrentFile("");
 	}
 }

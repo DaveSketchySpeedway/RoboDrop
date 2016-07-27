@@ -107,10 +107,10 @@ void Setup::createChannelInfoWidgets(int numChan)
 	}
 }
 
-void Setup::deleteChannelInfoWidgets(map<string, vector<int> > &channelInfo)
+void Setup::deleteChannelInfoWidgets(std::map<std::string, std::vector<int> > &channelInfo)
 {
-	vector<int> newIndices;
-	vector<int> directions;
+	std::vector<int> newIndices;
+	std::vector<int> directions;
 	foreach(ChannelInfoWidget *channelInfoWidget, channelInfoWidgets)
 	{
 		newIndices.push_back(channelInfoWidget->newBox->currentIndex());

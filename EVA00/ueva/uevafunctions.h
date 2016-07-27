@@ -13,30 +13,27 @@
 
 #include "uevastructures.h"
 
-using namespace cv;
-using namespace std;
+cv::Mat qImage2cvMat(const QImage &qImage);
 
-Mat qImage2cvMat(const QImage &qImage);
+QImage cvMat2qImage(const cv::Mat &cvMat);
 
-QImage cvMat2qImage(const Mat &cvMat);
+cv::Mat contour2Mask(const std::vector<cv::Point_<int>> &contour, const cv::Size_<int> &sz);
 
-Mat contour2Mask(const vector<Point_<int>> &contour, const Size_<int> &sz);
+std::vector<cv::Point_<int>> mask2Contour(const cv::Mat &mask);
 
-vector<Point_<int>> mask2Contour(const Mat &mask);
+void bigPassFilter(std::vector<std::vector< cv::Point_<int> >> &contours, const int &size);
 
-void bigPassFilter(vector<vector< Point_<int> >> &contours, const int &size);
+bool isPointInMask(cv::Point_<int> &point, cv::Mat &mask);
 
-bool isPointInMask(Point_<int> &point, Mat &mask);
+int masksOverlap(cv::Mat &mask1, cv::Mat &mask2);
 
-int masksOverlap(Mat &mask1, Mat &mask2);
+int detectKink(std::vector< cv::Point_<int>> &contour, const int &convexSize);
 
-int detectKink(vector< Point_<int>> &contour, const int &convexSize);
+int detectNeck(std::vector< cv::Point_<int>> &contour, int &kinkIndex, float &neck, const int threshold);
 
-int detectNeck(vector< Point_<int>> &contour, int &kinkIndex, float &neck, const int threshold);
+bool isCombinationPossible(std::vector<int> &combination, std::vector<UevaCtrl> &ctrls);
 
-bool isCombinationPossible(vector<int> &combination, vector<UevaCtrl> &ctrls);
-
-void deleteFromCombination(vector<int> &combination, const int &value);
+void deleteFromCombination(std::vector<int> &combination, const int &value);
 
 
 #endif

@@ -59,12 +59,12 @@ void S2EngineThread::wake()
 
 //// SINGLE TIME
 
-void S2EngineThread::loadCtrl(string fileName,
+void S2EngineThread::loadCtrl(std::string fileName,
 	int *numState, int *numIn, int *numOut, int *numCtrl, double *ctrlTs)
 {
 	mutex.lock();
 	ctrls.clear();
-	FileStorage fs(fileName, FileStorage::READ);
+	cv::FileStorage fs(fileName, cv::FileStorage::READ);
 	*numCtrl = (int)fs["numCtrl"];
 	*ctrlTs = (double)fs["samplePeriod"];
 	*numState = (int)fs["numPlantState"];
@@ -77,8 +77,8 @@ void S2EngineThread::loadCtrl(string fileName,
 
 	for (int i = 0; i < *numCtrl; i++)
 	{	
-		string ctrlName = "ctrl" + to_string(i);
-		FileNode c = fs[ctrlName];
+		std::string ctrlName = "ctrl" + std::to_string(i);
+		cv::FileNode c = fs[ctrlName];
 		UevaCtrl ctrl;
 
 		ctrl.uncoUnob = (int)c["uncoUnob"];
@@ -94,18 +94,18 @@ void S2EngineThread::loadCtrl(string fileName,
 
 		ctrls.push_back(ctrl);
 
-		cerr << "controller " << ctrlName << endl;
-		cerr << "unco unob " << ctrl.uncoUnob << endl;
-		cerr << "output index " << ctrl.outputIdx << endl;
-		cerr << "state index " << ctrl.stateIdx << endl;
-		//cerr << "A " << ctrl.A << endl;
-		//cerr << "B " << ctrl.B << endl;
-		//cerr << "C " << ctrl.C << endl;
-		//cerr << "D " << ctrl.D << endl;
-		//cerr << "K1 " << ctrl.K1 << endl;
-		//cerr << "K2 " << ctrl.K2 << endl;
-		//cerr << "H " << ctrl.H << endl;
-		cerr << endl;
+		std::cerr << "controller " << ctrlName << std::endl;
+		std::cerr << "unco unob " << ctrl.uncoUnob << std::endl;
+		std::cerr << "output index " << ctrl.outputIdx << std::endl;
+		std::cerr << "state index " << ctrl.stateIdx << std::endl;
+		//std::cerr << "A " << ctrl.A << std::endl;
+		//std::cerr << "B " << ctrl.B << std::endl;
+		//std::cerr << "C " << ctrl.C << std::endl;
+		//std::cerr << "D " << ctrl.D << std::endl;
+		//std::cerr << "K1 " << ctrl.K1 << std::endl;
+		//std::cerr << "K2 " << ctrl.K2 << std::endl;
+		//std::cerr << "H " << ctrl.H << std::endl;
+		std::cerr << std::endl;
 	}
 	fs.release();
 
@@ -119,8 +119,8 @@ void S2EngineThread::setCalib(double micronLength)
 	if (!settings.mouseLines.empty())
 	{
 		QLine mouseLine = settings.mouseLines[0];
-		double pixelLength = sqrt(
-			pow((double)mouseLine.dx(), 2.0) + pow((double)mouseLine.dy(), 2.0));
+		double pixelLength = std::sqrt(
+			std::pow((double)mouseLine.dx(), 2.0) + std::pow((double)mouseLine.dy(), 2.0));
 		micronPerPixel = micronLength / pixelLength;
 		qDebug() << "micronPerPixel = " << micronPerPixel << endl;
 	}
@@ -146,7 +146,7 @@ void S2EngineThread::separateChannels(int &numChan)
 	channelContours.clear();
 	channels.clear();
 	// find all channel contours
-	findContours(allChannels, channelContours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
+	cv::findContours(allChannels, channelContours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
 	numChan = channelContours.size();
 	// seprate into vector of UevaChannel
 	for (int i = 0; i < numChan; i++)
@@ -158,7 +158,7 @@ void S2EngineThread::separateChannels(int &numChan)
 	}
 }
 
-void S2EngineThread::sortChannels(map<string, vector<int> > &channelInfo)
+void S2EngineThread::sortChannels(std::map<std::string, std::vector<int> > &channelInfo)
 {
 	CV_Assert(channelInfo["newIndices"].size() == channels.size());
 	// fill info
@@ -168,7 +168,7 @@ void S2EngineThread::sortChannels(map<string, vector<int> > &channelInfo)
 		channels[i].direction = channelInfo["directions"][i];
 	}
 	// sort
-	sort(channels.begin(), channels.end(),
+	std::sort(channels.begin(), channels.end(),
 		[](const UevaChannel &a, const UevaChannel &b)
 	{
 		return a.index < b.index;
@@ -197,7 +197,7 @@ void S2EngineThread::run()
 			{
 				CV_Assert(!bkgd.empty());
 				// detect walls with adaptive threshold (most time consuming)
-				adaptiveThreshold(bkgd, dropletMask,
+				cv::adaptiveThreshold(bkgd, dropletMask,
 					HIGH_VALUE,
 					cv::ADAPTIVE_THRESH_GAUSSIAN_C,
 					cv::THRESH_BINARY_INV,
@@ -212,18 +212,18 @@ void S2EngineThread::run()
 					seed.x = settings.mouseLines[0].x1();
 					seed.y = settings.mouseLines[0].y1();
 				}
-				floodFillReturn = floodFill(dropletMask, seed, MID_VALUE);
+				floodFillReturn = cv::floodFill(dropletMask, seed, MID_VALUE);
 				// eliminate noise and wall by morphological opening (second most time consuming)
 				//morphologyEx(dropletMask, dropletMask, cv::MORPH_OPEN, structuringElement);
-				structuringElement = getStructuringElement(MORPH_RECT,
-					Size_<int>(settings.maskOpenSize + 3, settings.maskOpenSize + 3));
-				erode(dropletMask, dropletMask, structuringElement);
-				structuringElement = getStructuringElement(MORPH_RECT,
-					Size_<int>(settings.maskOpenSize, settings.maskOpenSize));
-				dilate(dropletMask, dropletMask, structuringElement);
+				structuringElement = cv::getStructuringElement(cv::MORPH_RECT,
+					cv::Size_<int>(settings.maskOpenSize + 3, settings.maskOpenSize + 3));
+				cv::erode(dropletMask, dropletMask, structuringElement);
+				structuringElement = cv::getStructuringElement(cv::MORPH_RECT,
+					cv::Size_<int>(settings.maskOpenSize, settings.maskOpenSize));
+				cv::dilate(dropletMask, dropletMask, structuringElement);
 				// draw
-				cvtColor(dropletMask, data.drawnBgr, CV_GRAY2BGR);
-				cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
+				cv::cvtColor(dropletMask, data.drawnBgr, CV_GRAY2BGR);
+				cv::cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
 			}
 			
 			//// CHANNEL CUTTING
@@ -231,26 +231,26 @@ void S2EngineThread::run()
 			{
 				CV_Assert(!dropletMask.empty());
 				// further erode to get thinner mask
-				structuringElement = getStructuringElement(MORPH_RECT,
-					Size_<int>(settings.channelErodeSize, settings.channelErodeSize));
-				erode(dropletMask, markerMask, structuringElement);
+				structuringElement = cv::getStructuringElement(cv::MORPH_RECT,
+					cv::Size_<int>(settings.channelErodeSize, settings.channelErodeSize));
+				cv::erode(dropletMask, markerMask, structuringElement);
 				// cut into channels
 				allChannels = markerMask.clone();
 				for (int i = 1; i < settings.mouseLines.size(); i++)
 				{
-					Point_<int> pt1 = Point_<int>(
+					cv::Point_<int> pt1 = cv::Point_<int>(
 						settings.mouseLines[i].x1(),
 						settings.mouseLines[i].y1());
-					Point_<int> pt2 = Point_<int>(
+					cv::Point_<int> pt2 = cv::Point_<int>(
 						settings.mouseLines[i].x2(),
 						settings.mouseLines[i].y2());
-					line(allChannels, pt1, pt2, Scalar(0), settings.channelCutThickness);
+					cv::line(allChannels, pt1, pt2, cv::Scalar(0), settings.channelCutThickness);
 				}
 				// draw
-				Mat drawn;
-				add(dropletMask, allChannels, drawn);
-				cvtColor(drawn, data.drawnBgr, CV_GRAY2BGR);
-				cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
+				cv::Mat drawn;
+				cv::add(dropletMask, allChannels, drawn);
+				cv::cvtColor(drawn, data.drawnBgr, CV_GRAY2BGR);
+				cv::cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
 			}
 			else
 			{	
@@ -261,35 +261,35 @@ void S2EngineThread::run()
 					CV_Assert(!dropletMask.empty());
 					CV_Assert(!markerMask.empty());
 					// background subtraction to get markers (droplets edges)
-					absdiff(data.rawGray, bkgd, allMarkers); 
-					threshold(allMarkers, allMarkers,
+					cv::absdiff(data.rawGray, bkgd, allMarkers);
+					cv::threshold(allMarkers, allMarkers,
 						settings.imgprogThreshold,
 						HIGH_VALUE,
 						cv::THRESH_BINARY);
 					// flood and complement to get droplets (droplets internal)
 					allDroplets = allMarkers.clone(); 
-					seed = Point(0, 0);
-					floodFillReturn = floodFill(allDroplets,
+					seed = cv::Point(0, 0);
+					floodFillReturn = cv::floodFill(allDroplets,
 						seed, 
 						HIGH_VALUE,
-						0, Scalar_<int>(0), Scalar_<int>(0),
-						FLOODFILL_FIXED_RANGE);
+						0, cv::Scalar_<int>(0), cv::Scalar_<int>(0),
+						cv::FLOODFILL_FIXED_RANGE);
 					allDroplets = HIGH_VALUE - allDroplets;
 					// combine edges and internals to get whole droplets 
-					bitwise_or(allMarkers, allDroplets, allDroplets);
+					cv::bitwise_or(allMarkers, allDroplets, allDroplets);
 					// Exclude noise with masks
-					bitwise_and(allMarkers, markerMask, allMarkers);
-					bitwise_and(allDroplets, dropletMask, allDroplets);
+					cv::bitwise_and(allMarkers, markerMask, allMarkers);
+					cv::bitwise_and(allDroplets, dropletMask, allDroplets);
 					// polish droplets with erosion
-					structuringElement = getStructuringElement(MORPH_RECT,
-						Size_<int>(settings.imgprogErodeSize, settings.imgprogErodeSize));
-					erode(allDroplets, allDroplets, structuringElement);
+					structuringElement = cv::getStructuringElement(cv::MORPH_RECT,
+						cv::Size_<int>(settings.imgprogErodeSize, settings.imgprogErodeSize));
+					cv::erode(allDroplets, allDroplets, structuringElement);
 					// find countours
 					dropletContours.clear();
 					markerContours.clear();
-					findContours(allMarkers, markerContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
-					findContours(allDroplets, dropletContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-						//findContours(allDroplets, dropletContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+					cv::findContours(allMarkers, markerContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+					cv::findContours(allDroplets, dropletContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+						//cv::findContours(allDroplets, dropletContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 					// filter contours base on size	
 					bigPassFilter(markerContours, settings.imgprogContourSize);
 					bigPassFilter(dropletContours, settings.imgprogContourSize);
@@ -318,12 +318,12 @@ void S2EngineThread::run()
 					UevaMarker::sortRatio = settings.imgprogSortRatio;
 					for (int i = 0; i < markerContours.size(); i++)
 					{
-						mom = moments(markerContours[i]);
+						mom = cv::moments(markerContours[i]);
 						UevaMarker marker;
 						marker.type = 0;
 						marker.centroid.x = mom.m10 / mom.m00;
 						marker.centroid.y = mom.m01 / mom.m00;
-						marker.rect = Rect_<int>(
+						marker.rect = cv::Rect_<int>(
 							marker.centroid.x - settings.ctrlMarkerSize / 2,
 							marker.centroid.y - settings.ctrlMarkerSize / 2,
 							settings.ctrlMarkerSize,
@@ -331,7 +331,7 @@ void S2EngineThread::run()
 						markers.push_back(marker);
 					}
 					// sort markers to fake continuity
-					sort(markers.begin(), markers.end(), 
+					std::sort(markers.begin(), markers.end(), 
 						[](const UevaMarker &a, const UevaMarker &b)
 						{
 							double sizeOfA =
@@ -385,7 +385,7 @@ void S2EngineThread::run()
 								mom = moments(dropletContours[i]);
 								marker.centroid.x = mom.m10 / mom.m00;
 								marker.centroid.y = mom.m01 / mom.m00;
-								marker.rect = Rect_<int>(
+								marker.rect = cv::Rect_<int>(
 									marker.centroid.x - settings.ctrlMarkerSize / 2,
 									marker.centroid.y - settings.ctrlMarkerSize / 2,
 									settings.ctrlMarkerSize,
@@ -402,7 +402,7 @@ void S2EngineThread::run()
 					}
 					if (UevaDroplet::fileStream.is_open())
 					{
-						UevaDroplet::fileStream << endl;
+						UevaDroplet::fileStream << std::endl;
 					}
 					// user change marker
 					for (int i = 0; i < channels.size(); i++)
@@ -491,8 +491,8 @@ void S2EngineThread::run()
 						}
 					}
 					for (int k = 0; k < activatedChannels.size(); k++)
-						cerr << activatedChannels[k] << " ";
-					cerr << endl;
+						std::cerr << activatedChannels[k] << " ";
+					std::cerr << std::endl;
 				}
 
 				//// CTRL
@@ -504,11 +504,58 @@ void S2EngineThread::run()
 				//// DRAW
 				if (!data.rawGray.empty())
 				{
-					cvtColor(data.rawGray, data.drawnBgr, CV_GRAY2BGR);
+					cv::cvtColor(data.rawGray, data.drawnBgr, CV_GRAY2BGR);
+					// draw channel contour
+					if (settings.flag & UevaSettings::DRAW_CHANNEL)
+					{
+						lineColor = cv::Scalar(255, 255, 255); // white
+						lineThickness = CV_FILLED; 
+						lineType = 8;
+						cv::drawContours(data.drawnBgr, channelContours, -1,
+							lineColor, lineThickness, lineType);
+					}
+					// draw droplet contour
+					if (settings.flag & UevaSettings::DRAW_DROPLET)
+					{
+						lineColor = cv::Scalar(255, 0, 255); // magenta
+						lineThickness = 1;
+						lineType = 8;
+						cv::drawContours(data.drawnBgr, dropletContours, -1,
+							lineColor, lineThickness, lineType);
+					}
+					// draw marker contour
+					if (settings.flag & UevaSettings::DRAW_MARKER)
+					{
+						lineColor = cv::Scalar(255, 255, 0); // cyan
+						lineThickness = 1;
+						lineType = 8;
+						cv::drawContours(data.drawnBgr, markerContours, -1,
+							lineColor, lineThickness, lineType);
+					}
+					// draw kink and neck
+					if (settings.flag & UevaSettings::DRAW_NECK)
+					{
+						lineColor = cv::Scalar(0, 255, 255); // yellow
+						lineThickness = 3;
+						lineType = 8;
+						for (int i = 0; i < droplets.size(); i++)
+						{
+							if (droplets[i].kinkIndex >= 0 && droplets[i].neckIndex >= 0)
+							{
+								cv::line(data.drawnBgr,
+									dropletContours[i][droplets[i].kinkIndex],
+									dropletContours[i][droplets[i].neckIndex],
+									lineColor, lineThickness, lineType);
+								//cv::circle(data.drawnBgr,
+								//	dropletContours[i][droplets[i].kinkIndex],
+								//	10, lineColor, lineThickness, lineType);
+							}
+						}
+					}
 					// draw channel text
 					for (int i = 0; i < channels.size(); i++)
 					{
-						string dir;
+						std::string dir;
 						switch (channels[i].direction)
 						{
 						case 0:
@@ -547,94 +594,47 @@ void S2EngineThread::run()
 						if (settings.linkChannels[i])
 						{
 							fontScale = 1;
-							lineColor = Scalar(0, 0, 255); // red
+							lineColor = cv::Scalar(0, 0, 255); // red
 						}
 						else
 						{
 							fontScale = 0.8;
-							lineColor = Scalar(255, 255, 255); // white
+							lineColor = cv::Scalar(255, 255, 255); // white
 						}
-						ostringstream oss;
+						std::ostringstream oss;
 						oss << "CH" << i << " " << dir;
-						string str = oss.str();
-						rect = boundingRect(channelContours[i]);
+						std::string str = oss.str();
+						rect = cv::boundingRect(channelContours[i]);
 						anchor.x = rect.x + 60; // offset right from leftmost
-						mom = moments(channelContours[i]);
+						mom = cv::moments(channelContours[i]);
 						anchor.y = mom.m01 / mom.m00 - 30; // offset up from center
 						lineThickness = 1;
 						lineType = 8;
-						putText(data.drawnBgr, str, anchor,
-							FONT_HERSHEY_SIMPLEX, fontScale, lineColor, lineThickness, lineType);
+						cv::putText(data.drawnBgr, str, anchor,
+							cv::FONT_HERSHEY_SIMPLEX, fontScale, lineColor, lineThickness, lineType);
 						// draw occupying markers
 						for (int j = 0; j < channels[i].currentMarkerIndices.size(); j++)
 						{
-						if (channels[i].currentMarkerIndices[j] == channels[i].selectedMarkerIndex)
-						{
-							lineColor = Scalar(0, 0, 255); // red if selected 
-						}
-						else if (markers[channels[i].currentMarkerIndices[j]].type == 1)
-						{
-							lineColor = Scalar(0, 255, 255); // yellow if neck not selected
-						}
-						else
-						{
-							lineColor = Scalar(255, 0, 0); // blue if not selected
-						}
+							if (channels[i].currentMarkerIndices[j] == channels[i].selectedMarkerIndex)
+							{
+								lineColor = cv::Scalar(255, 0, 0); // blue if selected 
+							}
+							else if (markers[channels[i].currentMarkerIndices[j]].type == 1)
+							{
+								lineColor = cv::Scalar(0, 255, 255); // yellow if neck not selected
+							}
+							else
+							{
+								lineColor = cv::Scalar(255, 255, 0); // cyan if not selected
+							}
 							lineThickness = 1;
 							lineType = 8;
-							rectangle(data.drawnBgr,
+							cv::rectangle(data.drawnBgr,
 								markers[channels[i].currentMarkerIndices[j]].rect,
 								lineColor, lineThickness, lineThickness);
 						}
 					}
-					// draw channel contour
-					if (settings.flag & UevaSettings::DRAW_CHANNEL)
-					{
-						lineColor = Scalar(255, 255, 255); // white
-						lineThickness = CV_FILLED; 
-						lineType = 8;
-						drawContours(data.drawnBgr, channelContours, -1,
-							lineColor, lineThickness, lineType);
-					}
-					// draw droplet contour
-					if (settings.flag & UevaSettings::DRAW_DROPLET)
-					{
-						lineColor = Scalar(255, 0, 255); // magenta
-						lineThickness = 1;
-						lineType = 8;
-						drawContours(data.drawnBgr, dropletContours, -1,
-							lineColor, lineThickness, lineType);
-					}
-					// draw marker contour
-					if (settings.flag & UevaSettings::DRAW_MARKER)
-					{
-						lineColor = Scalar(255, 255, 0); // cyan
-						lineThickness = 1;
-						lineType = 8;
-						drawContours(data.drawnBgr, markerContours, -1,
-							lineColor, lineThickness, lineType);
-					}
-					// draw kink and neck
-					if (settings.flag & UevaSettings::DRAW_NECK)
-					{
-						lineColor = Scalar(0, 255, 255); // yellow
-						lineThickness = 1;
-						lineType = 8;
-						for (int i = 0; i < droplets.size(); i++)
-						{
-							if (droplets[i].kinkIndex >= 0 && droplets[i].neckIndex >= 0)
-							{
-								line(data.drawnBgr,
-									dropletContours[i][droplets[i].kinkIndex],
-									dropletContours[i][droplets[i].neckIndex],
-									lineColor, lineThickness, lineType);
-								//circle(data.drawnBgr,
-								//	dropletContours[i][droplets[i].kinkIndex],
-								//	10, lineColor, lineThickness, lineType);
-							}
-						}
-					}
-					cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
+					cv::cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
 				}
 			}
 

@@ -56,9 +56,6 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include "uevastructures.h"
 #include "uevafunctions.h"
 
-using namespace std;
-using namespace cv;
-
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT;
@@ -156,11 +153,11 @@ private:
 
 	//// GUI VARIABLES
 	QString currentFile;
-	Mat file8uc1;
 	QImage fileRgb888;
-	Size_<int> videoWriterSize;
-	VideoWriter rawVideoWriter;
-	VideoWriter drawnVideoWriter;
+	cv::Mat file8uc1;
+	cv::Size_<int> videoWriterSize;
+	cv::VideoWriter rawVideoWriter;
+	cv::VideoWriter drawnVideoWriter;
 
 	//// NON MODAL SUBWINDOW
 	Setup *setup;

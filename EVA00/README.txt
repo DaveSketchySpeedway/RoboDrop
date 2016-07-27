@@ -1,14 +1,15 @@
 microfluidics Enhanced Vision-based Automation
-
 Copyright 2016 David Wong
-email: yh3wong@uwaterloo.ca
-repo: https://github.com/DaveSketchySpeedway/uEva
+https://github.com/DaveSketchySpeedway/uEva
 
 
 
-
-
-
+Platform:
+	Source code is platform independent, EXCEPT for:
+		camera class (zyla.h, zyla.cpp)
+		pump class (mfcs.h, mfcs.cpp)
+	because of third party dll
+	executable is tested on a i7-4790 Windows 7 Professional machine
 
 Pump:
 	uEVA works with Fluigent MFCS or MFCS-ez pump.
@@ -23,10 +24,27 @@ Controller:
 	export into .yaml (step5)
 	import using uEVA setup window
 
-
 Deployment:
-	Following files are required to run the executable:
-		asf
-		asf
-		asdf
-	Contact author for more info
+	Following libraries are required to run the executable:
+		atblkbx.dll
+		atd_bitflow.dll
+		atcore.dll
+		atdevapogee.dll
+		atdevregcam.dll
+		atmcd64d.dll
+		atspooler.dll
+		atusb_libusb.dll
+		atusb_libusb10.dll
+		atutility.dll
+		mfcs_c_64.dll
+		opencv_world310.dll
+		Qt5Core.dll
+		Qt5Gui.dll
+		Qt5Widgets.dll
+		\platforms\qwindows.dll
+
+		
+
+
+Contact author for more info
+email: yh3wong@uwaterloo.ca

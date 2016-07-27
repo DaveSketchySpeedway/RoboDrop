@@ -1,6 +1,6 @@
 #include "uevafunctions.h"
 
-Mat qImage2cvMat(const QImage &qImage)
+cv::Mat qImage2cvMat(const QImage &qImage)
 {
 	// indexed8 to 8uc1 
 	//Mat cvMat(qImage.height(), qImage.width(), CV_8UC1,
@@ -16,14 +16,14 @@ Mat qImage2cvMat(const QImage &qImage)
 	//return cvMat;
 
 	// argb32 to 8uc1
-	Mat color = Mat(qImage.height(), qImage.width(), CV_8UC4,
+	cv::Mat color = cv::Mat(qImage.height(), qImage.width(), CV_8UC4,
 		const_cast<uchar*>(qImage.bits()), qImage.bytesPerLine());
-	Mat cvMat;
-	cvtColor(color, cvMat, CV_BGRA2GRAY); // 1 deep copy
+	cv::Mat cvMat;
+	cv::cvtColor(color, cvMat, CV_BGRA2GRAY); // 1 deep copy
 	return cvMat;
 }
 
-QImage cvMat2qImage(const Mat &cvMat)
+QImage cvMat2qImage(const cv::Mat &cvMat)
 {
 	// 8uc1 to indexed8 
 	//static QVector<QRgb> colorTable;
@@ -43,29 +43,29 @@ QImage cvMat2qImage(const Mat &cvMat)
 	return qImage; // no deep copy
 }
 
-Mat contour2Mask(const vector<Point_<int>> &contour, const Size_<int> &sz)
+cv::Mat contour2Mask(const std::vector< cv::Point_<int> > &contour, const cv::Size_<int> &sz)
 {
-	vector<vector< Point_<int> >> contours;
+	std::vector< std::vector< cv::Point_<int> >> contours;
 	contours.push_back(contour);
-	Mat mask = Mat(sz, CV_8UC1, Scalar_<int>(0));
-	drawContours(mask, contours, -1, Scalar_<int>(255), -1);
+	cv::Mat mask = cv::Mat(sz, CV_8UC1, cv::Scalar_<int>(0));
+	cv::drawContours(mask, contours, -1, cv::Scalar_<int>(255), -1);
 	return mask;
 }
 
-vector<Point_<int>> mask2Contour(const Mat &mask)
+std::vector<cv::Point_<int>> mask2Contour(const cv::Mat &mask)
 {
-	vector<vector< Point_<int> >> contours;
-	findContours(mask, contours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
+	std::vector<std::vector< cv::Point_<int> >> contours;
+	cv::findContours(mask, contours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
 	return contours[0];
 }
 
-void bigPassFilter(vector<vector< Point_<int> >> &contours, const int &size)
+void bigPassFilter(std::vector<std::vector< cv::Point_<int> >> &contours, const int &size)
 {
-	vector<vector< Point_<int> >>::iterator iter;
+	std::vector<std::vector< cv::Point_<int> >>::iterator iter;
 	iter = contours.begin();
 	while (iter != contours.end())
 	{
-		Moments mom = moments(*iter);
+		cv::Moments mom = cv::moments(*iter);
 		if (mom.m00 < size)
 		{
 			iter = contours.erase(iter);
@@ -77,7 +77,7 @@ void bigPassFilter(vector<vector< Point_<int> >> &contours, const int &size)
 	}
 }
 
-bool isPointInMask(Point_<int> &point, Mat &mask)
+bool isPointInMask(cv::Point_<int> &point, cv::Mat &mask)
 {
 	uchar *p = mask.ptr<uchar>(point.y);
 	if (p[point.x])
@@ -85,20 +85,20 @@ bool isPointInMask(Point_<int> &point, Mat &mask)
 	return false;
 }
 
-int masksOverlap(Mat &mask1, Mat &mask2)
+int masksOverlap(cv::Mat &mask1, cv::Mat &mask2)
 {
-	Mat mask3 = Mat(mask1.size(), CV_8UC1, Scalar_<int>(0));
-	bitwise_and(mask1, mask2, mask3);
-	return countNonZero(mask3);
+	cv::Mat mask3 = cv::Mat(mask1.size(), CV_8UC1, cv::Scalar_<int>(0));
+	cv::bitwise_and(mask1, mask2, mask3);
+	return cv::countNonZero(mask3);
 }
 
-int detectKink(vector< Point_<int>> &contour, const int &convexSize)
+int detectKink(std::vector< cv::Point_<int>> &contour, const int &convexSize)
 {
-	vector<int> hull;
-	convexHull(contour, hull);
+	std::vector<int> hull;
+	cv::convexHull(contour, hull);
 
-	vector<Vec4i> defects;
-	convexityDefects(contour, hull, defects);
+	std::vector<cv::Vec4i> defects;
+	cv::convexityDefects(contour, hull, defects);
 
 	int kinkIndex = -1;
 	int depth = 0;
@@ -119,9 +119,9 @@ int detectKink(vector< Point_<int>> &contour, const int &convexSize)
 	return kinkIndex; 
 }
 
-int detectNeck(vector< Point_<int>> &contour, int &kinkIndex, float &neck, const int threshold)
+int detectNeck(std::vector< cv::Point_<int>> &contour, int &kinkIndex, float &neck, const int threshold)
 {
-	vector<float> profile;
+	std::vector<float> profile;
 	for (int i = kinkIndex; i < contour.size(); i++)
 	{
 		float l2Norm = sqrt(
@@ -150,7 +150,7 @@ int detectNeck(vector< Point_<int>> &contour, int &kinkIndex, float &neck, const
 	p1d::Persistence1D persistence;
 	persistence.RunPersistence(profile);
 
-	vector< p1d::TPairedExtrema > extremas;
+	std::vector< p1d::TPairedExtrema > extremas;
 	persistence.GetPairedExtrema(extremas, float(threshold));
 
 	int neckIndex = -1;
@@ -192,12 +192,12 @@ int detectNeck(vector< Point_<int>> &contour, int &kinkIndex, float &neck, const
 	return neckIndex;
 }
 
-bool isCombinationPossible(vector<int> &combination, vector<UevaCtrl> &ctrls)
+bool isCombinationPossible(std::vector<int> &combination, std::vector<UevaCtrl> &ctrls)
 {
 	std::sort(combination.begin(), combination.end());
 	for (int i = 0; i < ctrls.size(); i++)
 	{
-		vector<int> ctrlOutputIdx;
+		std::vector<int> ctrlOutputIdx;
 		for (int j = 0; j < ctrls[i].outputIdx.cols; j++)
 		{
 			ctrlOutputIdx.push_back(ctrls[i].outputIdx.at<uchar>(j));
@@ -211,9 +211,9 @@ bool isCombinationPossible(vector<int> &combination, vector<UevaCtrl> &ctrls)
 	return false;
 }
 
-void deleteFromCombination(vector<int> &combination, const int &value)
+void deleteFromCombination(std::vector<int> &combination, const int &value)
 {
-	vector<int>::iterator iter;
+	std::vector<int>::iterator iter;
 	iter = combination.begin();
 	while (iter != combination.end())
 	{

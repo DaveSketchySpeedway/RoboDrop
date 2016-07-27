@@ -44,7 +44,7 @@ UevaData::UevaData()
 	//// xxx
 }
 
-ofstream UevaData::fileStream;
+std::ofstream UevaData::fileStream;
 QTime UevaData::startTime;
 
 void UevaData::headerToFile() const
@@ -63,7 +63,7 @@ void UevaData::headerToFile() const
 		}
 	}
 
-	fileStream << endl;
+	fileStream << std::endl;
 }
 
 void UevaData::writeToFile() const
@@ -83,7 +83,7 @@ void UevaData::writeToFile() const
 		}
 	}
 
-	fileStream << endl;
+	fileStream << std::endl;
 }
 
 //// BUFFER
@@ -187,7 +187,7 @@ UevaDroplet::UevaDroplet()
 	accomodatingChannelIndex = -1;
 }
 
-ofstream UevaDroplet::fileStream;
+std::ofstream UevaDroplet::fileStream;
 
 //// MARKER
 UevaMarker::UevaMarker()
@@ -195,5 +195,5 @@ UevaMarker::UevaMarker()
 	accomodatingChannelIndex = -1;
 }
 
-Size_<int> UevaMarker::imageSize = Size_<int>(0, 0);
+cv::Size_<int> UevaMarker::imageSize = cv::Size_<int>(0, 0);
 int UevaMarker::sortRatio = 0;

@@ -24,9 +24,6 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include <fstream>
 #include "opencv2/core.hpp"
 
-using namespace std;
-using namespace cv;
-
 struct UevaSettings
 {
 	UevaSettings();
@@ -80,12 +77,12 @@ struct UevaData
 	void headerToFile() const;
 	void writeToFile() const;
 
-	static ofstream fileStream;
+	static std::ofstream fileStream;
 	static QTime startTime;
 
-	Mat rawGray;
-	Mat drawnBgr;
-	Mat drawnRgb;
+	cv::Mat rawGray;
+	cv::Mat drawnBgr;
+	cv::Mat drawnRgb;
 	QMap<QString, QVector<qreal>> map;
 };
 
@@ -110,15 +107,15 @@ struct UevaCtrl
 	static double samplePeriod;
 
 	int uncoUnob;
-	Mat outputIdx;
-	Mat stateIdx;
-	Mat A;
-	Mat B;
-	Mat C;
-	Mat D;
-	Mat K1; 
-	Mat K2;
-	Mat H;
+	cv::Mat outputIdx;
+	cv::Mat stateIdx;
+	cv::Mat A;
+	cv::Mat B;
+	cv::Mat C;
+	cv::Mat D;
+	cv::Mat K1;
+	cv::Mat K2;
+	cv::Mat H;
 };
 
 struct UevaChannel
@@ -126,21 +123,21 @@ struct UevaChannel
 	UevaChannel();
 
 	int index;
-	Mat mask;
+	cv::Mat mask;
 	int direction;
 	int selectedMarkerIndex;
 
-	vector<int> currentMarkerIndices;
-	vector<int> previousMarkerIndices;	
+	std::vector<int> currentMarkerIndices;
+	std::vector<int> previousMarkerIndices;	
 };
 
 struct UevaDroplet
 {
 	UevaDroplet();
 
-	static ofstream fileStream;
+	static std::ofstream fileStream;
 
-	Mat mask;
+	cv::Mat mask;
 	int kinkIndex;
 	int neckIndex;
 	
@@ -151,13 +148,13 @@ struct UevaMarker
 {
 	UevaMarker();
 
-	static Size_<int> imageSize;
+	static cv::Size_<int> imageSize;
 	static int sortRatio;
 
 	int type;
 	double value;
-	Point_<int> centroid;
-	Rect_<int> rect;
+	cv::Point_<int> centroid;
+	cv::Rect_<int> rect;
 	
 	int accomodatingChannelIndex;
 };

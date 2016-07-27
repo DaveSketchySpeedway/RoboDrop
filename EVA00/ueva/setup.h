@@ -29,8 +29,6 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include "addpumpdialog.h"
 #include "channelinfowidget.h"
 
-using namespace std;
-
 class Setup : public QWidget, public Ui_Setup
 {
 	Q_OBJECT
@@ -40,7 +38,7 @@ public:
 	~Setup();
 
 	void createChannelInfoWidgets(int numChan);
-	void  deleteChannelInfoWidgets(map<string, vector<int> > &channelInfo);
+	void  deleteChannelInfoWidgets(std::map<std::string, std::vector<int> > &channelInfo);
 
 	public slots:
 

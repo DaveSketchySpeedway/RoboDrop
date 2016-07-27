@@ -273,7 +273,7 @@ public:
         threshSlider->setObjectName(QStringLiteral("threshSlider"));
         threshSlider->setMinimum(0);
         threshSlider->setMaximum(99);
-        threshSlider->setPageStep(5);
+        threshSlider->setPageStep(1);
         threshSlider->setValue(20);
         threshSlider->setOrientation(Qt::Horizontal);
 
@@ -402,7 +402,7 @@ public:
         markerSizeSlider->setObjectName(QStringLiteral("markerSizeSlider"));
         markerSizeSlider->setMinimum(0);
         markerSizeSlider->setMaximum(200);
-        markerSizeSlider->setPageStep(10);
+        markerSizeSlider->setPageStep(1);
         markerSizeSlider->setValue(70);
         markerSizeSlider->setOrientation(Qt::Horizontal);
 

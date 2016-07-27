@@ -294,7 +294,7 @@ public:
         thresholdSlider = new QSlider(imgprocTab);
         thresholdSlider->setObjectName(QStringLiteral("thresholdSlider"));
         thresholdSlider->setMaximum(255);
-        thresholdSlider->setPageStep(5);
+        thresholdSlider->setPageStep(1);
         thresholdSlider->setValue(127);
         thresholdSlider->setOrientation(Qt::Horizontal);
 

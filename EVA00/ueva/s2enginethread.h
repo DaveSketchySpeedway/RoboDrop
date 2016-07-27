@@ -36,10 +36,6 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include "uevastructures.h"
 #include "uevafunctions.h"
 
-using namespace std;
-using namespace cv;
-
-
 class S2EngineThread : public QThread
 {
 	Q_OBJECT
@@ -54,12 +50,12 @@ public:
 	void wake();
 
 	//// SINGLE TIME 
-	void loadCtrl(string fileName,
+	void loadCtrl(std::string fileName,
 		int *numState, int *numIn, int *numOut, int *numCtrl, double *ctrlTs);
 	void setCalib(double micronLength);
 	void setBkgd();
 	void separateChannels(int &numChan);
-	void sortChannels(map<string, vector<int> > &channelInfo);
+	void sortChannels(std::map<std::string, std::vector<int> > &channelInfo);
 
 signals:
 	void engineSignal(const UevaData &d);
@@ -77,28 +73,28 @@ private:
 	UevaData data;
 
 	//// PERSISTENT VARIABLES
-	vector<UevaCtrl> ctrls;
-	vector<int> activatedChannels;
+	std::vector<UevaCtrl> ctrls;
+	std::vector<int> activatedChannels;
 	int ctrlIndex;
 	double micronPerPixel;
-	Mat bkgd;
-	Mat dropletMask;
-	Mat markerMask;
-	Mat allChannels;
-	vector<vector<Point_<int>>> channelContours;
-	vector<UevaChannel> channels;
+	cv::Mat bkgd;
+	cv::Mat dropletMask;
+	cv::Mat markerMask;
+	cv::Mat allChannels;
+	std::vector<std::vector<cv::Point_<int>>> channelContours;
+	std::vector<UevaChannel> channels;
 
 	//// NON PERSISTANT VARIABLES
 	bool needReset;
 	bool needInactivateAll;
 	int vacancy;
-	vector<int> desiredChannels;
-	Mat allDroplets;
-	Mat allMarkers;
-	vector<vector< Point_<int> >> dropletContours;
-	vector<vector< Point_<int> >> markerContours;
-	vector<UevaDroplet> droplets;
-	vector<UevaMarker> markers;
+	std::vector<int> desiredChannels;
+	cv::Mat allDroplets;
+	cv::Mat allMarkers;
+	std::vector<std::vector< cv::Point_<int> >> dropletContours;
+	std::vector<std::vector< cv::Point_<int> >> markerContours;
+	std::vector<UevaDroplet> droplets;
+	std::vector<UevaMarker> markers;
 
 
 	//// CONVENIENT PARAMETERS
@@ -108,20 +104,20 @@ private:
 		MID_VALUE = 127,
 		HIGH_VALUE = 255,
 	};
-	Mat structuringElement;
-	Point_<int> seed;
+	cv::Mat structuringElement;
+	cv::Point_<int> seed;
 	int floodFillReturn;
-	Scalar_<int> lineColor;
+	cv::Scalar_<int> lineColor;
 	int lineThickness;
 	int lineType;
 	double fontScale;
-	Point_<int> anchor;
-	Moments mom;
-	Rect rect;
-	Point_<int> mousePressLeft;
-	Point_<int> mousePressRight;
-	Point_<int> mousePressPrevious;
-	Point_<int> mousePressCurrent;
+	cv::Point_<int> anchor;
+	cv::Moments mom;
+	cv::Rect rect;
+	cv::Point_<int> mousePressLeft;
+	cv::Point_<int> mousePressRight;
+	cv::Point_<int> mousePressPrevious;
+	cv::Point_<int> mousePressCurrent;
 
 	private slots:
 

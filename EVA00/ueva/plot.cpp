@@ -26,8 +26,6 @@ Plot::Plot(QWidget *parent)
 	setAutoFillBackground(true);
 	numXTicks = 10;
 	numYTicks = 10;
-
-
 }
 
 Plot::~Plot()
@@ -83,13 +81,13 @@ void Plot::paintEvent(QPaintEvent *event)
 	////// AXIS
 	minX = 0;
 	maxX = data[0].size();
-	minY = *min_element(data[0].constBegin(), data[0].constEnd());
-	maxY = *max_element(data[0].constBegin(), data[0].constEnd());
+	minY = *std::min_element(data[0].constBegin(), data[0].constEnd());
+	maxY = *std::max_element(data[0].constBegin(), data[0].constEnd());
 	foreach(QVector<qreal> d, data)
 	{
 		qreal newMaxX = d.size();
-		qreal newMinY = *min_element(d.constBegin(), d.constEnd());
-		qreal newMaxY = *max_element(d.constBegin(), d.constEnd());
+		qreal newMinY = *std::min_element(d.constBegin(), d.constEnd());
+		qreal newMaxY = *std::max_element(d.constBegin(), d.constEnd());
 		if (newMaxX > maxX) { maxX = newMaxX; }
 		if (newMinY < minY) { minY = newMinY; }
 		if (newMaxY > maxY){ maxY = newMaxY; }
