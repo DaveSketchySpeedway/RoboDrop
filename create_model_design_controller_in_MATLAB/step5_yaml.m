@@ -87,7 +87,7 @@ for i = 1:length(ctrl_d)
     matrixNames = {'outputIdx','stateIdx'};
     for j = 1:length(matrixNames)
         matrixName = matrixNames{j};
-        matrix = CTRL.(matrixName)'; % inverse for linear indexing
+        matrix = CTRL.(matrixName);
         [cols, rows] = size(matrix);
         fprintf(file, '  %s: !!opencv-matrix\n', matrixName);
         fprintf(file, '    rows: %d\n', rows);

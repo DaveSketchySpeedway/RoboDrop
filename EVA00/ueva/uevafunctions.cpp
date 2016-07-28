@@ -198,13 +198,14 @@ bool isCombinationPossible(std::vector<int> &combination, std::vector<UevaCtrl> 
 	for (int i = 0; i < ctrls.size(); i++)
 	{
 		std::vector<int> ctrlOutputIdx;
-		for (int j = 0; j < ctrls[i].outputIdx.cols; j++)
+		for (int j = 0; j < ctrls[i].outputIndices.rows; j++)
 		{
-			ctrlOutputIdx.push_back(ctrls[i].outputIdx.at<uchar>(j));
+			ctrlOutputIdx.push_back(ctrls[i].outputIndices.at<uchar>(j));
 		}
 		if (combination == ctrlOutputIdx &&
 			ctrls[i].uncoUnob == 0)
 		{
+			UevaCtrl::index = i;
 			return true;
 		}
 	}

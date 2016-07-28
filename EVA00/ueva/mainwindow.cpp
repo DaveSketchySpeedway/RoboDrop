@@ -225,11 +225,15 @@ void MainWindow::ctrlOnOff()
 		// initialize settings
 		imgprocSettings();
 		ctrlSettings();
+		// initialize ctrl
+		engineThread->initCtrl();
 	}
 	else
 	{
 		dashboard->ctrlButton->setText(tr("On"));
 		settings.flag ^= UevaSettings::CTRL_ON;
+		// reset ctrl
+		engineThread->resetCtrl();
 	}
 }
 

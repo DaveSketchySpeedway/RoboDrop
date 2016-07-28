@@ -101,14 +101,15 @@ struct UevaCtrl
 {
 	UevaCtrl();
 
+	static int index;
 	static int numPlantState;
 	static int numPlantInput;
 	static int numPlantOutput;
 	static double samplePeriod;
 
 	int uncoUnob;
-	cv::Mat outputIdx;
-	cv::Mat stateIdx;
+	cv::Mat outputIndices;
+	cv::Mat stateIndices;
 	cv::Mat A;
 	cv::Mat B;
 	cv::Mat C;

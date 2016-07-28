@@ -50,12 +50,14 @@ public:
 	void wake();
 
 	//// SINGLE TIME 
-	void loadCtrl(std::string fileName,
-		int *numState, int *numIn, int *numOut, int *numCtrl, double *ctrlTs);
 	void setCalib(double micronLength);
 	void setBkgd();
 	void separateChannels(int &numChan);
 	void sortChannels(std::map<std::string, std::vector<int> > &channelInfo);
+	void loadCtrl(std::string fileName,
+		int *numState, int *numIn, int *numOut, int *numCtrl, double *ctrlTs);
+	void initCtrl();
+	void resetCtrl();
 
 signals:
 	void engineSignal(const UevaData &d);
@@ -75,7 +77,6 @@ private:
 	//// PERSISTENT VARIABLES
 	std::vector<UevaCtrl> ctrls;
 	std::vector<int> activatedChannels;
-	int ctrlIndex;
 	double micronPerPixel;
 	cv::Mat bkgd;
 	cv::Mat dropletMask;
@@ -83,6 +84,14 @@ private:
 	cv::Mat allChannels;
 	std::vector<std::vector<cv::Point_<int>>> channelContours;
 	std::vector<UevaChannel> channels;
+	QVector<qreal> estimates;
+	QVector<qreal> measures;
+	QVector<qreal> references;
+	QVector<qreal> states;
+	QVector<qreal> integralStates;
+	QVector<qreal> commands;
+	QVector<qreal> measureOffsets;
+	QVector<qreal> referenceOffsets;
 
 	//// NON PERSISTANT VARIABLES
 	bool needReset;
@@ -95,6 +104,15 @@ private:
 	std::vector<std::vector< cv::Point_<int> >> markerContours;
 	std::vector<UevaDroplet> droplets;
 	std::vector<UevaMarker> markers;
+	cv::Mat x;
+	cv::Mat z;
+	cv::Mat u;
+	cv::Mat y_est;
+	cv::Mat y;
+	cv::Mat r;
+	cv::Mat x_new;
+	cv::Mat z_new;
+	cv::Mat u_new;
 
 
 	//// CONVENIENT PARAMETERS

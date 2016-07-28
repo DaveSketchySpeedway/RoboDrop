@@ -40,8 +40,23 @@ UevaData::UevaData()
 	map["inletWrite"] = inletWrite;
 	map["inletRead"] = inletRead;
 	map["inletTime"] = inletTime;
-
-	//// xxx
+	//// CTRL
+	QVector<qreal> estimates;
+	QVector<qreal> measures;
+	QVector<qreal> references;
+	QVector<qreal> states;
+	QVector<qreal> integralStates;
+	QVector<qreal> commands;
+	QVector<qreal> measureOffsets;
+	QVector<qreal> referenceOffsets;
+	map["ctrlEstimate"] = estimates;
+	map["ctrlMeasure"] = measures;
+	map["ctrlReference"] = references;
+	map["ctrlState"] = states;
+	map["ctrlIntegraState"] = integralStates;
+	map["ctrlCommand"] = commands;
+	map["ctrlMeasureOffset"] = measureOffsets;
+	map["ctrlReferenceOffset"] = referenceOffsets;
 }
 
 std::ofstream UevaData::fileStream;
@@ -168,6 +183,7 @@ UevaCtrl::UevaCtrl()
 
 }
 
+int UevaCtrl::index = 0;
 int UevaCtrl::numPlantState = 0;
 int UevaCtrl::numPlantInput = 0;
 int UevaCtrl::numPlantOutput = 0;

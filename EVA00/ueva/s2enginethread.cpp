@@ -58,60 +58,6 @@ void S2EngineThread::wake()
 }
 
 //// SINGLE TIME
-
-void S2EngineThread::loadCtrl(std::string fileName,
-	int *numState, int *numIn, int *numOut, int *numCtrl, double *ctrlTs)
-{
-	mutex.lock();
-	ctrls.clear();
-	cv::FileStorage fs(fileName, cv::FileStorage::READ);
-	*numCtrl = (int)fs["numCtrl"];
-	*ctrlTs = (double)fs["samplePeriod"];
-	*numState = (int)fs["numPlantState"];
-	*numIn = (int)fs["numPlantInput"];
-	*numOut = (int)fs["numPlantOutput"];
-	UevaCtrl::samplePeriod = (double)fs["samplePeriod"];
-	UevaCtrl::numPlantState = (int)fs["numPlantState"];
-	UevaCtrl::numPlantInput = (int)fs["numPlantInput"];
-	UevaCtrl::numPlantOutput = (int)fs["numPlantOutput"];
-
-	for (int i = 0; i < *numCtrl; i++)
-	{	
-		std::string ctrlName = "ctrl" + std::to_string(i);
-		cv::FileNode c = fs[ctrlName];
-		UevaCtrl ctrl;
-
-		ctrl.uncoUnob = (int)c["uncoUnob"];
-		c["outputIdx"] >> ctrl.outputIdx;
-		c["stateIdx"] >> ctrl.stateIdx;
-		c["A"] >> ctrl.A;
-		c["B"] >> ctrl.B;
-		c["C"] >> ctrl.C;
-		c["D"] >> ctrl.D;
-		c["K1"] >> ctrl.K1;
-		c["K2"] >> ctrl.K2;
-		c["H"] >> ctrl.H;
-
-		ctrls.push_back(ctrl);
-
-		std::cerr << "controller " << ctrlName << std::endl;
-		std::cerr << "unco unob " << ctrl.uncoUnob << std::endl;
-		std::cerr << "output index " << ctrl.outputIdx << std::endl;
-		std::cerr << "state index " << ctrl.stateIdx << std::endl;
-		//std::cerr << "A " << ctrl.A << std::endl;
-		//std::cerr << "B " << ctrl.B << std::endl;
-		//std::cerr << "C " << ctrl.C << std::endl;
-		//std::cerr << "D " << ctrl.D << std::endl;
-		//std::cerr << "K1 " << ctrl.K1 << std::endl;
-		//std::cerr << "K2 " << ctrl.K2 << std::endl;
-		//std::cerr << "H " << ctrl.H << std::endl;
-		std::cerr << std::endl;
-	}
-	fs.release();
-
-	mutex.unlock();
-}
-
 void S2EngineThread::setCalib(double micronLength)
 {
 	mutex.lock();
@@ -141,8 +87,6 @@ void S2EngineThread::setBkgd()
 void S2EngineThread::separateChannels(int &numChan)
 {
 	CV_Assert(!allChannels.empty());
-	// clean up
-	activatedChannels.clear();
 	channelContours.clear();
 	channels.clear();
 	// find all channel contours
@@ -180,6 +124,93 @@ void S2EngineThread::sortChannels(std::map<std::string, std::vector<int> > &chan
 		channelContours.push_back(mask2Contour(channels[i].mask));
 	}
 }
+
+void S2EngineThread::loadCtrl(std::string fileName,
+	int *numState, int *numIn, int *numOut, int *numCtrl, double *ctrlTs)
+{
+	mutex.lock();
+
+	ctrls.clear();
+	cv::FileStorage fs(fileName, cv::FileStorage::READ);
+	*numCtrl = (int)fs["numCtrl"];
+	*ctrlTs = (double)fs["samplePeriod"];
+	*numState = (int)fs["numPlantState"];
+	*numIn = (int)fs["numPlantInput"];
+	*numOut = (int)fs["numPlantOutput"];
+	UevaCtrl::samplePeriod = (double)fs["samplePeriod"];
+	UevaCtrl::numPlantState = (int)fs["numPlantState"];
+	UevaCtrl::numPlantInput = (int)fs["numPlantInput"];
+	UevaCtrl::numPlantOutput = (int)fs["numPlantOutput"];
+
+	for (int i = 0; i < *numCtrl; i++)
+	{
+		std::string ctrlName = "ctrl" + std::to_string(i);
+		cv::FileNode c = fs[ctrlName];
+		UevaCtrl ctrl;
+
+		ctrl.uncoUnob = (int)c["uncoUnob"];
+		c["outputIdx"] >> ctrl.outputIndices;
+		c["stateIdx"] >> ctrl.stateIndices;
+		c["A"] >> ctrl.A;
+		c["B"] >> ctrl.B;
+		c["C"] >> ctrl.C;
+		c["D"] >> ctrl.D;
+		c["K1"] >> ctrl.K1;
+		c["K2"] >> ctrl.K2;
+		c["H"] >> ctrl.H;
+
+		ctrls.push_back(ctrl);
+
+		std::cerr << "controller " << ctrlName << std::endl;
+		std::cerr << "unco unob " << ctrl.uncoUnob << std::endl;
+		std::cerr << "output index " << ctrl.outputIndices << std::endl;
+		std::cerr << "state index " << ctrl.stateIndices << std::endl;
+		//std::cerr << "A " << ctrl.A << std::endl;
+		//std::cerr << "B " << ctrl.B << std::endl;
+		//std::cerr << "C " << ctrl.C << std::endl;
+		//std::cerr << "D " << ctrl.D << std::endl;
+		//std::cerr << "K1 " << ctrl.K1 << std::endl;
+		//std::cerr << "K2 " << ctrl.K2 << std::endl;
+		//std::cerr << "H " << ctrl.H << std::endl;
+		std::cerr << std::endl;
+	}
+	fs.release();
+
+	mutex.unlock();
+}
+
+void S2EngineThread::initCtrl()
+{
+	estimates = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	measures = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	references = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	states = QVector<qreal>(UevaCtrl::numPlantState, 0.0);
+	integralStates = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	commands = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
+	measureOffsets = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	referenceOffsets = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	// open to close loop transition
+	for (int i = 0; i < commands.size(); i++)
+	{
+		commands[i] = double(settings.inletRequests[i]);
+	}
+}
+
+void S2EngineThread::resetCtrl()
+{
+	activatedChannels.clear();
+
+	estimates.clear();
+	measures.clear();
+	references.clear();
+	states.clear();
+	integralStates.clear();
+	commands.clear();
+	measureOffsets.clear();
+	referenceOffsets.clear();
+}
+
+
 
 //// CONTINUOUS
 void S2EngineThread::run()
@@ -256,7 +287,7 @@ void S2EngineThread::run()
 			{	
 				//// IMGPROC
 				if (settings.flag & UevaSettings::IMGPROC_ON)
-				{			
+				{
 					CV_Assert(!bkgd.empty());
 					CV_Assert(!dropletMask.empty());
 					CV_Assert(!markerMask.empty());
@@ -267,10 +298,10 @@ void S2EngineThread::run()
 						HIGH_VALUE,
 						cv::THRESH_BINARY);
 					// flood and complement to get droplets (droplets internal)
-					allDroplets = allMarkers.clone(); 
+					allDroplets = allMarkers.clone();
 					seed = cv::Point(0, 0);
 					floodFillReturn = cv::floodFill(allDroplets,
-						seed, 
+						seed,
 						HIGH_VALUE,
 						0, cv::Scalar_<int>(0), cv::Scalar_<int>(0),
 						cv::FLOODFILL_FIXED_RANGE);
@@ -289,20 +320,20 @@ void S2EngineThread::run()
 					markerContours.clear();
 					cv::findContours(allMarkers, markerContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 					cv::findContours(allDroplets, dropletContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-						//cv::findContours(allDroplets, dropletContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+					//cv::findContours(allDroplets, dropletContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 					// filter contours base on size	
 					bigPassFilter(markerContours, settings.imgprogContourSize);
 					bigPassFilter(dropletContours, settings.imgprogContourSize);
 					// controller preparation
-					needInactivateAll = false;
-					needReset = false;
-					desiredChannels.clear();
 					for (int i = 0; i < channels.size(); i++)
 					{
 						channels[i].previousMarkerIndices.clear();
 						channels[i].previousMarkerIndices = channels[i].currentMarkerIndices;
 						channels[i].currentMarkerIndices.clear();
 					}
+					needInactivateAll = false;
+					needReset = false;
+					desiredChannels.clear();
 					vacancy = settings.ctrlAutoCatch - activatedChannels.size();
 					mousePressLeft.x = settings.leftPressPosition.x();
 					mousePressLeft.y = settings.leftPressPosition.y();
@@ -331,17 +362,17 @@ void S2EngineThread::run()
 						markers.push_back(marker);
 					}
 					// sort markers to fake continuity
-					std::sort(markers.begin(), markers.end(), 
+					std::sort(markers.begin(), markers.end(),
 						[](const UevaMarker &a, const UevaMarker &b)
-						{
-							double sizeOfA =
-								(double)a.centroid.x / (double)a.imageSize.width * (double)a.sortRatio +
-								(double)a.centroid.y / (double)a.imageSize.height;
-							double sizeOfB = 
-								(double)b.centroid.x / (double)b.imageSize.width * (double)b.sortRatio +
-								(double)b.centroid.y / (double)b.imageSize.height;
-							return sizeOfA < sizeOfB;
-						});
+					{
+						double sizeOfA =
+							(double)a.centroid.x / (double)a.imageSize.width * (double)a.sortRatio +
+							(double)a.centroid.y / (double)a.imageSize.height;
+						double sizeOfB =
+							(double)b.centroid.x / (double)b.imageSize.width * (double)b.sortRatio +
+							(double)b.centroid.y / (double)b.imageSize.height;
+						return sizeOfA < sizeOfB;
+					});
 					// link markers with channels after sort
 					for (int i = 0; i < markers.size(); i++)
 					{
@@ -490,15 +521,104 @@ void S2EngineThread::run()
 							}
 						}
 					}
-					for (int k = 0; k < activatedChannels.size(); k++)
-						std::cerr << activatedChannels[k] << " ";
-					std::cerr << std::endl;
 				}
-
 				//// CTRL
 				if (settings.flag & UevaSettings::CTRL_ON)
 				{
+					if (activatedChannels.size() > 0)
+					{
+						x = cv::Mat(ctrls[UevaCtrl::index].stateIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
+						z = cv::Mat(ctrls[UevaCtrl::index].outputIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
+						u = cv::Mat(UevaCtrl::numPlantInput, 1, CV_64FC1, cv::Scalar(0.0));
+						y_est = cv::Mat(ctrls[UevaCtrl::index].outputIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
+						y = cv::Mat(ctrls[UevaCtrl::index].outputIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
+						r = cv::Mat(ctrls[UevaCtrl::index].outputIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
+						x_new = cv::Mat(ctrls[UevaCtrl::index].stateIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
+						z_new = cv::Mat(ctrls[UevaCtrl::index].outputIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
+						u_new = cv::Mat(UevaCtrl::numPlantInput, 1, CV_64FC1, cv::Scalar(0.0));
+						// check in
+						for (int i = 0; i < ctrls[UevaCtrl::index].stateIndices.rows; i++)
+						{
+							x.at<double>(i) = states[ctrls[UevaCtrl::index].stateIndices.at<uchar>(i)];
+						}
+						for (int i = 0; i < ctrls[UevaCtrl::index].outputIndices.rows; i++)
+						{
+							z.at<double>(i) = integralStates[ctrls[UevaCtrl::index].outputIndices.at<uchar>(i)];
+						}
+						for (int i = 0; i < UevaCtrl::numPlantInput; i++)
+						{
+							u.at<double>(i) = commands[i];
+						}
+						// estimate output
 
+
+
+						// measurement
+
+
+
+						// reference
+
+
+
+
+						// estimate states
+
+
+
+
+						// calculate command
+
+						u_new = u;
+
+						// debug
+						std::cerr << " activated channels: ";
+						for (int k = 0; k < activatedChannels.size(); k++)
+							std::cerr  << activatedChannels[k] << " ";
+						std::cerr << std::endl;
+						std::cerr << "x     " << x.t() << std::endl;
+						std::cerr << "z     " << z.t() << std::endl;
+						std::cerr << "u     " << u.t() << std::endl;
+						std::cerr << "y_est " << y_est.t() << std::endl;
+						std::cerr << "y     " << y.t() << std::endl;
+						std::cerr << "r     " << r.t() << std::endl;
+						std::cerr << "x_new " << x_new.t() << std::endl;
+						std::cerr << "z_new " << z_new.t() << std::endl;
+						std::cerr << "u_new " << u_new.t() << std::endl;
+						std::cerr << std::endl;
+						// check out
+						for (int i = 0; i < ctrls[UevaCtrl::index].outputIndices.rows; i++)
+						{
+							uchar outputIndex = ctrls[UevaCtrl::index].outputIndices.at<uchar>(i);
+							estimates[outputIndex] = y_est.at<double>(i);
+							measures[outputIndex] = y.at<double>(i);
+							references[outputIndex] = r.at<double>(i);
+							integralStates[outputIndex] = z_new.at<double>(i);
+						}
+						for (int i = 0; i < ctrls[UevaCtrl::index].stateIndices.rows; i++)
+						{
+							uchar stateIndex = ctrls[UevaCtrl::index].stateIndices.at<uchar>(i);
+							states[stateIndex] = x_new.at<double>(i);
+						}
+						for (int i = 0; i < UevaCtrl::numPlantInput; i++)
+						{
+							commands[i] = u_new.at<double>(i);
+						}
+						// data acquisition
+						data.map["ctrlEstimate"] = estimates;
+						data.map["ctrlMeasure"] = measures;
+						data.map["ctrlReference"] = references;
+						data.map["ctrlState"] = states;
+						data.map["ctrlIntegraState"] = integralStates;
+						data.map["ctrlCommand"] = commands;
+						data.map["ctrlMeasureOffset"] = measureOffsets;
+						data.map["ctrlReferenceOffset"] = referenceOffsets;
+						// command pumps
+						for (int i = 0; i < commands.size(); i++)
+						{
+							data.map["inletWrite"][i] = commands[i];
+						}
+					}
 				}
 
 				//// DRAW

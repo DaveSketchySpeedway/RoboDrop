@@ -31,7 +31,7 @@ clc
 
 % PLANT = model.chip;
 PLANT = model.combo;
-CTRL_INDEX = 7;
+CTRL_INDEX = 3;
 
 PLOT_FMIN = -1;
 PLOT_FMAX = 5;
