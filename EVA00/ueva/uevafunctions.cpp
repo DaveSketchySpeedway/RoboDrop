@@ -1,6 +1,6 @@
 #include "uevafunctions.h"
 
-cv::Mat qImage2cvMat(const QImage &qImage)
+cv::Mat Ueva::qImage2cvMat(const QImage &qImage)
 {
 	// indexed8 to 8uc1 
 	//Mat cvMat(qImage.height(), qImage.width(), CV_8UC1,
@@ -23,7 +23,7 @@ cv::Mat qImage2cvMat(const QImage &qImage)
 	return cvMat;
 }
 
-QImage cvMat2qImage(const cv::Mat &cvMat)
+QImage Ueva::cvMat2qImage(const cv::Mat &cvMat)
 {
 	// 8uc1 to indexed8 
 	//static QVector<QRgb> colorTable;
@@ -43,7 +43,7 @@ QImage cvMat2qImage(const cv::Mat &cvMat)
 	return qImage; // no deep copy
 }
 
-cv::Mat contour2Mask(const std::vector< cv::Point_<int> > &contour, const cv::Size_<int> &sz)
+cv::Mat Ueva::contour2Mask(const std::vector< cv::Point_<int> > &contour, const cv::Size_<int> &sz)
 {
 	std::vector< std::vector< cv::Point_<int> >> contours;
 	contours.push_back(contour);
@@ -52,14 +52,14 @@ cv::Mat contour2Mask(const std::vector< cv::Point_<int> > &contour, const cv::Si
 	return mask;
 }
 
-std::vector<cv::Point_<int>> mask2Contour(const cv::Mat &mask)
+std::vector<cv::Point_<int>> Ueva::mask2Contour(const cv::Mat &mask)
 {
 	std::vector<std::vector< cv::Point_<int> >> contours;
 	cv::findContours(mask, contours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
 	return contours[0];
 }
 
-void bigPassFilter(std::vector<std::vector< cv::Point_<int> >> &contours, const int &size)
+void Ueva::bigPassFilter(std::vector<std::vector< cv::Point_<int> >> &contours, const int &size)
 {
 	std::vector<std::vector< cv::Point_<int> >>::iterator iter;
 	iter = contours.begin();
@@ -77,7 +77,7 @@ void bigPassFilter(std::vector<std::vector< cv::Point_<int> >> &contours, const 
 	}
 }
 
-bool isPointInMask(cv::Point_<int> &point, cv::Mat &mask)
+bool Ueva::isPointInMask(cv::Point_<int> &point, cv::Mat &mask)
 {
 	uchar *p = mask.ptr<uchar>(point.y);
 	if (p[point.x])
@@ -85,14 +85,14 @@ bool isPointInMask(cv::Point_<int> &point, cv::Mat &mask)
 	return false;
 }
 
-int masksOverlap(cv::Mat &mask1, cv::Mat &mask2)
+int Ueva::masksOverlap(cv::Mat &mask1, cv::Mat &mask2)
 {
 	cv::Mat mask3 = cv::Mat(mask1.size(), CV_8UC1, cv::Scalar_<int>(0));
 	cv::bitwise_and(mask1, mask2, mask3);
 	return cv::countNonZero(mask3);
 }
 
-int detectKink(std::vector< cv::Point_<int>> &contour, const int &convexSize)
+int Ueva::detectKink(std::vector< cv::Point_<int>> &contour, const int &convexSize)
 {
 	std::vector<int> hull;
 	cv::convexHull(contour, hull);
@@ -119,7 +119,7 @@ int detectKink(std::vector< cv::Point_<int>> &contour, const int &convexSize)
 	return kinkIndex; 
 }
 
-int detectNeck(std::vector< cv::Point_<int>> &contour, int &kinkIndex, float &neck, const int threshold)
+int Ueva::detectNeck(std::vector< cv::Point_<int>> &contour, int &kinkIndex, float &neck, const int threshold)
 {
 	std::vector<float> profile;
 	for (int i = kinkIndex; i < contour.size(); i++)
@@ -192,7 +192,7 @@ int detectNeck(std::vector< cv::Point_<int>> &contour, int &kinkIndex, float &ne
 	return neckIndex;
 }
 
-bool isCombinationPossible(std::vector<int> &combination, std::vector<UevaCtrl> &ctrls)
+bool Ueva::isCombinationPossible(std::vector<int> &combination, std::vector<UevaCtrl> &ctrls)
 {
 	std::sort(combination.begin(), combination.end());
 	for (int i = 0; i < ctrls.size(); i++)
@@ -212,7 +212,7 @@ bool isCombinationPossible(std::vector<int> &combination, std::vector<UevaCtrl> 
 	return false;
 }
 
-void deleteFromCombination(std::vector<int> &combination, const int &value)
+void Ueva::deleteFromCombination(std::vector<int> &combination, const int &value)
 {
 	std::vector<int>::iterator iter;
 	iter = combination.begin();
@@ -229,7 +229,7 @@ void deleteFromCombination(std::vector<int> &combination, const int &value)
 	}
 }
 
-double scaleInterface(const cv::Point_<int> &point, const int &direction, const double &multiplier)
+double Ueva::screen2ctrl(const cv::Point_<int> &point, const int &direction, const double &multiplier)
 {
 	double value;
 	switch (direction)

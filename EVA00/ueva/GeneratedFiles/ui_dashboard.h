@@ -86,7 +86,7 @@ public:
     {
         if (Dashboard->objectName().isEmpty())
             Dashboard->setObjectName(QStringLiteral("Dashboard"));
-        Dashboard->resize(773, 747);
+        Dashboard->resize(600, 800);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(1);
         sizePolicy.setVerticalStretch(1);

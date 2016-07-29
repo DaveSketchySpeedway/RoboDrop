@@ -989,7 +989,7 @@ bool MainWindow::loadFile(const QString &fileName)
 		statusBar()->showMessage(tr("Loading canceled"), 2000);
 		return false;
 	}
-	file8uc1 = qImage2cvMat(argb32);
+	file8uc1 = Ueva::qImage2cvMat(argb32);
 	setCurrentFile(fileName);
 	statusBar()->showMessage(tr("File loaded"), 2000);
 	return true;
@@ -1197,7 +1197,7 @@ void MainWindow::engineSlot(const UevaData &data)
 	pumpThread->wake();
 
 	//// UPDATE DISPLAY
-	fileRgb888 = cvMat2qImage(data.drawnRgb); // rgb8uc3 to rgb888, 1 deep copy
+	fileRgb888 = Ueva::cvMat2qImage(data.drawnRgb); // rgb8uc3 to rgb888, 1 deep copy
 	display->setImage(fileRgb888); 
 	display->update();
 	

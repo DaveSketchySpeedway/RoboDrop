@@ -93,6 +93,7 @@ private:
 	QVector<qreal> commands;
 	QVector<qreal> measureOffsets;
 	QVector<qreal> referenceOffsets;
+	bool firstTime;
 
 	//// NON PERSISTANT VARIABLES
 	bool needReset;
@@ -119,7 +120,7 @@ private:
 	cv::Point_<int> mousePressPrevious;
 	cv::Point_<int> mousePressCurrent;
 	cv::Point_<int> mousePressDisplacement;
-	bool haveDirectReference;
+	int directedChannel;
 	double dr;
 
 	//// CONVENIENT PARAMETERS

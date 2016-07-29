@@ -139,7 +139,7 @@ void Display::paintEvent(QPaintEvent *event)
 {
 	QPainter painter(this);
 	painter.drawImage(0, 0, image);
-	painter.setPen(QPen(Qt::green, 3));
+	painter.setPen(QPen(Qt::red, 3));
 	painter.drawLine(lineStartPosition, lineEndPosition);
 }
 
