@@ -190,6 +190,7 @@ void S2EngineThread::initCtrl()
 	commands = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
 	measureOffsets = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
 	referenceOffsets = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	stateOffsets = QVector<qreal>(UevaCtrl::numPlantState, 0.0);
 	// open to close loop transition
 	grounds.clear();
 	for (int i = 0; i < commands.size(); i++)
@@ -213,6 +214,7 @@ void S2EngineThread::resetCtrl()
 	commands.clear();
 	measureOffsets.clear();
 	referenceOffsets.clear();
+	stateOffsets.clear();
 	mutex.unlock();
 }
 
@@ -337,8 +339,10 @@ void S2EngineThread::run()
 						channels[i].previousMarkerIndices = channels[i].currentMarkerIndices;
 						channels[i].currentMarkerIndices.clear();
 					}
-					needInactivateAll = false;
-					needReset = false;
+					deactivateAll = false;
+					needToSelect = false;
+					needToRelease = false;
+					needToSwitch = false;
 					desiredChannels.clear();
 					vacancy = settings.ctrlAutoCatch - activatedChannels.size();
 					mousePressLeft.x = settings.leftPressPosition.x();
@@ -462,7 +466,7 @@ void S2EngineThread::run()
 								{
 									//cerr << "ch " << i << " select " << channels[i].selectedMarkerIndex << endl;////
 									channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[j];
-									needReset = 1;
+									needToSwitch = true;
 								}
 								// user try to select marker in inactive channel
 								else
@@ -474,7 +478,7 @@ void S2EngineThread::run()
 										//cerr << "ch " << i << " select " << channels[i].selectedMarkerIndex << endl;////
 										activatedChannels = desiredChannels;
 										channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[j];
-										needReset = 1;
+										needToSelect = true;
 										vacancy--;
 									}
 								}
@@ -488,7 +492,7 @@ void S2EngineThread::run()
 									//cerr << "ch " << i << " release " << channels[i].selectedMarkerIndex << endl;////
 									channels[i].selectedMarkerIndex = -1;
 									Ueva::deleteFromCombination(activatedChannels, i);
-									needReset = 1;
+									needToRelease = 1;
 									vacancy++;
 								}
 							}
@@ -499,10 +503,10 @@ void S2EngineThread::run()
 					{
 						if (channels[i].currentMarkerIndices != channels[i].previousMarkerIndices)
 						{
-							needInactivateAll = true;
+							deactivateAll = true;
 						}
 					}
-					if (needInactivateAll)
+					if (deactivateAll)
 					{
 						for (int i = 0; i < channels.size(); i++)
 						{
@@ -513,7 +517,7 @@ void S2EngineThread::run()
 								Ueva::deleteFromCombination(activatedChannels, i);
 							}
 						}
-						needReset = 1;
+						needToRelease = 1;
 						vacancy = settings.ctrlAutoCatch;
 					}
 					// auto catch marker
@@ -530,7 +534,7 @@ void S2EngineThread::run()
 								//cerr << "ch " << i << " select " << channels[i].selectedMarkerIndex << endl;
 								activatedChannels = desiredChannels;
 								channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[0];
-								needReset = 1;
+								needToSelect = 1;
 								vacancy--;
 							}
 						}
@@ -543,7 +547,7 @@ void S2EngineThread::run()
 					if (firstTime)
 					{
 						firstTime = false;
-						needReset = true;
+						needToSelect = true;
 						desiredChannels.clear();
 						for (int i = 0; i < channels.size(); i++)
 						{
@@ -557,151 +561,145 @@ void S2EngineThread::run()
 							activatedChannels = desiredChannels;
 						}
 					}
-					// check in
-					x = cv::Mat(ctrls[UevaCtrl::index].stateIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
-					z = cv::Mat(ctrls[UevaCtrl::index].outputIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
-					u = cv::Mat(UevaCtrl::numPlantInput, 1, CV_64FC1, cv::Scalar(0.0));
-					y_est = cv::Mat(ctrls[UevaCtrl::index].outputIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
-					y = cv::Mat(ctrls[UevaCtrl::index].outputIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
-					r = cv::Mat(ctrls[UevaCtrl::index].outputIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
-					x_new = cv::Mat(ctrls[UevaCtrl::index].stateIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
-					z_new = cv::Mat(ctrls[UevaCtrl::index].outputIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
-					u_new = cv::Mat(UevaCtrl::numPlantInput, 1, CV_64FC1, cv::Scalar(0.0));
-					for (int i = 0; i < ctrls[UevaCtrl::index].stateIndices.rows; i++)
+					if (activatedChannels.size() > 0)
 					{
-						x.at<double>(i) = states[ctrls[UevaCtrl::index].stateIndices.at<uchar>(i)];
-					}
-					for (int i = 0; i < ctrls[UevaCtrl::index].outputIndices.rows; i++)
-					{
-						z.at<double>(i) = integralStates[ctrls[UevaCtrl::index].outputIndices.at<uchar>(i)];
-					}
-					for (int i = 0; i < UevaCtrl::numPlantInput; i++)
-					{
-						u.at<double>(i) = commands[i];
-					}
-					if (!needReset)
-					{
+						// check in old
+						x = cv::Mat(ctrls[UevaCtrl::index].stateIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
+						z = cv::Mat(ctrls[UevaCtrl::index].outputIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
+						u = cv::Mat(UevaCtrl::numPlantInput, 1, CV_64FC1, cv::Scalar(0.0));
+						y = cv::Mat(ctrls[UevaCtrl::index].outputIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
+						r = cv::Mat(ctrls[UevaCtrl::index].outputIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
+						for (int i = 0; i < ctrls[UevaCtrl::index].stateIndices.rows; i++)
+						{
+							x.at<double>(i) = states[ctrls[UevaCtrl::index].stateIndices.at<uchar>(i)];
+						}
+						for (int i = 0; i < UevaCtrl::numPlantInput; i++)
+						{
+							u.at<double>(i) = commands[i];
+						}
 						for (int i = 0; i < ctrls[UevaCtrl::index].outputIndices.rows; i++)
 						{
+							z.at<double>(i) = integralStates[ctrls[UevaCtrl::index].outputIndices.at<uchar>(i)];
+							y.at<double>(i) = measures[ctrls[UevaCtrl::index].outputIndices.at<uchar>(i)];
 							r.at<double>(i) = references[ctrls[UevaCtrl::index].outputIndices.at<uchar>(i)];
 						}
-					}
-					// estimate output
-					if (needReset)
-					{
-						for (int i = 0; i < ctrls[UevaCtrl::index].outputIndices.rows; i++)
-						{
-							x.at<double>(i) = 0.0;
-						}
-					}
-					y_est = ctrls[UevaCtrl::index].C * x + ctrls[UevaCtrl::index].D * u;
-					// directed reference
-					for (int i = 0; i < activatedChannels.size(); i++)
-					{
-						rect = markers[channels[activatedChannels[i]].selectedMarkerIndex].rect;
-						if (mousePressPrevious.inside(rect) &&	mousePressCurrent.inside(rect))
-						{
-							directedChannel = activatedChannels[i];
-							dr = Ueva::screen2ctrl(mousePressDisplacement,
-								channels[activatedChannels[i]].direction, 
-								micronPerPixel);
-							r.at<double>(i) += dr;
-						}
-					}
-					// linked reference
-					if (directedChannel != -1)
-					{
+						// initiate new
+						y_est = cv::Mat(ctrls[UevaCtrl::index].outputIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
+						x_new = cv::Mat(ctrls[UevaCtrl::index].stateIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
+						z_new = cv::Mat(ctrls[UevaCtrl::index].outputIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
+						u_new = cv::Mat(UevaCtrl::numPlantInput, 1, CV_64FC1, cv::Scalar(0.0));
+						// estimate output
+						y_est = ctrls[UevaCtrl::index].C * x + ctrls[UevaCtrl::index].D * u;
+						// measurement
 						for (int i = 0; i < activatedChannels.size(); i++)
 						{
-							if (settings.linkChannels[activatedChannels[i]])
+							if (markers[channels[activatedChannels[i]].selectedMarkerIndex].type == 1) // neck
 							{
-								if (settings.inverseLinkChannels[activatedChannels[i]])
+								// y base on r
+							}
+							else // interface
+							{
+								y.at<double>(i) = Ueva::screen2ctrl(
+									markers[channels[activatedChannels[i]].selectedMarkerIndex].centroid,
+									channels[activatedChannels[i]].direction,
+									micronPerPixel);
+							}
+							if (needReset)
+							{
+								measureOffsets[activatedChannels[i]] = y.at<double>(i);
+							}
+							y.at<double>(i) -= measureOffsets[activatedChannels[i]];
+						}
+						// directed reference
+						for (int i = 0; i < activatedChannels.size(); i++)
+						{
+							rect = markers[channels[activatedChannels[i]].selectedMarkerIndex].rect;
+							if (mousePressPrevious.inside(rect) && mousePressCurrent.inside(rect))
+							{
+								directedChannel = activatedChannels[i];
+								dr = Ueva::screen2ctrl(mousePressDisplacement,
+									channels[activatedChannels[i]].direction,
+									micronPerPixel);
+								r.at<double>(i) += dr;
+							}
+							//if (needReset)
+							//{
+							//	referenceOffsets[activatedChannels[i]] += r_new.at<double>(i) - r.at<double>(i);
+							//}
+							//r_new.at<double>(i) -= referenceOffsets[activatedChannels[i]];
+						}
+						// linked reference
+						if (directedChannel != -1)
+						{
+							for (int i = 0; i < activatedChannels.size(); i++)
+							{
+								if (settings.linkChannels[activatedChannels[i]])
 								{
-									r.at<double>(i) -= dr;
-								}
-								else
-								{
-									r.at<double>(i) += dr;
+									if (settings.inverseLinkChannels[activatedChannels[i]])
+									{
+										r.at<double>(i) -= dr;
+									}
+									else
+									{
+										r.at<double>(i) += dr;
+									}
 								}
 							}
 						}
-					}
-					// measurement
-					for (int i = 0; i < activatedChannels.size(); i++)
-					{
-						if (markers[ channels[activatedChannels[i]].selectedMarkerIndex ].type == 1) // neck
+						// estimate states
+						x_new = ctrls[UevaCtrl::index].A * x +
+							ctrls[UevaCtrl::index].B * u +
+							ctrls[UevaCtrl::index].H * (y - y_est);
+						z_new = z + UevaCtrl::samplePeriod * (y - r);
+						// calculate command
+						u_new = -ctrls[UevaCtrl::index].K1 * x_new - ctrls[UevaCtrl::index].K2 * z_new;
+						// check out new
+						for (int i = 0; i < ctrls[UevaCtrl::index].outputIndices.rows; i++)
 						{
-							
+							uchar outputIndex = ctrls[UevaCtrl::index].outputIndices.at<uchar>(i);
+							estimates[outputIndex] = y_est.at<double>(i);
+							measures[outputIndex] = y.at<double>(i);
+							references[outputIndex] = r.at<double>(i);
+							integralStates[outputIndex] = z_new.at<double>(i);
 						}
-						else // interface
+						for (int i = 0; i < ctrls[UevaCtrl::index].stateIndices.rows; i++)
 						{
-							y.at<double>(i) = Ueva::screen2ctrl(
-								markers[ channels[activatedChannels[i]].selectedMarkerIndex ].centroid,
-								channels[activatedChannels[i]].direction, 
-								micronPerPixel);
+							uchar stateIndex = ctrls[UevaCtrl::index].stateIndices.at<uchar>(i);
+							states[stateIndex] = x_new.at<double>(i);
 						}
-						if (needReset)
+						for (int i = 0; i < UevaCtrl::numPlantInput; i++)
 						{
-							measureOffsets[activatedChannels[i]] = y.at<double>(i);
+							commands[i] = u_new.at<double>(i);
 						}
-						y.at<double>(i) -= measureOffsets[activatedChannels[i]];
+						// data acquisition
+						data.map["ctrlEstimate"] = estimates;
+						data.map["ctrlMeasure"] = measures;
+						data.map["ctrlReference"] = references;
+						data.map["ctrlState"] = states;
+						data.map["ctrlIntegraState"] = integralStates;
+						data.map["ctrlCommand"] = commands;
+						// command pumps
+						for (int i = 0; i < commands.size(); i++)
+						{
+							data.map["inletWrite"][i] = grounds[i] + commands[i];
+						}
+						// debug
+						std::cerr << " activated channels: ";
+						for (int k = 0; k < activatedChannels.size(); k++)
+							std::cerr << activatedChannels[k] << " ";
+						//std::cerr << std::endl;
+						//std::cerr << std::fixed << std::setprecision(5);
+						//std::cerr << "x     " << x.t() << std::endl;
+						//std::cerr << "z     " << z.t() << std::endl;
+						//std::cerr << "u     " << u.t() << std::endl;
+						//std::cerr << "y_est " << y_est.t() << std::endl;
+						//std::cerr << "y     " << y.t() << std::endl;
+						//std::cerr << "r     " << r.t() << std::endl;
+						//std::cerr << "x_new " << x_new.t() << std::endl;
+						//std::cerr << "z_new " << z_new.t() << std::endl;
+						//std::cerr << "u_new " << u_new.t() << std::endl;
+						std::cerr << std::endl;
 					}
-					// estimate states
-					x_new = ctrls[UevaCtrl::index].A * x +
-						ctrls[UevaCtrl::index].B * u +
-						ctrls[UevaCtrl::index].H * (y - y_est);
-					z_new = z + UevaCtrl::samplePeriod * (y - r);
-					// calculate command
-					u_new = -ctrls[UevaCtrl::index].K1 * x_new - ctrls[UevaCtrl::index].K2 * z_new;
-					// check out
-					for (int i = 0; i < ctrls[UevaCtrl::index].outputIndices.rows; i++)
-					{
-						uchar outputIndex = ctrls[UevaCtrl::index].outputIndices.at<uchar>(i);
-						estimates[outputIndex] = y_est.at<double>(i);
-						measures[outputIndex] = y.at<double>(i);
-						references[outputIndex] = r.at<double>(i);
-						integralStates[outputIndex] = z_new.at<double>(i);
-					}
-					for (int i = 0; i < ctrls[UevaCtrl::index].stateIndices.rows; i++)
-					{
-						uchar stateIndex = ctrls[UevaCtrl::index].stateIndices.at<uchar>(i);
-						states[stateIndex] = x_new.at<double>(i);
-					}
-					for (int i = 0; i < UevaCtrl::numPlantInput; i++)
-					{
-						//commands[i] = double(settings.inletRequests[i]) + u_new.at<double>(i);
-						commands[i] = u_new.at<double>(i);
-					}
-					// data acquisition
-					data.map["ctrlEstimate"] = estimates;
-					data.map["ctrlMeasure"] = measures;
-					data.map["ctrlReference"] = references;
-					data.map["ctrlState"] = states;
-					data.map["ctrlIntegraState"] = integralStates;
-					data.map["ctrlCommand"] = commands;
-					data.map["ctrlMeasureOffset"] = measureOffsets;
-					data.map["ctrlReferenceOffset"] = referenceOffsets;
-					// command pumps
-					for (int i = 0; i < commands.size(); i++)
-					{
-						data.map["inletWrite"][i] = grounds[i] + commands[i];
-					}
-					// debug
-					std::cerr << " activated channels: ";
-					for (int k = 0; k < activatedChannels.size(); k++)
-						std::cerr << activatedChannels[k] << " ";
-					//std::cerr << std::endl;
-					//std::cerr << std::fixed << std::setprecision(5);
-					//std::cerr << "x     " << x.t() << std::endl;
-					//std::cerr << "z     " << z.t() << std::endl;
-					//std::cerr << "u     " << u.t() << std::endl;
-					//std::cerr << "y_est " << y_est.t() << std::endl;
-					//std::cerr << "y     " << y.t() << std::endl;
-					//std::cerr << "r     " << r.t() << std::endl;
-					//std::cerr << "x_new " << x_new.t() << std::endl;
-					//std::cerr << "z_new " << z_new.t() << std::endl;
-					//std::cerr << "u_new " << u_new.t() << std::endl;
-					std::cerr << std::endl;
 				}
 
 				//// DRAW

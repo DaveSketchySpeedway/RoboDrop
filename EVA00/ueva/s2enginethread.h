@@ -93,12 +93,15 @@ private:
 	QVector<qreal> commands;
 	QVector<qreal> measureOffsets;
 	QVector<qreal> referenceOffsets;
-	bool firstTime;
+	QVector<qreal> stateOffsets;
 	std::vector<double> grounds;
 
 	//// NON PERSISTANT VARIABLES
-	bool needReset;
-	bool needInactivateAll;
+	bool firstTime;
+	bool needToSelect;
+	bool needToRelease;
+	bool needToSwitch;
+	bool deactivateAll;
 	int vacancy;
 	std::vector<int> desiredChannels;
 	cv::Mat allDroplets;
@@ -110,9 +113,9 @@ private:
 	cv::Mat x; 
 	cv::Mat z;
 	cv::Mat u;
-	cv::Mat y_est;
 	cv::Mat y;
 	cv::Mat r;
+	cv::Mat y_est;
 	cv::Mat x_new;
 	cv::Mat z_new;
 	cv::Mat u_new;

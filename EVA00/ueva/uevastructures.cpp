@@ -55,8 +55,6 @@ UevaData::UevaData()
 	map["ctrlState"] = states;
 	map["ctrlIntegraState"] = integralStates;
 	map["ctrlCommand"] = commands;
-	map["ctrlMeasureOffset"] = measureOffsets;
-	map["ctrlReferenceOffset"] = referenceOffsets;
 }
 
 std::ofstream UevaData::fileStream;
