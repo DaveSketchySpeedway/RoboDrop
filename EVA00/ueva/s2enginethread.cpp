@@ -191,15 +191,10 @@ void S2EngineThread::initCtrl()
 	measureOffsets = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
 	referenceOffsets = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
 	// open to close loop transition
-	ground = 0.0;
+	grounds.clear();
 	for (int i = 0; i < commands.size(); i++)
 	{
-		ground += double(settings.inletRequests[i]);
-	}
-	ground /= commands.size();
-	for (int i = 0; i < commands.size(); i++)
-	{
-		commands[i] = double(settings.inletRequests[i]) - ground;
+		grounds.push_back(double(settings.inletRequests[i]));
 	}
 	mutex.unlock();
 	firstTime = true;
@@ -584,7 +579,6 @@ void S2EngineThread::run()
 					{
 						u.at<double>(i) = commands[i];
 					}
-
 					if (!needReset)
 					{
 						for (int i = 0; i < ctrls[UevaCtrl::index].outputIndices.rows; i++)
@@ -592,6 +586,15 @@ void S2EngineThread::run()
 							r.at<double>(i) = references[ctrls[UevaCtrl::index].outputIndices.at<uchar>(i)];
 						}
 					}
+					// estimate output
+					if (needReset)
+					{
+						for (int i = 0; i < ctrls[UevaCtrl::index].outputIndices.rows; i++)
+						{
+							x.at<double>(i) = 0.0;
+						}
+					}
+					y_est = ctrls[UevaCtrl::index].C * x + ctrls[UevaCtrl::index].D * u;
 					// directed reference
 					for (int i = 0; i < activatedChannels.size(); i++)
 					{
@@ -628,7 +631,7 @@ void S2EngineThread::run()
 					{
 						if (markers[ channels[activatedChannels[i]].selectedMarkerIndex ].type == 1) // neck
 						{
-							// won't work here
+							
 						}
 						else // interface
 						{
@@ -643,15 +646,6 @@ void S2EngineThread::run()
 						}
 						y.at<double>(i) -= measureOffsets[activatedChannels[i]];
 					}
-					// estimate output
-					if (needReset)
-					{
-						for (int i = 0; i < ctrls[UevaCtrl::index].outputIndices.rows; i++)
-						{
-							x.at<double>(i) = y.at<double>(i);
-						}
-					}
-					y_est = ctrls[UevaCtrl::index].C * x + ctrls[UevaCtrl::index].D * u;
 					// estimate states
 					x_new = ctrls[UevaCtrl::index].A * x +
 						ctrls[UevaCtrl::index].B * u +
@@ -690,7 +684,7 @@ void S2EngineThread::run()
 					// command pumps
 					for (int i = 0; i < commands.size(); i++)
 					{
-						data.map["inletWrite"][i] = ground + commands[i];
+						data.map["inletWrite"][i] = grounds[i] + commands[i];
 					}
 					// debug
 					std::cerr << " activated channels: ";

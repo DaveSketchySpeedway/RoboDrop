@@ -94,7 +94,7 @@ private:
 	QVector<qreal> measureOffsets;
 	QVector<qreal> referenceOffsets;
 	bool firstTime;
-	double ground;
+	std::vector<double> grounds;
 
 	//// NON PERSISTANT VARIABLES
 	bool needReset;
