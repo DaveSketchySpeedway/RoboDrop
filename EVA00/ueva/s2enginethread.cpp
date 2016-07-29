@@ -191,9 +191,15 @@ void S2EngineThread::initCtrl()
 	measureOffsets = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
 	referenceOffsets = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
 	// open to close loop transition
+	ground = 0.0;
 	for (int i = 0; i < commands.size(); i++)
 	{
-		commands[i] = double(settings.inletRequests[i]);
+		ground += double(settings.inletRequests[i]);
+	}
+	ground /= commands.size();
+	for (int i = 0; i < commands.size(); i++)
+	{
+		commands[i] = double(settings.inletRequests[i]) - ground;
 	}
 	mutex.unlock();
 	firstTime = true;
@@ -566,17 +572,9 @@ void S2EngineThread::run()
 					x_new = cv::Mat(ctrls[UevaCtrl::index].stateIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
 					z_new = cv::Mat(ctrls[UevaCtrl::index].outputIndices.rows, 1, CV_64FC1, cv::Scalar(0.0));
 					u_new = cv::Mat(UevaCtrl::numPlantInput, 1, CV_64FC1, cv::Scalar(0.0));
-						
-					if (!needReset)
+					for (int i = 0; i < ctrls[UevaCtrl::index].stateIndices.rows; i++)
 					{
-						for (int i = 0; i < ctrls[UevaCtrl::index].stateIndices.rows; i++)
-						{
-							x.at<double>(i) = states[ctrls[UevaCtrl::index].stateIndices.at<uchar>(i)];
-						}
-						for (int i = 0; i < ctrls[UevaCtrl::index].outputIndices.rows; i++)
-						{
-							r.at<double>(i) = references[ctrls[UevaCtrl::index].outputIndices.at<uchar>(i)];
-						}
+						x.at<double>(i) = states[ctrls[UevaCtrl::index].stateIndices.at<uchar>(i)];
 					}
 					for (int i = 0; i < ctrls[UevaCtrl::index].outputIndices.rows; i++)
 					{
@@ -586,8 +584,14 @@ void S2EngineThread::run()
 					{
 						u.at<double>(i) = commands[i];
 					}
-					// estimate output
-					y_est = ctrls[UevaCtrl::index].C * x + ctrls[UevaCtrl::index].D * u;
+
+					if (!needReset)
+					{
+						for (int i = 0; i < ctrls[UevaCtrl::index].outputIndices.rows; i++)
+						{
+							r.at<double>(i) = references[ctrls[UevaCtrl::index].outputIndices.at<uchar>(i)];
+						}
+					}
 					// directed reference
 					for (int i = 0; i < activatedChannels.size(); i++)
 					{
@@ -624,7 +628,7 @@ void S2EngineThread::run()
 					{
 						if (markers[ channels[activatedChannels[i]].selectedMarkerIndex ].type == 1) // neck
 						{
-								
+							// won't work here
 						}
 						else // interface
 						{
@@ -639,6 +643,15 @@ void S2EngineThread::run()
 						}
 						y.at<double>(i) -= measureOffsets[activatedChannels[i]];
 					}
+					// estimate output
+					if (needReset)
+					{
+						for (int i = 0; i < ctrls[UevaCtrl::index].outputIndices.rows; i++)
+						{
+							x.at<double>(i) = y.at<double>(i);
+						}
+					}
+					y_est = ctrls[UevaCtrl::index].C * x + ctrls[UevaCtrl::index].D * u;
 					// estimate states
 					x_new = ctrls[UevaCtrl::index].A * x +
 						ctrls[UevaCtrl::index].B * u +
@@ -662,7 +675,8 @@ void S2EngineThread::run()
 					}
 					for (int i = 0; i < UevaCtrl::numPlantInput; i++)
 					{
-						commands[i] = double(settings.inletRequests[i]) + u_new.at<double>(i);
+						//commands[i] = double(settings.inletRequests[i]) + u_new.at<double>(i);
+						commands[i] = u_new.at<double>(i);
 					}
 					// data acquisition
 					data.map["ctrlEstimate"] = estimates;
@@ -676,7 +690,7 @@ void S2EngineThread::run()
 					// command pumps
 					for (int i = 0; i < commands.size(); i++)
 					{
-						data.map["inletWrite"][i] = commands[i];
+						data.map["inletWrite"][i] = ground + commands[i];
 					}
 					// debug
 					std::cerr << " activated channels: ";
