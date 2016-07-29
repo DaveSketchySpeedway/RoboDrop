@@ -23,6 +23,7 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <iomanip>
 #include <cmath>
 #include <QtGui >
 #include <QImage > 
@@ -104,7 +105,7 @@ private:
 	std::vector<std::vector< cv::Point_<int> >> markerContours;
 	std::vector<UevaDroplet> droplets;
 	std::vector<UevaMarker> markers;
-	cv::Mat x;
+	cv::Mat x; 
 	cv::Mat z;
 	cv::Mat u;
 	cv::Mat y_est;
@@ -113,7 +114,13 @@ private:
 	cv::Mat x_new;
 	cv::Mat z_new;
 	cv::Mat u_new;
-
+	cv::Point_<int> mousePressLeft;
+	cv::Point_<int> mousePressRight;
+	cv::Point_<int> mousePressPrevious;
+	cv::Point_<int> mousePressCurrent;
+	cv::Point_<int> mousePressDisplacement;
+	bool haveDirectReference;
+	double dr;
 
 	//// CONVENIENT PARAMETERS
 	enum EngineConstants
@@ -132,10 +139,6 @@ private:
 	cv::Point_<int> anchor;
 	cv::Moments mom;
 	cv::Rect rect;
-	cv::Point_<int> mousePressLeft;
-	cv::Point_<int> mousePressRight;
-	cv::Point_<int> mousePressPrevious;
-	cv::Point_<int> mousePressCurrent;
 
 	private slots:
 

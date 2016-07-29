@@ -69,7 +69,7 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "yh3wong"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Thu Jul 28 09:11:16 2016"
+  LastModifiedDate	  "Thu Jul 28 18:52:04 2016"
   RTWModifiedTimeStamp	  385976854
   ModelVersionFormat	  "1.%<AutoIncrement:99>"
   ConfigurationManager	  "none"

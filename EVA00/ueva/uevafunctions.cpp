@@ -228,3 +228,32 @@ void deleteFromCombination(std::vector<int> &combination, const int &value)
 		}
 	}
 }
+
+double scaleInterface(const cv::Point_<int> &point, const int &direction, const double &multiplier)
+{
+	double value;
+	switch (direction)
+	{
+	case 0:
+	{
+		value = point.y * -1 * multiplier;
+		break;
+	}
+	case 1:
+	{
+		value = point.y * multiplier;
+		break;
+	}
+	case 2:
+	{
+		value = point.x * -1 * multiplier;
+		break;
+	}
+	case 3:
+	{
+		value = point.x * multiplier;
+		break;
+	}
+	}
+	return value;
+}

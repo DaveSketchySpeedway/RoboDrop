@@ -35,5 +35,6 @@ bool isCombinationPossible(std::vector<int> &combination, std::vector<UevaCtrl> 
 
 void deleteFromCombination(std::vector<int> &combination, const int &value);
 
+double scaleInterface(const cv::Point_<int> &point, const int &direction, const double &multiplier);
 
 #endif
