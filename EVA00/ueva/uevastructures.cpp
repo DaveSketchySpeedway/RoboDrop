@@ -41,16 +41,18 @@ UevaData::UevaData()
 	map["inletRead"] = inletRead;
 	map["inletTime"] = inletTime;
 	//// CTRL
-	QVector<qreal> estimates;
+	QVector<qreal> raws;
 	QVector<qreal> measures;
+	QVector<qreal> estimates;
 	QVector<qreal> references;
 	QVector<qreal> states;
 	QVector<qreal> integralStates;
 	QVector<qreal> commands;
 	QVector<qreal> measureOffsets;
 	QVector<qreal> referenceOffsets;
-	map["ctrlEstimate"] = estimates;
+	map["ctrlRaw"] = raws;
 	map["ctrlMeasure"] = measures;
+	map["ctrlEstimate"] = estimates;
 	map["ctrlReference"] = references;
 	map["ctrlState"] = states;
 	map["ctrlIntegraState"] = integralStates;

@@ -64,7 +64,6 @@ signals:
 	void engineSignal(const UevaData &d);
 
 protected:
-
 	//// CONTINUOUS 
 	void run();
 
@@ -86,22 +85,16 @@ private:
 	std::vector<std::vector<cv::Point_<int>>> channelContours;
 	std::vector<UevaChannel> channels;
 	QVector<qreal> estimates;
+	QVector<qreal> raws;
 	QVector<qreal> measures;
 	QVector<qreal> references;
 	QVector<qreal> states;
 	QVector<qreal> integralStates;
 	QVector<qreal> commands;
 	QVector<qreal> measureOffsets;
-	QVector<qreal> referenceOffsets;
-	QVector<qreal> stateOffsets;
 	std::vector<double> grounds;
 
 	//// NON PERSISTANT VARIABLES
-	bool firstTime;
-	bool needToSelect;
-	bool needToRelease;
-	bool needToSwitch;
-	bool deactivateAll;
 	int vacancy;
 	std::vector<int> desiredChannels;
 	cv::Mat allDroplets;
@@ -113,8 +106,9 @@ private:
 	cv::Mat x; 
 	cv::Mat z;
 	cv::Mat u;
-	cv::Mat y;
-	cv::Mat r;
+	cv::Mat r_new;
+	cv::Mat y_raw;
+	cv::Mat y_new;
 	cv::Mat y_est;
 	cv::Mat x_new;
 	cv::Mat z_new;
@@ -124,8 +118,7 @@ private:
 	cv::Point_<int> mousePressPrevious;
 	cv::Point_<int> mousePressCurrent;
 	cv::Point_<int> mousePressDisplacement;
-	int directedChannel;
-	double dr;
+
 
 	//// CONVENIENT PARAMETERS
 	enum EngineConstants
@@ -144,6 +137,13 @@ private:
 	cv::Point_<int> anchor;
 	cv::Moments mom;
 	cv::Rect rect;
+	bool isFirstTime;
+	bool needSelecting;
+	bool needReleasing;
+	bool needSwapping;
+	bool deactivateAll;
+	int directedChannel;
+	double dr;
 
 	private slots:
 
