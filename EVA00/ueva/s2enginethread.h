@@ -24,6 +24,7 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <cstdlib>
 #include <cmath>
 #include <QtGui >
 #include <QImage > 

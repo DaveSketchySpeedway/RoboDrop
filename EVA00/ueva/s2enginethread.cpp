@@ -360,7 +360,7 @@ void S2EngineThread::run()
 					// vector of marker
 					markers.clear();
 					UevaMarker::imageSize = allMarkers.size();
-					UevaMarker::sortRatio = settings.imgprogSortRatio;
+					UevaMarker::sortGridSize = settings.imgprogSortGridSize;
 					for (int i = 0; i < markerContours.size(); i++)
 					{
 						mom = cv::moments(markerContours[i]);
@@ -376,17 +376,49 @@ void S2EngineThread::run()
 						markers.push_back(marker);
 					}
 					// sort markers to fake continuity
-					std::sort(markers.begin(), markers.end(),
-						[](const UevaMarker &a, const UevaMarker &b)
+					//std::sort(markers.begin(), markers.end(),
+					//	[](const UevaMarker &a, const UevaMarker &b)
+					//{
+					//	double sizeOfA =
+					//		(double)a.centroid.x / (double)a.imageSize.width * (double)a.sortRatio +
+					//		(double)a.centroid.y / (double)a.imageSize.height;
+					//	double sizeOfB =
+					//		(double)b.centroid.x / (double)b.imageSize.width * (double)b.sortRatio +
+					//		(double)b.centroid.y / (double)b.imageSize.height;
+					//	return sizeOfA < sizeOfB;
+					//});
+					if (settings.imgprogSortOrder == 0) // sort row before col
 					{
-						double sizeOfA =
-							(double)a.centroid.x / (double)a.imageSize.width * (double)a.sortRatio +
-							(double)a.centroid.y / (double)a.imageSize.height;
-						double sizeOfB =
-							(double)b.centroid.x / (double)b.imageSize.width * (double)b.sortRatio +
-							(double)b.centroid.y / (double)b.imageSize.height;
-						return sizeOfA < sizeOfB;
-					});
+						std::sort(markers.begin(), markers.end(),
+							[](const UevaMarker &a, const UevaMarker &b)
+						{
+							int indexOfA =
+								std::div(a.centroid.x, a.sortGridSize).quot +
+								std::div(a.centroid.y, a.sortGridSize).quot *
+								std::div(a.imageSize.height, a.sortGridSize).quot;
+							int indexOfB =
+								std::div(b.centroid.x, b.sortGridSize).quot +
+								std::div(b.centroid.y, b.sortGridSize).quot *
+								std::div(b.imageSize.height, b.sortGridSize).quot;
+							return indexOfA < indexOfB;
+						});
+					}
+					else if (settings.imgprogSortOrder == 1) // sort col before row
+					{
+						std::sort(markers.begin(), markers.end(),
+							[](const UevaMarker &a, const UevaMarker &b)
+						{
+							int indexOfA =
+								std::div(a.centroid.x, a.sortGridSize).quot *
+								std::div(a.imageSize.width, a.sortGridSize).quot +
+								std::div(a.centroid.y, a.sortGridSize).quot;
+							int indexOfB =
+								std::div(b.centroid.x, b.sortGridSize).quot *
+								std::div(b.imageSize.width, b.sortGridSize).quot +
+								std::div(b.centroid.y, b.sortGridSize).quot;
+							return indexOfA < indexOfB;
+						});
+					}
 					// link markers with channels after sort
 					for (int i = 0; i < markers.size(); i++)
 					{

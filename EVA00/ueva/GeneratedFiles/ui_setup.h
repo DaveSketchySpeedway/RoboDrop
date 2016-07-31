@@ -273,6 +273,7 @@ public:
         gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
         blockSlider = new QSlider(imgprocTab);
         blockSlider->setObjectName(QStringLiteral("blockSlider"));
+        blockSlider->setMinimum(1);
         blockSlider->setMaximum(10);
         blockSlider->setPageStep(1);
         blockSlider->setValue(5);
@@ -362,6 +363,7 @@ public:
 
         cutThicknessSlider = new QSlider(imgprocTab);
         cutThicknessSlider->setObjectName(QStringLiteral("cutThicknessSlider"));
+        cutThicknessSlider->setMinimum(1);
         cutThicknessSlider->setMaximum(10);
         cutThicknessSlider->setPageStep(1);
         cutThicknessSlider->setOrientation(Qt::Horizontal);
@@ -528,7 +530,7 @@ public:
 
         retranslateUi(Setup);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(Setup);

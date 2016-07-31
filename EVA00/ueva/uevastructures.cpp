@@ -212,4 +212,4 @@ UevaMarker::UevaMarker()
 }
 
 cv::Size_<int> UevaMarker::imageSize = cv::Size_<int>(0, 0);
-int UevaMarker::sortRatio = 0;
+int UevaMarker::sortGridSize = 0;

@@ -194,24 +194,41 @@ void MainWindow::imgprocOnOff()
 
 void MainWindow::imgprocSettings()
 {
-	int threshold = dashboard->threshSlider->value() + 1; // 0 threshold will leak memory and crash.
+	int threshold = dashboard->threshSlider->value();
 	int erodeSize = dashboard->erodeSizeSlider->value() * 2 + 3;
 	int contourSize = dashboard->contourSizeSlider->value();
-	int sortRatio = dashboard->sortRatioSlider->value();
+	int sortGridSize = dashboard->sortGridSizeSlider->value();
+	int sortOrder = dashboard->sortOrderSlider->value();
 	int convexSize = dashboard->convexSizeSlider->value();
 	int persistence = dashboard->persistenceSlider->value();
 
 	settings.imgprogThreshold = threshold;
 	settings.imgprogErodeSize = erodeSize;
 	settings.imgprogContourSize = contourSize;
-	settings.imgprogSortRatio = sortRatio;
+	settings.imgprogSortGridSize = sortGridSize;
+	settings.imgprogSortOrder = sortOrder;
 	settings.imgprocConvexSize = convexSize;
 	settings.imgprocPersistence = persistence;
+
+	QString sortOrderString;
+	switch (sortOrder)
+	{
+	case 0:
+	{
+		sortOrderString = QString("Sort Row First");
+		break;
+	}
+	case 1:
+	{
+		sortOrderString = QString("Sort Column First");
+	}
+	}
 
 	dashboard->threshLabel->setText(QString::number(threshold));
 	dashboard->erodeSizeLabel->setText(QString::number(erodeSize));
 	dashboard->contourSizeLabel->setText(QString::number(contourSize));
-	dashboard->sorRatioLabel->setText(QString::number(sortRatio));
+	dashboard->sorGridSizeLabel->setText(QString::number(sortGridSize));
+	dashboard->sortOrderLabel->setText(sortOrderString);
 	dashboard->convexSizeLabel->setText(QString::number(convexSize));
 	dashboard->persistenceLabel->setText(QString::number(persistence));
 }
@@ -458,7 +475,7 @@ void MainWindow::channelOnOff()
 void MainWindow::channelSetup()
 {
 	int erodeSize = setup->erodeSizeSlider->value() * 2 + 3;
-	int cutThickness = setup->cutThicknessSlider->value() + 1;
+	int cutThickness = setup->cutThicknessSlider->value();
 
 	settings.channelErodeSize = erodeSize;
 	settings.channelCutThickness = cutThickness;

@@ -52,7 +52,9 @@ Dashboard::Dashboard(QWidget *parent)
 		parent, SLOT(imgprocSettings()));
 	connect(contourSizeSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(imgprocSettings()));
-	connect(sortRatioSlider, SIGNAL(valueChanged(int)),
+	connect(sortGridSizeSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(imgprocSettings()));
+	connect(sortOrderSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(imgprocSettings()));
 	connect(convexSizeSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(imgprocSettings()));

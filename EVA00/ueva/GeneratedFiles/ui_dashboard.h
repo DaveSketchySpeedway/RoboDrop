@@ -60,17 +60,20 @@ public:
     QLabel *convexSizeLabel;
     QLabel *label_5;
     QSlider *threshSlider;
+    QLabel *persistenceLabel;
     QLabel *label_10;
-    QSlider *sortRatioSlider;
+    QSlider *sortGridSizeSlider;
     QLabel *threshLabel;
-    QLabel *sorRatioLabel;
+    QLabel *sorGridSizeLabel;
     QLabel *label_12;
     QLabel *label_6;
     QSlider *contourSizeSlider;
     QLabel *contourSizeLabel;
     QLabel *label_13;
     QSlider *persistenceSlider;
-    QLabel *persistenceLabel;
+    QSlider *sortOrderSlider;
+    QLabel *label_14;
+    QLabel *sortOrderLabel;
     QGroupBox *groupBox_4;
     QGridLayout *gridLayout_4;
     QGridLayout *gridLayout_3;
@@ -247,7 +250,7 @@ public:
         label_9 = new QLabel(groupBox_3);
         label_9->setObjectName(QStringLiteral("label_9"));
 
-        gridLayout->addWidget(label_9, 5, 0, 1, 1);
+        gridLayout->addWidget(label_9, 6, 0, 1, 1);
 
         convexSizeSlider = new QSlider(groupBox_3);
         convexSizeSlider->setObjectName(QStringLiteral("convexSizeSlider"));
@@ -257,12 +260,12 @@ public:
         convexSizeSlider->setValue(7);
         convexSizeSlider->setOrientation(Qt::Horizontal);
 
-        gridLayout->addWidget(convexSizeSlider, 5, 1, 1, 1);
+        gridLayout->addWidget(convexSizeSlider, 6, 1, 1, 1);
 
         convexSizeLabel = new QLabel(groupBox_3);
         convexSizeLabel->setObjectName(QStringLiteral("convexSizeLabel"));
 
-        gridLayout->addWidget(convexSizeLabel, 5, 2, 1, 1);
+        gridLayout->addWidget(convexSizeLabel, 6, 2, 1, 1);
 
         label_5 = new QLabel(groupBox_3);
         label_5->setObjectName(QStringLiteral("label_5"));
@@ -271,38 +274,43 @@ public:
 
         threshSlider = new QSlider(groupBox_3);
         threshSlider->setObjectName(QStringLiteral("threshSlider"));
-        threshSlider->setMinimum(0);
-        threshSlider->setMaximum(99);
+        threshSlider->setMinimum(1);
+        threshSlider->setMaximum(100);
         threshSlider->setPageStep(1);
         threshSlider->setValue(20);
         threshSlider->setOrientation(Qt::Horizontal);
 
         gridLayout->addWidget(threshSlider, 1, 1, 1, 1);
 
+        persistenceLabel = new QLabel(groupBox_3);
+        persistenceLabel->setObjectName(QStringLiteral("persistenceLabel"));
+
+        gridLayout->addWidget(persistenceLabel, 7, 2, 1, 1);
+
         label_10 = new QLabel(groupBox_3);
         label_10->setObjectName(QStringLiteral("label_10"));
 
         gridLayout->addWidget(label_10, 4, 0, 1, 1);
 
-        sortRatioSlider = new QSlider(groupBox_3);
-        sortRatioSlider->setObjectName(QStringLiteral("sortRatioSlider"));
-        sortRatioSlider->setMinimum(0);
-        sortRatioSlider->setMaximum(100);
-        sortRatioSlider->setPageStep(1);
-        sortRatioSlider->setValue(40);
-        sortRatioSlider->setOrientation(Qt::Horizontal);
+        sortGridSizeSlider = new QSlider(groupBox_3);
+        sortGridSizeSlider->setObjectName(QStringLiteral("sortGridSizeSlider"));
+        sortGridSizeSlider->setMinimum(1);
+        sortGridSizeSlider->setMaximum(100);
+        sortGridSizeSlider->setPageStep(1);
+        sortGridSizeSlider->setValue(40);
+        sortGridSizeSlider->setOrientation(Qt::Horizontal);
 
-        gridLayout->addWidget(sortRatioSlider, 4, 1, 1, 1);
+        gridLayout->addWidget(sortGridSizeSlider, 4, 1, 1, 1);
 
         threshLabel = new QLabel(groupBox_3);
         threshLabel->setObjectName(QStringLiteral("threshLabel"));
 
         gridLayout->addWidget(threshLabel, 1, 2, 1, 1);
 
-        sorRatioLabel = new QLabel(groupBox_3);
-        sorRatioLabel->setObjectName(QStringLiteral("sorRatioLabel"));
+        sorGridSizeLabel = new QLabel(groupBox_3);
+        sorGridSizeLabel->setObjectName(QStringLiteral("sorGridSizeLabel"));
 
-        gridLayout->addWidget(sorRatioLabel, 4, 2, 1, 1);
+        gridLayout->addWidget(sorGridSizeLabel, 4, 2, 1, 1);
 
         label_12 = new QLabel(groupBox_3);
         label_12->setObjectName(QStringLiteral("label_12"));
@@ -316,9 +324,9 @@ public:
 
         contourSizeSlider = new QSlider(groupBox_3);
         contourSizeSlider->setObjectName(QStringLiteral("contourSizeSlider"));
-        contourSizeSlider->setMinimum(0);
+        contourSizeSlider->setMinimum(1);
         contourSizeSlider->setMaximum(1000);
-        contourSizeSlider->setValue(30);
+        contourSizeSlider->setValue(10);
         contourSizeSlider->setOrientation(Qt::Horizontal);
 
         gridLayout->addWidget(contourSizeSlider, 3, 1, 1, 1);
@@ -331,7 +339,7 @@ public:
         label_13 = new QLabel(groupBox_3);
         label_13->setObjectName(QStringLiteral("label_13"));
 
-        gridLayout->addWidget(label_13, 6, 0, 1, 1);
+        gridLayout->addWidget(label_13, 7, 0, 1, 1);
 
         persistenceSlider = new QSlider(groupBox_3);
         persistenceSlider->setObjectName(QStringLiteral("persistenceSlider"));
@@ -341,12 +349,27 @@ public:
         persistenceSlider->setValue(7);
         persistenceSlider->setOrientation(Qt::Horizontal);
 
-        gridLayout->addWidget(persistenceSlider, 6, 1, 1, 1);
+        gridLayout->addWidget(persistenceSlider, 7, 1, 1, 1);
 
-        persistenceLabel = new QLabel(groupBox_3);
-        persistenceLabel->setObjectName(QStringLiteral("persistenceLabel"));
+        sortOrderSlider = new QSlider(groupBox_3);
+        sortOrderSlider->setObjectName(QStringLiteral("sortOrderSlider"));
+        sortOrderSlider->setMinimum(0);
+        sortOrderSlider->setMaximum(1);
+        sortOrderSlider->setPageStep(1);
+        sortOrderSlider->setValue(1);
+        sortOrderSlider->setOrientation(Qt::Horizontal);
 
-        gridLayout->addWidget(persistenceLabel, 6, 2, 1, 1);
+        gridLayout->addWidget(sortOrderSlider, 5, 1, 1, 1);
+
+        label_14 = new QLabel(groupBox_3);
+        label_14->setObjectName(QStringLiteral("label_14"));
+
+        gridLayout->addWidget(label_14, 5, 0, 1, 1);
+
+        sortOrderLabel = new QLabel(groupBox_3);
+        sortOrderLabel->setObjectName(QStringLiteral("sortOrderLabel"));
+
+        gridLayout->addWidget(sortOrderLabel, 5, 2, 1, 1);
 
 
         verticalLayout->addLayout(gridLayout);
@@ -448,14 +471,16 @@ public:
         label_9->setText(QApplication::translate("Dashboard", "Neck Min Convex:", 0));
         convexSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         label_5->setText(QApplication::translate("Dashboard", "Droplet Threshold:", 0));
-        label_10->setText(QApplication::translate("Dashboard", "Sort Ratio:", 0));
+        persistenceLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
+        label_10->setText(QApplication::translate("Dashboard", "Sort Grid Size:", 0));
         threshLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
-        sorRatioLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
+        sorGridSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         label_12->setText(QApplication::translate("Dashboard", "Droplet Erode Size::", 0));
         label_6->setText(QApplication::translate("Dashboard", "Min Contour Size:", 0));
         contourSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         label_13->setText(QApplication::translate("Dashboard", "Neck Persistence:", 0));
-        persistenceLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
+        label_14->setText(QApplication::translate("Dashboard", "Sort Order:", 0));
+        sortOrderLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         groupBox_4->setTitle(QApplication::translate("Dashboard", "Controller", 0));
         autoCatchLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         markerSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));

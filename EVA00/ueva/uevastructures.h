@@ -63,7 +63,8 @@ struct UevaSettings
 	int imgprogThreshold;
 	int imgprogErodeSize;
 	int imgprogContourSize;
-	int imgprogSortRatio;
+	int imgprogSortGridSize;
+	int imgprogSortOrder;
 	int imgprocConvexSize;
 	int imgprocPersistence;
 	int ctrlMarkerSize;
@@ -150,7 +151,7 @@ struct UevaMarker
 	UevaMarker();
 
 	static cv::Size_<int> imageSize;
-	static int sortRatio;
+	static int sortGridSize;
 
 	int type;
 	double value;
