@@ -182,44 +182,11 @@ void S2EngineThread::loadCtrl(std::string fileName,
 void S2EngineThread::initCtrl()
 {
 	mutex.lock();
-	// zero everything 
-	estimates = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-	raws = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-	measures = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-	references = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-	states = QVector<qreal>(UevaCtrl::numPlantState, 0.0);
-	integralStates = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-	commands = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
-	measureOffsets = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-	// open to close loop transition
+
 	isFirstTime = true;
-	grounds.clear();
-	for (int i = 0; i < commands.size(); i++)
-	{
-		grounds.push_back(double(settings.inletRequests[i]));
-	}
 
 	mutex.unlock();
 }
-
-void S2EngineThread::resetCtrl()
-{
-	mutex.lock();
-
-	activatedChannels.clear();
-	estimates.clear();
-	raws.clear();
-	measures.clear();
-	references.clear();
-	states.clear();
-	integralStates.clear();
-	commands.clear();
-	measureOffsets.clear();
-
-	mutex.unlock();
-}
-
-
 
 //// CONTINUOUS
 void S2EngineThread::run()
@@ -252,7 +219,7 @@ void S2EngineThread::run()
 					seed.x = settings.mouseLines[0].x1();
 					seed.y = settings.mouseLines[0].y1();
 				}
-				floodFillReturn = cv::floodFill(dropletMask, seed, MID_VALUE);
+				alwaysTrue = cv::floodFill(dropletMask, seed, MID_VALUE);
 				// eliminate noise and wall by morphological opening (second most time consuming)
 				//morphologyEx(dropletMask, dropletMask, cv::MORPH_OPEN, structuringElement);
 				structuringElement = cv::getStructuringElement(cv::MORPH_RECT,
@@ -309,7 +276,7 @@ void S2EngineThread::run()
 					// flood and complement to get droplets (droplets internal)
 					allDroplets = allMarkers.clone();
 					seed = cv::Point(0, 0);
-					floodFillReturn = cv::floodFill(allDroplets,
+					alwaysTrue = cv::floodFill(allDroplets,
 						seed,
 						HIGH_VALUE,
 						0, cv::Scalar_<int>(0), cv::Scalar_<int>(0),
@@ -354,7 +321,7 @@ void S2EngineThread::run()
 					needSelecting = false;
 					needReleasing = false;
 					needSwapping = false;
-					deactivateAll = false;
+					needResetting = false;
 					directedChannel = -1;
 					dr = 0;
 					// vector of marker
@@ -376,17 +343,6 @@ void S2EngineThread::run()
 						markers.push_back(marker);
 					}
 					// sort markers to fake continuity
-					//std::sort(markers.begin(), markers.end(),
-					//	[](const UevaMarker &a, const UevaMarker &b)
-					//{
-					//	double sizeOfA =
-					//		(double)a.centroid.x / (double)a.imageSize.width * (double)a.sortRatio +
-					//		(double)a.centroid.y / (double)a.imageSize.height;
-					//	double sizeOfB =
-					//		(double)b.centroid.x / (double)b.imageSize.width * (double)b.sortRatio +
-					//		(double)b.centroid.y / (double)b.imageSize.height;
-					//	return sizeOfA < sizeOfB;
-					//});
 					if (settings.imgprogSortOrder == 0) // sort row before col
 					{
 						std::sort(markers.begin(), markers.end(),
@@ -522,6 +478,7 @@ void S2EngineThread::run()
 								{
 									channels[i].selectedMarkerIndex = -1;
 									Ueva::deleteFromCombination(activatedChannels, i);
+									alwaysTrue = Ueva::isCombinationPossible(activatedChannels, ctrls);
 									needReleasing = true;
 									vacancy++;
 								}
@@ -533,37 +490,45 @@ void S2EngineThread::run()
 					{
 						if (channels[i].currentMarkerIndices != channels[i].previousMarkerIndices)
 						{
-							deactivateAll = true;
+							needResetting = true;
 						}
 					}
-					if (deactivateAll)
+					if (needResetting)
 					{
 						for (int i = 0; i < channels.size(); i++)
 						{
-							if (channels[i].selectedMarkerIndex != -1)
-							{
-								channels[i].selectedMarkerIndex = -1;
-								Ueva::deleteFromCombination(activatedChannels, i);
-							}
+							channels[i].selectedMarkerIndex = -1;
 						}
+						activatedChannels.clear();
+						UevaCtrl::index = -1;
 						needReleasing = true;
 						vacancy = settings.ctrlAutoCatch;
 					}
 					// auto catch marker
+					rect = cv::Rect(
+						settings.ctrlAutoMargin,
+						settings.ctrlAutoMargin,
+						allChannels.size().width - 2 * settings.ctrlAutoMargin,
+						allChannels.size().height - 2 * settings.ctrlAutoMargin);
 					for (int i = 0; i < channels.size(); i++)
 					{
-						if (vacancy > 0 &&
-							channels[i].selectedMarkerIndex == -1 &&
-							channels[i].currentMarkerIndices.size() > 0)
+						if (vacancy > 0 &&	channels[i].selectedMarkerIndex == -1)
 						{
-							desiredChannels = activatedChannels;
-							desiredChannels.push_back(i);
-							if (Ueva::isCombinationPossible(desiredChannels, ctrls))
+							for (int j = 0; j < channels[i].currentMarkerIndices.size(); j++)
 							{
-								activatedChannels = desiredChannels;
-								channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[0];
-								needSelecting = true;
-								vacancy--;
+								if (markers[channels[i].currentMarkerIndices[j]].centroid.inside(rect))
+								{
+									desiredChannels = activatedChannels;
+									desiredChannels.push_back(i);
+									if (Ueva::isCombinationPossible(desiredChannels, ctrls))
+									{
+										activatedChannels = desiredChannels;
+										channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[0];
+										needSelecting = true;
+										vacancy--;
+										break;
+									}
+								}
 							}
 						}
 					}
@@ -574,7 +539,32 @@ void S2EngineThread::run()
 					if (isFirstTime)
 					{
 						isFirstTime = false;
+						// zero everything 
+						estimates.clear();
+						raws.clear();
+						measures.clear();
+						references.clear();
+						states.clear();
+						integralStates.clear();
+						commands.clear();
+						measureOffsets.clear();
+						estimates = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+						raws = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+						measures = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+						references = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+						states = QVector<qreal>(UevaCtrl::numPlantState, 0.0);
+						integralStates = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+						commands = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
+						measureOffsets = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+						// open to close loop transition
+						grounds.clear();
+						for (int i = 0; i < commands.size(); i++)
+						{
+							grounds.push_back(double(settings.inletRequests[i]));
+						}
+						// check what is activated
 						needSelecting = true;
+						activatedChannels.clear();
 						desiredChannels.clear();
 						for (int i = 0; i < channels.size(); i++)
 						{
@@ -587,6 +577,26 @@ void S2EngineThread::run()
 						{
 							activatedChannels = desiredChannels;
 						}
+					}
+					if (needResetting)
+					{
+						// zero everything 
+						estimates.clear();
+						raws.clear();
+						measures.clear();
+						references.clear();
+						states.clear();
+						integralStates.clear();
+						commands.clear();
+						measureOffsets.clear();
+						estimates = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+						raws = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+						measures = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+						references = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+						states = QVector<qreal>(UevaCtrl::numPlantState, 0.0);
+						integralStates = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+						commands = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
+						measureOffsets = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
 					}
 					if (activatedChannels.size() > 0)
 					{
@@ -720,17 +730,18 @@ void S2EngineThread::run()
 					}
 				}
 				// debug
-				//std::cerr << " activated channels: ";
-				//for (int k = 0; k < activatedChannels.size(); k++)
-				//	std::cerr << activatedChannels[k] << " ";
-				//std::cerr << std::endl;
+				std::cerr << "activated channels: ";
+				for (int k = 0; k < activatedChannels.size(); k++)
+					std::cerr << activatedChannels[k] << " ";
+				std::cerr << "vacancy " << vacancy << std::endl;
 				//std::cerr << std::fixed << std::setprecision(5);
 				//std::cerr << "x     " << x.t() << std::endl;
 				//std::cerr << "z     " << z.t() << std::endl;
 				//std::cerr << "u     " << u.t() << std::endl;
+				//std::cerr << "r_new " << r_new.t() << std::endl;
+				//std::cerr << "y_raw " << y_raw.t() << std::endl;
+				//std::cerr << "y_new " << y_new.t() << std::endl;
 				//std::cerr << "y_est " << y_est.t() << std::endl;
-				//std::cerr << "y     " << y.t() << std::endl;
-				//std::cerr << "r     " << r.t() << std::endl;
 				//std::cerr << "x_new " << x_new.t() << std::endl;
 				//std::cerr << "z_new " << z_new.t() << std::endl;
 				//std::cerr << "u_new " << u_new.t() << std::endl;

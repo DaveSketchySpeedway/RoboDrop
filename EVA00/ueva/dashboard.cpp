@@ -68,6 +68,8 @@ Dashboard::Dashboard(QWidget *parent)
 		parent, SLOT(ctrlSettings()));
 	connect(autoCatchSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(ctrlSettings()));
+	connect(autoMarginSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(ctrlSettings()));
 }
 
 Dashboard::~Dashboard()

@@ -84,6 +84,9 @@ public:
     QLabel *label_7;
     QSlider *markerSizeSlider;
     QPushButton *ctrlButton;
+    QSlider *autoMarginSlider;
+    QLabel *label_15;
+    QLabel *autoMarginLabel;
 
     void setupUi(QWidget *Dashboard)
     {
@@ -437,6 +440,26 @@ public:
 
         gridLayout_3->addWidget(ctrlButton, 0, 0, 1, 3);
 
+        autoMarginSlider = new QSlider(groupBox_4);
+        autoMarginSlider->setObjectName(QStringLiteral("autoMarginSlider"));
+        autoMarginSlider->setMinimum(0);
+        autoMarginSlider->setMaximum(200);
+        autoMarginSlider->setPageStep(1);
+        autoMarginSlider->setValue(100);
+        autoMarginSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_3->addWidget(autoMarginSlider, 3, 1, 1, 1);
+
+        label_15 = new QLabel(groupBox_4);
+        label_15->setObjectName(QStringLiteral("label_15"));
+
+        gridLayout_3->addWidget(label_15, 3, 0, 1, 1);
+
+        autoMarginLabel = new QLabel(groupBox_4);
+        autoMarginLabel->setObjectName(QStringLiteral("autoMarginLabel"));
+
+        gridLayout_3->addWidget(autoMarginLabel, 3, 2, 1, 1);
+
 
         gridLayout_4->addLayout(gridLayout_3, 0, 0, 1, 1);
 
@@ -487,6 +510,8 @@ public:
         label_8->setText(QApplication::translate("Dashboard", "Auto Catch:", 0));
         label_7->setText(QApplication::translate("Dashboard", "Marker Rectangle  Size:", 0));
         ctrlButton->setText(QApplication::translate("Dashboard", "On", 0));
+        label_15->setText(QApplication::translate("Dashboard", "Auto Catch Margin:", 0));
+        autoMarginLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
     } // retranslateUi
 
 };

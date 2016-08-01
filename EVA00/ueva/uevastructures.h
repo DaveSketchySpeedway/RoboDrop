@@ -69,6 +69,7 @@ struct UevaSettings
 	int imgprocPersistence;
 	int ctrlMarkerSize;
 	int ctrlAutoCatch;
+	int ctrlAutoMargin;
 };
 
 struct UevaData

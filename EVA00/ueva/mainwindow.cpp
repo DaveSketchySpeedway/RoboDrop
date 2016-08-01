@@ -249,8 +249,6 @@ void MainWindow::ctrlOnOff()
 	{
 		dashboard->ctrlButton->setText(tr("On"));
 		settings.flag ^= UevaSettings::CTRL_ON;
-		// reset ctrl
-		engineThread->resetCtrl();
 	}
 }
 
@@ -258,12 +256,15 @@ void MainWindow::ctrlSettings()
 {
 	int markerSize = dashboard->markerSizeSlider->value();
 	int autoCatch = dashboard->autoCatchSlider->value();
+	int autoMargin = dashboard->autoMarginSlider->value();
 
 	settings.ctrlMarkerSize = markerSize;
 	settings.ctrlAutoCatch = autoCatch;
+	settings.ctrlAutoMargin = autoMargin;
 
 	dashboard->markerSizeLabel->setText(QString::number(markerSize));
 	dashboard->autoCatchLabel->setText(QString::number(autoCatch));
+	dashboard->autoMarginLabel->setText(QString::number(autoMargin));
 }
 
 //// COMMUNICATE WITH SETUP

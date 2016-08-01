@@ -59,7 +59,6 @@ public:
 	void loadCtrl(std::string fileName,
 		int *numState, int *numIn, int *numOut, int *numCtrl, double *ctrlTs);
 	void initCtrl();
-	void resetCtrl();
 
 signals:
 	void engineSignal(const UevaData &d);
@@ -96,6 +95,11 @@ private:
 	std::vector<double> grounds;
 
 	//// NON PERSISTANT VARIABLES
+	bool isFirstTime;
+	bool needSelecting;
+	bool needReleasing;
+	bool needSwapping;
+	bool needResetting;
 	int vacancy;
 	std::vector<int> desiredChannels;
 	cv::Mat allDroplets;
@@ -120,7 +124,6 @@ private:
 	cv::Point_<int> mousePressCurrent;
 	cv::Point_<int> mousePressDisplacement;
 
-
 	//// CONVENIENT PARAMETERS
 	enum EngineConstants
 	{
@@ -130,7 +133,7 @@ private:
 	};
 	cv::Mat structuringElement;
 	cv::Point_<int> seed;
-	int floodFillReturn;
+	int alwaysTrue;
 	cv::Scalar_<int> lineColor;
 	int lineThickness;
 	int lineType;
@@ -138,11 +141,6 @@ private:
 	cv::Point_<int> anchor;
 	cv::Moments mom;
 	cv::Rect rect;
-	bool isFirstTime;
-	bool needSelecting;
-	bool needReleasing;
-	bool needSwapping;
-	bool deactivateAll;
 	int directedChannel;
 	double dr;
 
