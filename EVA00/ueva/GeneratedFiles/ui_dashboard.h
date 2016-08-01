@@ -356,7 +356,7 @@ public:
         sortOrderSlider->setMinimum(0);
         sortOrderSlider->setMaximum(1);
         sortOrderSlider->setPageStep(1);
-        sortOrderSlider->setValue(1);
+        sortOrderSlider->setValue(0);
         sortOrderSlider->setOrientation(Qt::Horizontal);
 
         gridLayout->addWidget(sortOrderSlider, 5, 1, 1, 1);
@@ -426,7 +426,7 @@ public:
         markerSizeSlider->setMinimum(0);
         markerSizeSlider->setMaximum(200);
         markerSizeSlider->setPageStep(1);
-        markerSizeSlider->setValue(70);
+        markerSizeSlider->setValue(100);
         markerSizeSlider->setOrientation(Qt::Horizontal);
 
         gridLayout_3->addWidget(markerSizeSlider, 1, 1, 1, 1);
