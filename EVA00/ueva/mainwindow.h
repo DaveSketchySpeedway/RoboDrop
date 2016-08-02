@@ -77,6 +77,7 @@ public:
 	void imgprocSettings();
 	void ctrlOnOff();
 	void ctrlSettings();
+	void receiveAutoCatchRequests(const QVector<bool> &values);
 
 	//// COMMUNICATE WITH SETUP
 	void connectCamera();

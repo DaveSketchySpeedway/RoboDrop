@@ -307,8 +307,6 @@ void S2EngineThread::run()
 						channels[i].previousMarkerIndices = channels[i].currentMarkerIndices;
 						channels[i].currentMarkerIndices.clear();
 					}
-					desiredChannels.clear();
-					vacancy = settings.ctrlAutoCatch - activatedChannels.size();
 					mousePressLeft.x = settings.leftPressPosition.x();
 					mousePressLeft.y = settings.leftPressPosition.y();
 					mousePressRight.x = settings.rightPressPosition.x();
@@ -318,6 +316,7 @@ void S2EngineThread::run()
 					mousePressCurrent.x = settings.leftPressMovement.x2();
 					mousePressCurrent.y = settings.leftPressMovement.y2();
 					mousePressDisplacement = mousePressCurrent - mousePressPrevious;
+					desiredChannels.clear();
 					needSelecting = false;
 					needReleasing = false;
 					needSwapping = false;
@@ -348,15 +347,15 @@ void S2EngineThread::run()
 						std::sort(markers.begin(), markers.end(),
 							[](const UevaMarker &a, const UevaMarker &b)
 						{
-							int indexOfA =
+							int linearLocationA =
 								std::div(a.centroid.x, a.sortGridSize).quot +
 								std::div(a.centroid.y, a.sortGridSize).quot *
 								std::div(a.imageSize.height, a.sortGridSize).quot;
-							int indexOfB =
+							int linearLocationB =
 								std::div(b.centroid.x, b.sortGridSize).quot +
 								std::div(b.centroid.y, b.sortGridSize).quot *
 								std::div(b.imageSize.height, b.sortGridSize).quot;
-							return indexOfA < indexOfB;
+							return linearLocationA < linearLocationB;
 						});
 					}
 					else if (settings.imgprogSortOrder == 1) // sort col before row
@@ -364,15 +363,15 @@ void S2EngineThread::run()
 						std::sort(markers.begin(), markers.end(),
 							[](const UevaMarker &a, const UevaMarker &b)
 						{
-							int indexOfA =
+							int linearLocationA =
 								std::div(a.centroid.x, a.sortGridSize).quot *
 								std::div(a.imageSize.width, a.sortGridSize).quot +
 								std::div(a.centroid.y, a.sortGridSize).quot;
-							int indexOfB =
+							int linearLocationB =
 								std::div(b.centroid.x, b.sortGridSize).quot *
 								std::div(b.imageSize.width, b.sortGridSize).quot +
 								std::div(b.centroid.y, b.sortGridSize).quot;
-							return indexOfA < indexOfB;
+							return linearLocationA < linearLocationB;
 						});
 					}
 					// link markers with channels after sort
@@ -466,7 +465,6 @@ void S2EngineThread::run()
 										activatedChannels = desiredChannels;
 										channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[j];
 										needSelecting = true;
-										vacancy--;
 									}
 								}
 							}
@@ -480,7 +478,6 @@ void S2EngineThread::run()
 									Ueva::deleteFromCombination(activatedChannels, i);
 									alwaysTrue = Ueva::isCombinationPossible(activatedChannels, ctrls);
 									needReleasing = true;
-									vacancy++;
 								}
 							}
 						}
@@ -501,18 +498,16 @@ void S2EngineThread::run()
 						}
 						activatedChannels.clear();
 						UevaCtrl::index = -1;
-						needReleasing = true;
-						vacancy = settings.ctrlAutoCatch;
 					}
 					// auto catch marker
-					rect = cv::Rect(
+					rect = cv::Rect_<int>(
 						settings.ctrlAutoMargin,
 						settings.ctrlAutoMargin,
 						allChannels.size().width - 2 * settings.ctrlAutoMargin,
 						allChannels.size().height - 2 * settings.ctrlAutoMargin);
 					for (int i = 0; i < channels.size(); i++)
 					{
-						if (vacancy > 0 &&	channels[i].selectedMarkerIndex == -1)
+						if (settings.autoCatchRequests[i] && channels[i].selectedMarkerIndex == -1)
 						{
 							for (int j = 0; j < channels[i].currentMarkerIndices.size(); j++)
 							{
@@ -523,9 +518,8 @@ void S2EngineThread::run()
 									if (Ueva::isCombinationPossible(desiredChannels, ctrls))
 									{
 										activatedChannels = desiredChannels;
-										channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[0];
+										channels[i].selectedMarkerIndex = channels[i].currentMarkerIndices[j];
 										needSelecting = true;
-										vacancy--;
 										break;
 									}
 								}
@@ -730,10 +724,9 @@ void S2EngineThread::run()
 					}
 				}
 				// debug
-				std::cerr << "activated channels: ";
-				for (int k = 0; k < activatedChannels.size(); k++)
-					std::cerr << activatedChannels[k] << " ";
-				std::cerr << "vacancy " << vacancy << std::endl;
+				//std::cerr << "activated channels: ";
+				//for (int k = 0; k < activatedChannels.size(); k++)
+				//	std::cerr << activatedChannels[k] << " ";
 				//std::cerr << std::fixed << std::setprecision(5);
 				//std::cerr << "x     " << x.t() << std::endl;
 				//std::cerr << "z     " << z.t() << std::endl;

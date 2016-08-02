@@ -75,18 +75,18 @@ public:
     QLabel *label_14;
     QLabel *sortOrderLabel;
     QGroupBox *groupBox_4;
-    QGridLayout *gridLayout_4;
+    QVBoxLayout *verticalLayout_4;
     QGridLayout *gridLayout_3;
-    QSlider *autoCatchSlider;
-    QLabel *autoCatchLabel;
-    QLabel *markerSizeLabel;
-    QLabel *label_8;
     QLabel *label_7;
     QSlider *markerSizeSlider;
-    QPushButton *ctrlButton;
-    QSlider *autoMarginSlider;
+    QLabel *markerSizeLabel;
     QLabel *label_15;
+    QSlider *autoMarginSlider;
     QLabel *autoMarginLabel;
+    QPushButton *ctrlButton;
+    QHBoxLayout *ctrlLayout;
+    QLabel *label_16;
+    QWidget *widget_2;
 
     void setupUi(QWidget *Dashboard)
     {
@@ -387,38 +387,13 @@ public:
         groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
         sizePolicy.setHeightForWidth(groupBox_4->sizePolicy().hasHeightForWidth());
         groupBox_4->setSizePolicy(sizePolicy);
-        gridLayout_4 = new QGridLayout(groupBox_4);
-        gridLayout_4->setSpacing(6);
-        gridLayout_4->setContentsMargins(11, 11, 11, 11);
-        gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
+        verticalLayout_4 = new QVBoxLayout(groupBox_4);
+        verticalLayout_4->setSpacing(6);
+        verticalLayout_4->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
         gridLayout_3 = new QGridLayout();
         gridLayout_3->setSpacing(6);
         gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
-        autoCatchSlider = new QSlider(groupBox_4);
-        autoCatchSlider->setObjectName(QStringLiteral("autoCatchSlider"));
-        autoCatchSlider->setMinimum(0);
-        autoCatchSlider->setMaximum(10);
-        autoCatchSlider->setPageStep(1);
-        autoCatchSlider->setValue(1);
-        autoCatchSlider->setOrientation(Qt::Horizontal);
-
-        gridLayout_3->addWidget(autoCatchSlider, 2, 1, 1, 1);
-
-        autoCatchLabel = new QLabel(groupBox_4);
-        autoCatchLabel->setObjectName(QStringLiteral("autoCatchLabel"));
-
-        gridLayout_3->addWidget(autoCatchLabel, 2, 2, 1, 1);
-
-        markerSizeLabel = new QLabel(groupBox_4);
-        markerSizeLabel->setObjectName(QStringLiteral("markerSizeLabel"));
-
-        gridLayout_3->addWidget(markerSizeLabel, 1, 2, 1, 1);
-
-        label_8 = new QLabel(groupBox_4);
-        label_8->setObjectName(QStringLiteral("label_8"));
-
-        gridLayout_3->addWidget(label_8, 2, 0, 1, 1);
-
         label_7 = new QLabel(groupBox_4);
         label_7->setObjectName(QStringLiteral("label_7"));
 
@@ -434,11 +409,15 @@ public:
 
         gridLayout_3->addWidget(markerSizeSlider, 1, 1, 1, 1);
 
-        ctrlButton = new QPushButton(groupBox_4);
-        ctrlButton->setObjectName(QStringLiteral("ctrlButton"));
-        ctrlButton->setCheckable(true);
+        markerSizeLabel = new QLabel(groupBox_4);
+        markerSizeLabel->setObjectName(QStringLiteral("markerSizeLabel"));
 
-        gridLayout_3->addWidget(ctrlButton, 0, 0, 1, 3);
+        gridLayout_3->addWidget(markerSizeLabel, 1, 2, 1, 1);
+
+        label_15 = new QLabel(groupBox_4);
+        label_15->setObjectName(QStringLiteral("label_15"));
+
+        gridLayout_3->addWidget(label_15, 2, 0, 1, 1);
 
         autoMarginSlider = new QSlider(groupBox_4);
         autoMarginSlider->setObjectName(QStringLiteral("autoMarginSlider"));
@@ -448,20 +427,39 @@ public:
         autoMarginSlider->setValue(100);
         autoMarginSlider->setOrientation(Qt::Horizontal);
 
-        gridLayout_3->addWidget(autoMarginSlider, 3, 1, 1, 1);
-
-        label_15 = new QLabel(groupBox_4);
-        label_15->setObjectName(QStringLiteral("label_15"));
-
-        gridLayout_3->addWidget(label_15, 3, 0, 1, 1);
+        gridLayout_3->addWidget(autoMarginSlider, 2, 1, 1, 1);
 
         autoMarginLabel = new QLabel(groupBox_4);
         autoMarginLabel->setObjectName(QStringLiteral("autoMarginLabel"));
 
-        gridLayout_3->addWidget(autoMarginLabel, 3, 2, 1, 1);
+        gridLayout_3->addWidget(autoMarginLabel, 2, 2, 1, 1);
+
+        ctrlButton = new QPushButton(groupBox_4);
+        ctrlButton->setObjectName(QStringLiteral("ctrlButton"));
+        ctrlButton->setCheckable(true);
+
+        gridLayout_3->addWidget(ctrlButton, 0, 0, 1, 3);
 
 
-        gridLayout_4->addLayout(gridLayout_3, 0, 0, 1, 1);
+        verticalLayout_4->addLayout(gridLayout_3);
+
+        ctrlLayout = new QHBoxLayout();
+        ctrlLayout->setSpacing(6);
+        ctrlLayout->setObjectName(QStringLiteral("ctrlLayout"));
+        label_16 = new QLabel(groupBox_4);
+        label_16->setObjectName(QStringLiteral("label_16"));
+
+        ctrlLayout->addWidget(label_16);
+
+        widget_2 = new QWidget(groupBox_4);
+        widget_2->setObjectName(QStringLiteral("widget_2"));
+        sizePolicy3.setHeightForWidth(widget_2->sizePolicy().hasHeightForWidth());
+        widget_2->setSizePolicy(sizePolicy3);
+
+        ctrlLayout->addWidget(widget_2);
+
+
+        verticalLayout_4->addLayout(ctrlLayout);
 
 
         verticalLayout_3->addWidget(groupBox_4);
@@ -505,13 +503,12 @@ public:
         label_14->setText(QApplication::translate("Dashboard", "Sort Order:", 0));
         sortOrderLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         groupBox_4->setTitle(QApplication::translate("Dashboard", "Controller", 0));
-        autoCatchLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
-        markerSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
-        label_8->setText(QApplication::translate("Dashboard", "Auto Catch:", 0));
         label_7->setText(QApplication::translate("Dashboard", "Marker Rectangle  Size:", 0));
-        ctrlButton->setText(QApplication::translate("Dashboard", "On", 0));
+        markerSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         label_15->setText(QApplication::translate("Dashboard", "Auto Catch Margin:", 0));
         autoMarginLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
+        ctrlButton->setText(QApplication::translate("Dashboard", "On", 0));
+        label_16->setText(QApplication::translate("Dashboard", "Auto Catch Channel:", 0));
     } // retranslateUi
 
 };

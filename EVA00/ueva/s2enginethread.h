@@ -100,7 +100,6 @@ private:
 	bool needReleasing;
 	bool needSwapping;
 	bool needResetting;
-	int vacancy;
 	std::vector<int> desiredChannels;
 	cv::Mat allDroplets;
 	cv::Mat allMarkers;

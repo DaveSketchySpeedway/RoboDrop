@@ -47,7 +47,7 @@ struct UevaSettings
 	int flag;
 	QVector<bool> linkChannels;
 	QVector<bool> inverseLinkChannels;
-
+	QVector<bool> autoCatchRequests;
 	QVector<QVector<int>> inletInfo;
 	QVector<qreal> inletRequests;
 	QVector<QLine> mouseLines;
@@ -68,7 +68,6 @@ struct UevaSettings
 	int imgprocConvexSize;
 	int imgprocPersistence;
 	int ctrlMarkerSize;
-	int ctrlAutoCatch;
 	int ctrlAutoMargin;
 };
 

@@ -169,8 +169,7 @@ void MainWindow::pumpOnOff()
 	}
 }
 
-void MainWindow::receiveInletRequests(
-	const QVector<qreal> &values)
+void MainWindow::receiveInletRequests(const QVector<qreal> &values)
 {
 	settings.inletRequests = values;
 }
@@ -255,16 +254,18 @@ void MainWindow::ctrlOnOff()
 void MainWindow::ctrlSettings()
 {
 	int markerSize = dashboard->markerSizeSlider->value();
-	int autoCatch = dashboard->autoCatchSlider->value();
 	int autoMargin = dashboard->autoMarginSlider->value();
 
 	settings.ctrlMarkerSize = markerSize;
-	settings.ctrlAutoCatch = autoCatch;
 	settings.ctrlAutoMargin = autoMargin;
 
 	dashboard->markerSizeLabel->setText(QString::number(markerSize));
-	dashboard->autoCatchLabel->setText(QString::number(autoCatch));
 	dashboard->autoMarginLabel->setText(QString::number(autoMargin));
+}
+
+void MainWindow::receiveAutoCatchRequests(const QVector<bool> &values)
+{
+	settings.autoCatchRequests = values;
 }
 
 //// COMMUNICATE WITH SETUP
@@ -395,7 +396,6 @@ void MainWindow::setPump()
 			d.push_back(c->text(2).toInt());
 			d.push_back(c->text(3).toInt());
 			settings.inletInfo.push_back(d);
-			settings.inletRequests.push_back(0.0);
 		}
 	}
 
@@ -495,16 +495,17 @@ void MainWindow::sepSortOnOff()
 		engineThread->separateChannels(numChan);
 		// create channel info widgets
 		setup->createChannelInfoWidgets(numChan);
-
 	}
 	else
 	{
 		setup->sepSortButton->setText(tr("Separate Channels"));
-		// get channel info 
+		// delete channel info widgets
 		std::map<std::string, std::vector<int> > channelInfo;
 		setup->deleteChannelInfoWidgets(channelInfo);
 		// sort channel objects
 		engineThread->sortChannels(channelInfo);
+		// reset auto catch checkboxes
+		dashboard->resetAutoCatchBox(channelInfo["newIndices"].size());
 	}
 }
 
