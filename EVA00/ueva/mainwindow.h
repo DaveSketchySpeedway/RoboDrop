@@ -34,13 +34,17 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include <QLabel >
 #include <QFileDialog >
 #include <QMessageBox >
+#include <QShortcut >
 #include <QTime >
 #include <QThread >
 #include <QMutex >
 #include <QPainter >
 #include <algorithm>
 #include <fstream>
-#include "opencv2/core.hpp"
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/highgui.hpp>
 
 #include "setup.h"
 #include "dashboard.h"
@@ -52,9 +56,6 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include "uevastructures.h"
 #include "uevafunctions.h"
 
-using namespace std;
-using namespace cv;
-
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT;
@@ -64,29 +65,47 @@ public:
 	~MainWindow();
 
 	public slots:
-	//// COMMUNICATE WITH SUBWINDOW
-	void cameraOnOff();
+
+	//// COMMUNICATE WITH DASHBOARD
 	void recordDataOnOff();
 	void recordRawOnOff();
-	void recordDisplayOnOff();
-	void connectCamera();
-	void getCamera();
-	void setCamera();
+	void recordDrawnOnOff();
+	void recordNeckOnOff();
 	void pumpOnOff();
-	void getPump();
-	void setPump();
 	void receiveInletRequests(const QVector<qreal> &values);
 	void imgprocOnOff();
+	void imgprocSettings();
 	void ctrlOnOff();
+	void ctrlSettings();
+	void receiveAutoCatchRequests(const QVector<bool> &values);
+
+	//// COMMUNICATE WITH SETUP
+	void connectCamera();
+	void setCamera();
+	void cameraOnOff();
+	void getCamera();
+	void getPump();
+	void setPump();
+	void setCalib();
+	void setBkgd();
+	void maskOnOff();
+	void maskSetup();
+	void channelOnOff();
+	void channelSetup();
+	void sepSortOnOff();
 	void loadCtrl();
+	void changeTimerInterval();
+
+	//// COMMUNICATE WITH DISPLAY
+	void receiveMouseLine(QLine line);
 
 signals:
-	
 
 protected:
 	//// REIMPLEMENTATION
 	void timerEvent(QTimerEvent *event);
 	void closeEvent(QCloseEvent *event);
+	void keyPressEvent(QKeyEvent *event);
 
 private:
 	//// CONSTRUCTOR FUNCTIONS
@@ -95,10 +114,11 @@ private:
 	void createContextMenu();
 	void createToolBars();
 	void createStatusBar();
+	void createShortcuts();
 	void createThreads();
 	void startTimers();
 
-	//// FUNCTIONS
+	//// MAIN WINDOW FUNCTIONS
 	bool noUnsavedFile(); // check if image is unsaved
 	bool loadFile(const QString &filename); // write image to file
 	bool saveFile(const QString &filename); // read image from file
@@ -106,9 +126,7 @@ private:
 	void readSettings();
 	void writeSettings(); 
 	
-	//// MEMBER
-	QString currentFile;
-
+	//// TIMING VARIABLES
 	int timerInterval; // sampling period right here
 	int timerId;
 
@@ -124,31 +142,23 @@ private:
 	QQueue<QTime> pingTimeStamps;
 	int ping;
 
+	//// THREAD
 	CameraThread *cameraThread;
 	S2EngineThread *engineThread;
 	PumpThread *pumpThread;
 
+	//// THREAD VARIABLES
 	UevaSettings settings;
 	int dataId;
 	UevaBuffer buffer;
 
-	Mat cvMat;
-	QImage qImage;
-
-	enum FlagValues
-	{
-		DRAW_DEFAULT = 1,
-		DRAW_CHANNEL = 2,
-		DRAW_CONTOUR = 4,
-		DRAW_NECK = 8,
-		DRAW_MARKER = 16,
-		RECORD_DATA = 32,
-		RECORD_RAW = 64,
-		RECORD_DISPLAY = 128,
-		CAMERA_ON = 256,
-	};
-	int guiFlag;
-
+	//// GUI VARIABLES
+	QString currentFile;
+	QImage fileRgb888;
+	cv::Mat file8uc1;
+	cv::Size_<int> videoWriterSize;
+	cv::VideoWriter rawVideoWriter;
+	cv::VideoWriter drawnVideoWriter;
 
 	//// NON MODAL SUBWINDOW
 	Setup *setup;
@@ -182,14 +192,17 @@ private:
 	QAction *dashboardAction;
 	QAction *plotterAction;
 	QAction *channelAction;
-	QAction *contourAction;
+	QAction *dropletAction;
 	QAction *neckAction;
 	QAction *markerAction;
 	QAction *useRefAction;
 	QAction *dropRefAction;
 
+
+
 	private slots:
-	//// TRIGGERED BY ACTIONS
+
+	//// TRIGGERED BY ACTIONS AND SHORTCUTS
 	void clear(); // check unsave and close image file
 	void open(); // check unsave and get open file name dialog
 	bool save(); // redirect to save as
@@ -200,10 +213,9 @@ private:
 	void showAndHideDashboard();
 	void showAndHidePlotter();
 	void showAndHideChannel();
-	void showAndHideContour();
+	void showAndHideDroplet();
 	void showAndHideNeck();
 	void showAndHideMarker();
-
 
 	//// TRIGGERED BY THREADS
 	void engineSlot(const UevaData &data);

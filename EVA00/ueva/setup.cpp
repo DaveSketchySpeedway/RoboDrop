@@ -28,10 +28,12 @@ Setup::Setup(QWidget *parent)
 	//// CAMERA
 	connect(connectCameraButton, SIGNAL(clicked()),
 		parent, SLOT(connectCamera()));
-	connect(getCameraButton, SIGNAL(clicked()),
-		parent, SLOT(getCamera()));
 	connect(setCameraButton, SIGNAL(clicked()),
 		parent, SLOT(setCamera()));
+	connect(cameraButton, SIGNAL(clicked()),
+		parent, SLOT(cameraOnOff()));
+	connect(getCameraButton, SIGNAL(clicked()),
+		parent, SLOT(getCamera()));
 
 	cameraTree->setColumnCount(2);
 	cameraTree->header()->resizeSection(0, 300);
@@ -58,18 +60,76 @@ Setup::Setup(QWidget *parent)
 		tr("Inlet Index") <<
 		tr("Limit (mbar)"));
 
-
-
 	//// IMGPROC
+	connect(calibButton, SIGNAL(clicked()),
+		parent, SLOT(setCalib()));
+	connect(bkgdButton, SIGNAL(clicked()),
+		parent, SLOT(setBkgd()));
+	connect(maskButton, SIGNAL(clicked()),
+		parent, SLOT(maskOnOff()));
+	connect(channelButton, SIGNAL(clicked()),
+		parent, SLOT(channelOnOff()));
+	connect(sepSortButton, SIGNAL(clicked()),
+		parent, SLOT(sepSortOnOff()));
+	
+	connect(thresholdSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(maskSetup()));
+	connect(blockSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(maskSetup()));
+	connect(openSizeSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(maskSetup()));
+
+	connect(erodeSizeSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(channelSetup()));
+	connect(cutThicknessSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(channelSetup()));
+
 
 	//// CTRL
 	connect(loadCtrlButton, SIGNAL(clicked()),
 		parent, SLOT(loadCtrl()));
+	connect(timerIntervalButton, SIGNAL(clicked()),
+		parent, SLOT(changeTimerInterval()));
 }
 
 Setup::~Setup()
 {
 
+}
+
+void Setup::createChannelInfoWidgets(int numChan)
+{
+	for (int i = 0; i < numChan; i++)
+	{
+		ChannelInfoWidget *channelInfoWidget = new ChannelInfoWidget(i, numChan, this);
+		channelInfoWidgets.push_back(channelInfoWidget);
+		sepSortLayout->addWidget(channelInfoWidget);
+	}
+}
+
+void Setup::deleteChannelInfoWidgets(std::map<std::string, std::vector<int> > &channelInfo)
+{
+	std::vector<int> newIndices;
+	std::vector<int> directions;
+	foreach(ChannelInfoWidget *channelInfoWidget, channelInfoWidgets)
+	{
+		newIndices.push_back(channelInfoWidget->newBox->currentIndex());
+		directions.push_back(channelInfoWidget->directionBox->currentIndex());
+		sepSortLayout->removeWidget(channelInfoWidget);
+		delete channelInfoWidget;
+	}
+	channelInfoWidgets.clear();
+
+	channelInfo["newIndices"] = newIndices;
+	channelInfo["directions"] = directions;
+}
+
+void Setup::keyPressEvent(QKeyEvent *event)
+{
+	if (event->key() == Qt::Key_Escape)
+	{
+		this->hide();
+	}
 }
 
 void Setup::addPump()

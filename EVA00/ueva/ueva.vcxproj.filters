@@ -152,6 +152,15 @@
     <ClCompile Include="uevafunctions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="channelinfowidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_channelinfowidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_channelinfowidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ueva.qrc">
@@ -205,6 +214,12 @@
     <CustomBuild Include="s2enginethread.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="channelinfowidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="channelinfowidget.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_setup.h">
@@ -237,11 +252,17 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_channelinfowidget.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="persistence1d.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ueva.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\deployment\2016_07_09_all_lib\icon\eva_icon.ico" />
+    <Image Include="eva_icon.ico" />
   </ItemGroup>
 </Project>

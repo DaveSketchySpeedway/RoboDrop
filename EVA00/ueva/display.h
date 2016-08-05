@@ -23,6 +23,8 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include <QtGui > 
 #include <QWidget >
 
+#include "uevastructures.h"
+
 class Display : public QWidget
 {
 	Q_OBJECT
@@ -30,27 +32,33 @@ public:
 	Display(QWidget *parent);
 	~Display();
 
-	void setImage(const QImage &image);
-	QPoint getMousePosition(); // used by ref set, statusbar
-	QLine getMouseLine(); // used by cut and calib
-	QLine getMousePressedMovement(); // used by ref update
+	//// REGULAR CALLS
+	void setImage(const QImage &i);
+	QPoint getMousePosition(); // return instantaneous mouse position
+	QPoint getLeftPress(); // return point if there is left click since last get
+	QPoint getRightPress(); // return point if there is right click since last get
+	QLine getLeftPressMovement(); // return line start at last get
 
 signals:
+	void sendMouseLine(QLine line); // send line start at button press
 	
 protected:
-	void paintEvent(QPaintEvent *event);
+	void mousePressEvent(QMouseEvent *event); // used by cut and calib
 	void mouseMoveEvent(QMouseEvent *event);
-	void mousePressEvent(QMouseEvent *event);
-	void mouseReleaseEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event); // used by cut and calib
+	void paintEvent(QPaintEvent *event);
 
 private:
-	QImage displayImage;
-	bool mousePressed;
+	QImage image;
+
+	bool leftPressed;
+	bool lastLeftPressed;
 	QPoint mousePosition;
-	bool lastMousePressed;
 	QPoint lastMousePosition;
-	QPoint linePoint1;
-	QPoint linePoint2;
+	QPoint lineStartPosition;
+	QPoint lineEndPosition;
+	QPoint leftPressPosition;
+	QPoint rightPressPosition;
 
 	private slots:
 

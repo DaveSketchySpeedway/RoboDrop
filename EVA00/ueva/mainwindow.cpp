@@ -5,12 +5,12 @@ This file is part of uEVA. https://github.com/DaveSketchySpeedway/uEVA
 
 uEVA is free software : you can redistribute it and / or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
+the Free Software Foundation, either version 3 of the License, or 
 any later version.
 
 uEVA is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
@@ -26,8 +26,6 @@ MainWindow::MainWindow()
 	settings = UevaSettings();
 	dataId = qRegisterMetaType<UevaData>();
 	buffer = UevaBuffer();
-	guiFlag = DRAW_DEFAULT | DRAW_CHANNEL | DRAW_CONTOUR | DRAW_NECK | DRAW_MARKER;
-	qImage = QImage(0, 0, QImage::Format_Indexed8);
 
 	//// INITIALIZE GUI
 	setWindowIcon(QIcon("icon/eva_icon.png"));
@@ -46,8 +44,8 @@ MainWindow::MainWindow()
 	createContextMenu();
 	createToolBars();
 	createStatusBar();
-
 	createThreads();
+
 	updateStatusBar();
 	setCurrentFile("");
 	showMaximized();
@@ -61,35 +59,19 @@ MainWindow::~MainWindow()
 
 }
 
-void MainWindow::cameraOnOff()
-{
-	if (dashboard->cameraButton->isChecked())
-	{
-		dashboard->cameraButton->setText(tr("Off"));
-		guiFlag |= CAMERA_ON;
-		cameraThread->startCamera( (int)(timerInterval/1000) );
-	}
-	else
-	{
-		dashboard->cameraButton->setText(tr("On"));
-		guiFlag ^= CAMERA_ON;
-		cameraThread->stopCamera();
-		qImage = QImage(0, 0, QImage::Format_Indexed8);
-	}
-}
-
+//// COMMUNICATE WITH DASHBOARD
 void MainWindow::recordDataOnOff()
 {
 	if (dashboard->recordDataButton->isChecked())
 	{
 		dashboard->recordDataButton->setText(tr("Off"));
-		guiFlag |= RECORD_DATA;
+		settings.flag |= UevaSettings::RECORD_DATA;
 	}
 	else
 	{
 		dashboard->recordDataButton->setText(tr("On"));
 		UevaData::fileStream.close();
-		guiFlag ^= RECORD_DATA;
+		settings.flag ^= UevaSettings::RECORD_DATA;
 	}
 }
 
@@ -98,29 +80,195 @@ void MainWindow::recordRawOnOff()
 	if (dashboard->recordRawButton->isChecked())
 	{
 		dashboard->recordRawButton->setText(tr("Off"));
-		guiFlag |= RECORD_RAW;
+		settings.flag |= UevaSettings::RECORD_RAW;
+		if (!rawVideoWriter.isOpened())
+		{
+			QDateTime now = QDateTime::currentDateTime();
+			QString filename = "record/ueva_raw_";
+			filename.append(now.toString("yyyy_MM_dd_HH_mm_ss"));
+			filename.append(".avi");
+			double fps = 1.0 / (timerInterval / 1000.0);
+			rawVideoWriter = cv::VideoWriter(filename.toStdString(), 
+				CV_FOURCC('M', 'S', 'V', 'C'), fps, videoWriterSize, 0);
+		}
 	}
 	else
 	{
 		dashboard->recordRawButton->setText(tr("On"));
-		guiFlag ^= RECORD_RAW;
+		settings.flag ^= UevaSettings::RECORD_RAW;
+		if (rawVideoWriter.isOpened())
+		{
+			rawVideoWriter.release();
+		}
 	}
 }
 
-void MainWindow::recordDisplayOnOff()
+void MainWindow::recordDrawnOnOff()
 {
-	if (dashboard->recordDisplayButton->isChecked())
+	if (dashboard->recordDrawnButton->isChecked())
 	{
-		dashboard->recordDisplayButton->setText(tr("Off"));
-		guiFlag |= RECORD_DISPLAY;
+		dashboard->recordDrawnButton->setText(tr("Off"));
+		settings.flag |= UevaSettings::RECORD_DRAWN;
+		if (!drawnVideoWriter.isOpened())
+		{
+			QDateTime now = QDateTime::currentDateTime();
+			QString filename = "record/ueva_drawn_";
+			filename.append(now.toString("yyyy_MM_dd_HH_mm_ss"));
+			filename.append(".avi");
+			double fps = 1.0 / (timerInterval / 1000.0);
+			drawnVideoWriter = cv::VideoWriter(filename.toStdString(),
+				CV_FOURCC('M', 'S', 'V', 'C'), fps, videoWriterSize, 1);
+		}
 	}
 	else
 	{
-		dashboard->recordDisplayButton->setText(tr("On"));
-		guiFlag ^= RECORD_DISPLAY;
+		dashboard->recordDrawnButton->setText(tr("On"));
+		settings.flag ^= UevaSettings::RECORD_DRAWN;
+		if (drawnVideoWriter.isOpened())
+		{
+			drawnVideoWriter.release();
+		}
 	}
 }
 
+void MainWindow::recordNeckOnOff()
+{
+	if (dashboard->recordNeckButton->isChecked())
+	{
+		dashboard->recordNeckButton->setText(tr("Off"));
+		if (!UevaDroplet::fileStream.is_open())
+		{
+			QDateTime now = QDateTime::currentDateTime();
+			QString filename = "record/ueva_neck_";
+			filename.append(now.toString("yyyy_MM_dd_HH_mm_ss"));
+			filename.append(".csv");
+			UevaDroplet::fileStream.open(filename.toStdString());
+		}
+	}
+	else
+	{
+		dashboard->recordNeckButton->setText(tr("On"));
+		if (UevaDroplet::fileStream.is_open())
+		{
+			UevaDroplet::fileStream.close();
+		}
+	}
+}
+
+void MainWindow::pumpOnOff()
+{
+	if (dashboard->pumpButton->isChecked())
+	{
+		dashboard->pumpButton->setText(tr("Off"));
+		settings.flag |= UevaSettings::PUMP_ON;
+	}
+	else
+	{
+		dashboard->pumpButton->setText(tr("On"));
+		settings.flag ^= UevaSettings::PUMP_ON;
+	}
+}
+
+void MainWindow::receiveInletRequests(const QVector<qreal> &values)
+{
+	settings.inletRequests = values;
+}
+
+void MainWindow::imgprocOnOff()
+{
+	if (dashboard->imgprocButton->isChecked())
+	{
+		dashboard->imgprocButton->setText(tr("Off"));
+		settings.flag |= UevaSettings::IMGPROC_ON;
+		// initialize settings
+		imgprocSettings();
+		ctrlSettings();
+	}
+	else
+	{
+		dashboard->imgprocButton->setText(tr("On"));
+		settings.flag ^= UevaSettings::IMGPROC_ON;
+	}
+}
+
+void MainWindow::imgprocSettings()
+{
+	int threshold = dashboard->threshSlider->value();
+	int erodeSize = dashboard->erodeSizeSlider->value() * 2 + 3;
+	int contourSize = dashboard->contourSizeSlider->value();
+	int sortGridSize = dashboard->sortGridSizeSlider->value();
+	int sortOrder = dashboard->sortOrderSlider->value();
+	int convexSize = dashboard->convexSizeSlider->value();
+	int persistence = dashboard->persistenceSlider->value();
+
+	settings.imgprogThreshold = threshold;
+	settings.imgprogErodeSize = erodeSize;
+	settings.imgprogContourSize = contourSize;
+	settings.imgprogSortGridSize = sortGridSize;
+	settings.imgprogSortOrder = sortOrder;
+	settings.imgprocConvexSize = convexSize;
+	settings.imgprocPersistence = persistence;
+
+	QString sortOrderString;
+	switch (sortOrder)
+	{
+	case 0:
+	{
+		sortOrderString = QString("Sort Row First");
+		break;
+	}
+	case 1:
+	{
+		sortOrderString = QString("Sort Column First");
+	}
+	}
+
+	dashboard->threshLabel->setText(QString::number(threshold));
+	dashboard->erodeSizeLabel->setText(QString::number(erodeSize));
+	dashboard->contourSizeLabel->setText(QString::number(contourSize));
+	dashboard->sorGridSizeLabel->setText(QString::number(sortGridSize));
+	dashboard->sortOrderLabel->setText(sortOrderString);
+	dashboard->convexSizeLabel->setText(QString::number(convexSize));
+	dashboard->persistenceLabel->setText(QString::number(persistence));
+}
+
+void MainWindow::ctrlOnOff()
+{
+	if (dashboard->ctrlButton->isChecked())
+	{
+		dashboard->ctrlButton->setText(tr("Off"));
+		settings.flag |= UevaSettings::CTRL_ON;
+		// initialize settings
+		imgprocSettings();
+		ctrlSettings();
+		// initialize ctrl
+		engineThread->initCtrl();
+	}
+	else
+	{
+		dashboard->ctrlButton->setText(tr("On"));
+		settings.flag ^= UevaSettings::CTRL_ON;
+	}
+}
+
+void MainWindow::ctrlSettings()
+{
+	int markerSize = dashboard->markerSizeSlider->value();
+	int autoMargin = dashboard->autoMarginSlider->value();
+
+	settings.ctrlMarkerSize = markerSize;
+	settings.ctrlAutoMargin = autoMargin;
+
+	dashboard->markerSizeLabel->setText(QString::number(markerSize));
+	dashboard->autoMarginLabel->setText(QString::number(autoMargin));
+}
+
+void MainWindow::receiveAutoCatchRequests(const QVector<bool> &values)
+{
+	settings.autoCatchRequests = values;
+}
+
+//// COMMUNICATE WITH SETUP
 void MainWindow::connectCamera()
 {
 	if (setup->connectCameraButton->isChecked())
@@ -134,7 +282,7 @@ void MainWindow::connectCamera()
 			delete setup->cameraTree->takeTopLevelItem(numItem - 1);
 		}
 		//// default setting
-		QMapIterator<QString, QString> d (cameraThread->defaultSettings());
+		QMapIterator<QString, QString> d(cameraThread->defaultSettings());
 		QTreeWidgetItem *p;
 		d.toFront();
 		while (d.hasNext())
@@ -159,6 +307,37 @@ void MainWindow::connectCamera()
 	}
 }
 
+void MainWindow::setCamera()
+{
+	// extract settings from tree
+	QMap<QString, QString> s;
+	for (int i = 0; i < setup->cameraTree->topLevelItemCount(); i++)
+	{
+		QTreeWidgetItem *p;
+		p = setup->cameraTree->topLevelItem(i);
+		s[p->text(0)] = p->text(1);
+	}
+	//// set settings
+	cameraThread->setSettings(s);
+}
+
+void MainWindow::cameraOnOff()
+{
+	if (setup->cameraButton->isChecked())
+	{
+		setup->cameraButton->setText(tr("Off"));
+		settings.flag |= UevaSettings::CAMERA_ON;
+		cameraThread->startCamera((int)(timerInterval / 1000));
+	}
+	else
+	{
+		setup->cameraButton->setText(tr("On"));
+		settings.flag ^= UevaSettings::CAMERA_ON;
+		cameraThread->stopCamera();
+		file8uc1 = cv::Mat(0, 0, CV_8UC1);
+	}
+}
+
 void MainWindow::getCamera()
 {
 	//// erase settings
@@ -177,34 +356,6 @@ void MainWindow::getCamera()
 		p->setText(0, s.key());
 		p->setText(1, s.value());
 		p->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
-	}
-}
-
-void MainWindow::setCamera()
-{
-	// extract settings from tree
-	QMap<QString, QString> s;
-	for (int i = 0; i < setup->cameraTree->topLevelItemCount(); i++)
-	{
-		QTreeWidgetItem *p;
-		p = setup->cameraTree->topLevelItem(i);
-		s[p->text(0)] = p->text(1);
-	}
-	//// set settings
-	cameraThread->setSettings(s);
-}
-
-void MainWindow::pumpOnOff()
-{
-	if (dashboard->pumpButton->isChecked())
-	{
-		dashboard->pumpButton->setText(tr("Off"));
-		settings.flag |= UevaSettings::PUMP_ON;
-	}
-	else
-	{
-		dashboard->pumpButton->setText(tr("On"));
-		settings.flag ^= UevaSettings::PUMP_ON;
 	}
 }
 
@@ -245,12 +396,11 @@ void MainWindow::setPump()
 			d.push_back(c->text(2).toInt());
 			d.push_back(c->text(3).toInt());
 			settings.inletInfo.push_back(d);
-			settings.inletRequests.push_back(0.0);
 		}
 	}
 
 	// sort inlet info
-	sort(settings.inletInfo.begin(), settings.inletInfo.end(),
+	std::sort(settings.inletInfo.begin(), settings.inletInfo.end(),
 		[](const QVector<int>& a, const QVector<int>& b)
 	{
 		return a[2] < b[2];
@@ -260,37 +410,102 @@ void MainWindow::setPump()
 	dashboard->resetInletWidgets(settings.inletInfo);
 }
 
-void MainWindow::receiveInletRequests(
-	const QVector<qreal> &values)
+void MainWindow::setCalib()
 {
-	settings.inletRequests = values;
+	double calibLength = setup->calibLengthEdit->text().toDouble();
+	engineThread->setCalib(calibLength);
 }
 
-void MainWindow::imgprocOnOff()
+void MainWindow::setBkgd()
 {
-	if (dashboard->imgprocButton->isChecked())
+	engineThread->setBkgd();
+}
+
+void MainWindow::maskOnOff()
+{
+	if (setup->maskButton->isChecked())
 	{
-		dashboard->imgprocButton->setText(tr("Off"));
-		settings.flag |= UevaSettings::IMGPROC_ON;
+		setup->maskButton->setText(tr("Done Making Mask"));
+		settings.flag |= UevaSettings::MASK_MAKING;
+		// initialize in case slider not tempered with
+		maskSetup();
 	}
 	else
 	{
-		dashboard->imgprocButton->setText(tr("On"));
-		settings.flag ^= UevaSettings::IMGPROC_ON;
+		setup->maskButton->setText(tr("Make Mask"));
+		settings.flag ^= UevaSettings::MASK_MAKING;
 	}
 }
 
-void MainWindow::ctrlOnOff()
+void MainWindow::maskSetup()
 {
-	if (dashboard->ctrlButton->isChecked())
+	// * 2 + 3 because they have to be odd and > 1
+	int block = setup->blockSlider->value() * 2 + 3;
+	int threshold = (127 - setup->thresholdSlider->value());
+	int openSize = setup->openSizeSlider->value() * 2 + 3;
+
+	settings.maskBlockSize = block;
+	settings.maskThreshold = threshold;
+	settings.maskOpenSize = openSize;
+
+	setup->blockLabel->setText(QString::number(block));
+	setup->thresholdLabel->setText(QString::number(threshold));
+	setup->openSizeLabel->setText(QString::number(openSize));
+}
+
+void MainWindow::channelOnOff()
+{
+	if (setup->channelButton->isChecked())
 	{
-		dashboard->ctrlButton->setText(tr("Off"));
-		settings.flag |= UevaSettings::CTRL_ON;
+		setup->channelButton->setText(tr("Done Cutting Channels"));
+		settings.flag |= UevaSettings::CHANNEL_CUTTING;
+		// initialize in case slider not tempered with
+		channelSetup();
 	}
 	else
 	{
-		dashboard->ctrlButton->setText(tr("On"));
-		settings.flag ^= UevaSettings::CTRL_ON;
+		setup->channelButton->setText(tr("Cut Channels"));
+		settings.flag ^= UevaSettings::CHANNEL_CUTTING;
+		// clear in case user don't click on screen in between
+		settings.mouseLines.clear();
+		QLine line = QLine(0, 0, 0, 0);
+		settings.mouseLines.push_back(line);
+	}
+}
+
+void MainWindow::channelSetup()
+{
+	int erodeSize = setup->erodeSizeSlider->value() * 2 + 3;
+	int cutThickness = setup->cutThicknessSlider->value();
+
+	settings.channelErodeSize = erodeSize;
+	settings.channelCutThickness = cutThickness;
+	
+	setup->erodeSizeLabel->setText(QString::number(erodeSize));
+	setup->cutThicknessLabel->setText(QString::number(cutThickness));
+}
+
+void MainWindow::sepSortOnOff()
+{
+	if (setup->sepSortButton->isChecked())
+	{
+		setup->sepSortButton->setText(tr("Sort Channels"));
+		// create channel objects
+		int numChan;
+		engineThread->separateChannels(numChan);
+		// create channel info widgets
+		setup->createChannelInfoWidgets(numChan);
+	}
+	else
+	{
+		setup->sepSortButton->setText(tr("Separate Channels"));
+		// delete channel info widgets
+		std::map<std::string, std::vector<int> > channelInfo;
+		setup->deleteChannelInfoWidgets(channelInfo);
+		// sort channel objects
+		engineThread->sortChannels(channelInfo);
+		// reset auto catch checkboxes
+		dashboard->resetAutoCatchBox(channelInfo["newIndices"].size());
 	}
 }
 
@@ -307,15 +522,42 @@ void MainWindow::loadCtrl()
 		int numIn;
 		int numState;
 		int numCtrl;
+		double ctrlTs;
 		engineThread->loadCtrl(fileName.toStdString(),
-			&numState, &numIn, &numOut, &numCtrl);
+			&numState, &numIn, &numOut, &numCtrl, &ctrlTs);
 		setup->numInLabel->setText(QString::number(numIn));
 		setup->numOutLabel->setText(QString::number(numOut));
 		setup->numStateLabel->setText(QString::number(numState));
 		setup->numCtrlLabel->setText(QString::number(numCtrl));
+		setup->ctrlTsLabel->setText(QString::number(ctrlTs));
 	}
 }
 
+void MainWindow::changeTimerInterval()
+{
+	// stop timer
+	killTimer(timerId);
+	// get new interval
+	timerInterval = setup->timerIntervalEdit->text().toInt();
+	// start new timer
+	startTimers();
+}
+
+//// COMMUNICATE WITH DISPLAY
+void MainWindow::receiveMouseLine(QLine line)
+{
+	if (settings.flag & UevaSettings::CHANNEL_CUTTING)
+	{
+		settings.mouseLines.push_back(line);
+	}
+	else
+	{
+		settings.mouseLines.clear();
+		settings.mouseLines.push_back(line);
+	}
+}
+
+//// REIMPLEMENTATION
 void MainWindow::timerEvent(QTimerEvent *event)
 {
 	
@@ -326,24 +568,27 @@ void MainWindow::timerEvent(QTimerEvent *event)
 		pingTimeStamps.enqueue(now);
 		
 		//// INTERUPT CAMERA THREAD
-		if (guiFlag & CAMERA_ON)
+		cv::Mat temp8uc1;
+		if (settings.flag & UevaSettings::CAMERA_ON)
 		{
-			cameraThread->getCurrentImage(cvMat);
-			//qDebug() << cvMat.total() << " " <<
-			//	cvMat.type() << " " << // 0 means CV_8U
-			//	cvMat.rows << " " <<
-			//	cvMat.cols << " " <<
-			//	cvMat.isContinuous() << endl;;
+			cameraThread->getCurrentImage(temp8uc1); // 16uc1 to 8uc1, 1 deep copy
 		}
 		else
 		{
-			cvMat = qImage2cvMat(qImage);
+			temp8uc1 = file8uc1.clone(); // 1 deep copy
 		}
+		videoWriterSize = temp8uc1.size();
+
+		//// COLLECT SETTINGS (SOME ARE ALREADY SET THROUG SIGNAL SLOT)
+		settings.rightPressPosition = display->getRightPress();
+		settings.leftPressPosition = display->getLeftPress();
+		settings.leftPressMovement = display->getLeftPressMovement();
+
+		//// CREATE AN EMPTY DATA STRUCTURE 
+		UevaData data = UevaData();
+		data.rawGray = temp8uc1;
 
 		//// WAKE ENGINE THREAD
-		UevaData data = UevaData();
-		//data.rawImage = cvMat.clone(); // deep copy, cost 7ms seconds for 1x1
-		data.image = cvMat; // shallow copy, screwed if engine last more than interval
 		engineThread->setSettings(settings); 
 		engineThread->setData(data);
 		engineThread->wake();
@@ -368,6 +613,155 @@ void MainWindow::closeEvent(QCloseEvent *event)
 	}
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+	if (!event->isAutoRepeat())
+	{
+		// hide stuff
+		if (event->key() == Qt::Key_Escape)
+		{
+			setup->hide();
+			dashboard->hide();
+			plotter->hide();
+		}
+		// channel linking
+		switch (event->key())
+		{
+		case Qt::Key_0:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[0] = !settings.linkChannels[0];
+				settings.inverseLinkChannels[0] = settings.linkChannels[0];
+			}
+			else
+			{
+				settings.linkChannels[0] = !settings.linkChannels[0];
+			}
+			break;
+		}
+		case Qt::Key_1:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[1] = !settings.linkChannels[1];
+				settings.inverseLinkChannels[1] = settings.linkChannels[1];
+			}
+			else
+			{
+				settings.linkChannels[1] = !settings.linkChannels[1];
+			}
+			break;
+		}
+		case Qt::Key_2:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[2] = !settings.linkChannels[2];
+				settings.inverseLinkChannels[2] = settings.linkChannels[2];
+			}
+			else
+			{
+				settings.linkChannels[2] = !settings.linkChannels[2];
+			}
+			break;
+		}
+		case Qt::Key_3:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[3] = !settings.linkChannels[3];
+				settings.inverseLinkChannels[3] = settings.linkChannels[3];
+			}
+			else
+			{
+				settings.linkChannels[3] = !settings.linkChannels[3];
+			}
+			break;
+		}
+		case Qt::Key_4:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[4] = !settings.linkChannels[4];
+				settings.inverseLinkChannels[4] = settings.linkChannels[4];
+			}
+			else
+			{
+				settings.linkChannels[4] = !settings.linkChannels[4];
+			}
+			break;
+		}
+		case Qt::Key_5:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[5] = !settings.linkChannels[5];
+				settings.inverseLinkChannels[5] = settings.linkChannels[5];
+			}
+			else
+			{
+				settings.linkChannels[5] = !settings.linkChannels[5];
+			}
+			break;
+		}
+		case Qt::Key_6:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[6] = !settings.linkChannels[6];
+				settings.inverseLinkChannels[6] = settings.linkChannels[6];
+			}
+			else
+			{
+				settings.linkChannels[6] = !settings.linkChannels[6];
+			}
+			break;
+		}
+		case Qt::Key_7:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[7] = !settings.linkChannels[7];
+				settings.inverseLinkChannels[7] = settings.linkChannels[7];
+			}
+			else
+			{
+				settings.linkChannels[7] = !settings.linkChannels[7];
+			}
+			break;
+		}
+		case Qt::Key_8:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[8] = !settings.linkChannels[8];
+				settings.inverseLinkChannels[8] = settings.linkChannels[8];
+			}
+			else
+			{
+				settings.linkChannels[8] = !settings.linkChannels[8];
+			}
+			break;
+		}
+		case Qt::Key_9:
+		{
+			if (event->modifiers() == Qt::ControlModifier)
+			{
+				settings.linkChannels[9] = !settings.linkChannels[9];
+				settings.inverseLinkChannels[9] = settings.linkChannels[9];
+			}
+			else
+			{
+				settings.linkChannels[9] = !settings.linkChannels[9];
+			}
+			break;
+		}
+		}
+	}
+}
+
+///// CONSTRUCTOR FUNCTIONS
 void MainWindow::createActions()
 {
 	clearAction = new QAction(tr("&Clear"), this);
@@ -409,70 +803,81 @@ void MainWindow::createActions()
 	connect(aboutAction, SIGNAL(triggered()),
 		this, SLOT(about()));
 
-	setupAction = new QAction(tr("show &Setup"), this);
+	setupAction = new QAction(tr("show Setup"), this);
 	setupAction->setIcon(QIcon("icon/setup.png"));
 	setupAction->setShortcut(tr("Alt+S"));
 	setupAction->setStatusTip(tr("Setup application"));
+	setupAction->setShortcutContext(Qt::ApplicationShortcut);
 	setupAction->setCheckable(true);
 	setupAction->setChecked(false);
 	connect(setupAction, SIGNAL(triggered()),
 		this, SLOT(showAndHideSetup()));
 
-	dashboardAction = new QAction(tr("show &Dashboard"), this);
+	dashboardAction = new QAction(tr("show Dashboard"), this);
 	dashboardAction->setIcon(QIcon("icon/dashboard.png"));
 	dashboardAction->setShortcut(tr("Alt+D"));
+	dashboardAction->setShortcutContext(Qt::ApplicationShortcut);
 	dashboardAction->setStatusTip(tr("Operate application"));
 	//dashboardAction->setCheckable(true);
 	//dashboardAction->setChecked(false);
 	connect(dashboardAction, SIGNAL(triggered()),
 		this, SLOT(showAndHideDashboard()));
 
-	plotterAction = new QAction(tr("show &Plotter"), this);
+	plotterAction = new QAction(tr("show Plotter"), this);
 	plotterAction->setIcon(QIcon("icon/plotter.png"));
-	plotterAction->setShortcut(tr("Alt+P"));
+	plotterAction->setShortcut(tr("Alt+A"));
+	plotterAction->setShortcutContext(Qt::ApplicationShortcut);
 	plotterAction->setStatusTip(tr("Plot data"));
 	//plotterAction->setCheckable(true);
 	//plotterAction->setChecked(false);
 	connect(plotterAction, SIGNAL(triggered()),
 		this, SLOT(showAndHidePlotter()));
 
-	channelAction = new QAction(tr("draw Cha&nnel"), this);
-	//channelAction->setIcon(QIcon("icon/channel.png"));
-	channelAction->setStatusTip(tr("Draw all channels"));
-	channelAction->setCheckable(true);
-	channelAction->setChecked(false);
-	connect(channelAction, SIGNAL(triggered()),
-		this, SLOT(showAndHideChannel()));
-
-	contourAction = new QAction(tr("draw &Contour"), this);
+	dropletAction = new QAction(tr("draw Droplet"), this);
 	//contourAction->setIcon(QIcon("icon/contour.png"));
-	contourAction->setStatusTip(tr("Draw detected contours"));
-	contourAction->setCheckable(true);
-	contourAction->setChecked(false);
-	connect(contourAction, SIGNAL(triggered()),
-		this, SLOT(showAndHideContour()));
+	dropletAction->setStatusTip(tr("Draw detected droplets"));
+	dropletAction->setShortcut(tr("CTRL+Z"));
+	dropletAction->setShortcutContext(Qt::ApplicationShortcut);
+	dropletAction->setCheckable(true);
+	dropletAction->setChecked(false);
+	connect(dropletAction, SIGNAL(triggered()),
+		this, SLOT(showAndHideDroplet()));
 
-	neckAction = new QAction(tr("draw &Neck"), this);
-	//neckAction->setIcon(QIcon("icon/neck.png"));
-	neckAction->setStatusTip(tr("Draw detected necks"));
-	neckAction->setCheckable(true);
-	neckAction->setChecked(false);
-	connect(neckAction, SIGNAL(triggered()),
-		this, SLOT(showAndHideNeck()));
-
-	markerAction = new QAction(tr("draw &Marker"), this);
+	markerAction = new QAction(tr("draw Marker"), this);
 	//markerAction->setIcon(QIcon("icon/marker.png"));
-	markerAction->setStatusTip(tr("Draw all detected markers"));
+	markerAction->setStatusTip(tr("Draw detected markers"));
+	markerAction->setShortcut(tr("CTRL+X"));
+	markerAction->setShortcutContext(Qt::ApplicationShortcut);
 	markerAction->setCheckable(true);
 	markerAction->setChecked(false);
 	connect(markerAction, SIGNAL(triggered()),
 		this, SLOT(showAndHideMarker()));
 
-	useRefAction = new QAction(tr("use as Reference"), this);
-	useRefAction->setStatusTip(tr("Use this marker as reference"));
+	channelAction = new QAction(tr("draw Channel"), this);
+	//channelAction->setIcon(QIcon("icon/channel.png"));
+	channelAction->setStatusTip(tr("Draw all channels"));
+	channelAction->setShortcut(tr("CTRL+C"));
+	channelAction->setShortcutContext(Qt::ApplicationShortcut);
+	channelAction->setCheckable(true);
+	channelAction->setChecked(false);
+	connect(channelAction, SIGNAL(triggered()),
+		this, SLOT(showAndHideChannel()));
 
-	dropRefAction = new QAction(tr("drop Reference"), this);
-	dropRefAction->setStatusTip(tr("Drop this reference"));
+	neckAction = new QAction(tr("draw Neck"), this);
+	//neckAction->setIcon(QIcon("icon/neck.png"));
+	neckAction->setStatusTip(tr("Draw detected necks"));
+	neckAction->setShortcut(tr("CTRL+V"));
+	neckAction->setShortcutContext(Qt::ApplicationShortcut);
+	neckAction->setCheckable(true);
+	neckAction->setChecked(false);
+	connect(neckAction, SIGNAL(triggered()),
+		this, SLOT(showAndHideNeck()));
+
+	//useRefAction = new QAction(tr("use as Reference"), this);
+	//useRefAction->setStatusTip(tr("Use this marker as reference"));
+
+	//dropRefAction = new QAction(tr("drop Reference"), this);
+	//dropRefAction->setStatusTip(tr("Drop this reference"));
 }
 
 void MainWindow::createMenus()
@@ -491,9 +896,10 @@ void MainWindow::createMenus()
 	viewMenu->addAction(plotterAction);
 	viewMenu->addSeparator();
 	visibilitySubMenu = viewMenu->addMenu(tr("&Visibility"));
-	visibilitySubMenu->addAction(contourAction);
-	visibilitySubMenu->addAction(neckAction);
+	visibilitySubMenu->addAction(channelAction);
+	visibilitySubMenu->addAction(dropletAction);
 	visibilitySubMenu->addAction(markerAction);
+	visibilitySubMenu->addAction(neckAction);
 
 	helpMenu = menuBar()->addMenu(tr("&Help"));
 	helpMenu->addAction(aboutAction);
@@ -501,18 +907,18 @@ void MainWindow::createMenus()
 
 void MainWindow::createContextMenu()
 {
-	display->addAction(useRefAction);
-	display->addAction(dropRefAction);
-	display->setContextMenuPolicy(Qt::ActionsContextMenu);
+	//display->addAction(useRefAction);
+	//display->addAction(dropRefAction);
+	//display->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
 void MainWindow::createToolBars()
 {
 	visibilityToolBar = addToolBar(tr("&Visibility"));	
-	visibilityToolBar->addAction(channelAction);
-	visibilityToolBar->addAction(contourAction);
-	visibilityToolBar->addAction(neckAction);
+	visibilityToolBar->addAction(dropletAction);
 	visibilityToolBar->addAction(markerAction);
+	visibilityToolBar->addAction(channelAction);
+	visibilityToolBar->addAction(neckAction);
 	visibilityToolBar->addSeparator();
 }
 
@@ -568,6 +974,7 @@ void MainWindow::startTimers()
 	pumpLastTime = now;
 }
 
+//// MAINWINDOW FUNCTIONS
 bool MainWindow::noUnsavedFile()
 {
 	if (isWindowModified())
@@ -595,12 +1002,13 @@ bool MainWindow::noUnsavedFile()
 
 bool MainWindow::loadFile(const QString &fileName)
 {
-
-	if (!qImage.load(fileName)) 
+	QImage argb32;
+	if (!argb32.load(fileName)) 
 	{
 		statusBar()->showMessage(tr("Loading canceled"), 2000);
 		return false;
 	}
+	file8uc1 = Ueva::qImage2cvMat(argb32);
 	setCurrentFile(fileName);
 	statusBar()->showMessage(tr("File loaded"), 2000);
 	return true;
@@ -608,7 +1016,7 @@ bool MainWindow::loadFile(const QString &fileName)
 
 bool MainWindow::saveFile(const QString &fileName)
 {
-	if (!qImage.save(fileName))
+	if (!fileRgb888.save(fileName))
 	{
 		statusBar()->showMessage(tr("Saving canceled"), 2000);
 		return false;
@@ -646,11 +1054,12 @@ void MainWindow::readSettings()
 
 }
 
+//// ACTION FUNCTIONS
 void MainWindow::clear()
 {
 	if (noUnsavedFile())
 	{
-		qImage = QImage(0, 0, QImage::Format_Indexed8);
+		file8uc1 = cv::Mat(0, 0, CV_8UC1);
 		setCurrentFile("");
 	}
 }
@@ -703,15 +1112,15 @@ void MainWindow::about()
 		"<p>Microfluidics Enhanced Vison-based Automation"
 		" https://github.com/DaveSketchySpeedway/uEVA"
 		"<p>Copyright &copy; 2016 David Wong"
-		"<p>This program is free software: you can redistribute it and/or modify"
-		"it under the terms of the GNU General Public License as published by"
-		"the Free Software Foundation, either version 3 of the License, or"
+		"<p>This program is free software: you can redistribute it and/or modify "
+		"it under the terms of the GNU General Public License as published by "
+		"the Free Software Foundation, either version 3 of the License, or "
 		"any later version."
-		"<p>This program is distributed in the hope that it will be useful,"
-		"but WITHOUT ANY WARRANTY; without even the implied warranty of"
-		"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the"
+		"<p>This program is distributed in the hope that it will be useful, "
+		"but WITHOUT ANY WARRANTY; without even the implied warranty of "
+		"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the "
 		"GNU General Public License for more details."
-		"<p>You should have received a copy of the GNU General Public License"
+		"<p>You should have received a copy of the GNU General Public License "
 		"along with this program. If not, see http://www.gnu.org/licenses/."
 		));
 }
@@ -721,12 +1130,12 @@ void MainWindow::updateStatusBar()
 	QPoint mousePosition = display->getMousePosition();
 	engineFpsLabel->setText(tr("Engine FPS: %1")
 		.arg(QString::number(engineFps)));
-	engineDutyCycleLabel->setText(tr("Engine Duty Cycle: %1")
-		.arg(QString::number(engineDutyCycle)));
+	engineDutyCycleLabel->setText(tr("Engine Duty Cycle: %1 %")
+		.arg(QString::number(engineDutyCycle * 100.0)));
 	pumpFpsLabel->setText(tr("Pump FPS: %1")
 		.arg(QString::number(pumpFps)));
-	pumpDutyCycleLabel->setText(tr("Pump Duty Cycle: %1")
-		.arg(QString::number(pumpDutyCycle)));
+	pumpDutyCycleLabel->setText(tr("Pump Duty Cycle: %1 %")
+		.arg(QString::number(pumpDutyCycle * 100.0)));
 	pingLabel->setText(tr("Ping: %1")
 		.arg(QString::number(ping)));
 	mousePositionLabel->setText(tr("X: %1	Y: %2")
@@ -748,44 +1157,54 @@ void MainWindow::showAndHideDashboard()
 
 void MainWindow::showAndHidePlotter()
 {
-	plotter->showMaximized();
+	plotter->show();
 	plotter->activateWindow();
 }
 
 void MainWindow::showAndHideChannel()
 {
 	if (channelAction->isChecked())
-		guiFlag |= DRAW_CHANNEL;
+		settings.flag |= UevaSettings::DRAW_CHANNEL;
 	else
-		guiFlag ^= DRAW_CHANNEL;
+		settings.flag ^= UevaSettings::DRAW_CHANNEL;
 }
 
-void MainWindow::showAndHideContour()
+void MainWindow::showAndHideDroplet()
 {
-	if (contourAction->isChecked())
-		guiFlag |= DRAW_CONTOUR;
+	if (dropletAction->isChecked())
+		settings.flag |= UevaSettings::DRAW_DROPLET;
 	else
-		guiFlag ^= DRAW_CONTOUR;
+		settings.flag ^= UevaSettings::DRAW_DROPLET;
 }
 
 void MainWindow::showAndHideNeck()
 {
 	if (neckAction->isChecked())
-		guiFlag |= DRAW_NECK;
+		settings.flag |= UevaSettings::DRAW_NECK;
 	else
-		guiFlag ^= DRAW_NECK;
+		settings.flag ^= UevaSettings::DRAW_NECK;
 }
 
 void MainWindow::showAndHideMarker()
 {
 	if (markerAction->isChecked())
-		guiFlag |= DRAW_MARKER;
+		settings.flag |= UevaSettings::DRAW_MARKER;
 	else
-		guiFlag ^= DRAW_MARKER;
+		settings.flag ^= UevaSettings::DRAW_MARKER;
 }
 
+//// THREAD FUNCTIONS
 void MainWindow::engineSlot(const UevaData &data)
 {
+	//// TRACK IMAGE DATA
+	//if (!cvMatGray.empty() && !data.rawGray.empty() && !data.displayRgb.empty())
+	//{
+	//	cerr << "cvMatGray " << static_cast<void*>(cvMatGray.data) << endl;
+	//	cerr << "data.rawGray" << static_cast<void*>(data.rawGray.data) << endl;
+	//	cerr << "data.displayRgb" << static_cast<void*>(data.displayRgb.data) << endl << endl;
+	//}
+	
+
 	//// ENGINE THREAD DUTY CYCLE
 	QTime now = QTime::currentTime();
 	engineDutyCycle = double(engineLastTime.msecsTo(now))/
@@ -797,12 +1216,12 @@ void MainWindow::engineSlot(const UevaData &data)
 	pumpThread->wake();
 
 	//// UPDATE DISPLAY
-	qImage = cvMat2qImage(data.image);
-	display->setImage(qImage);
-	// pass data to display
-	// pass flag to display --> record, draw
+	fileRgb888 = Ueva::cvMat2qImage(data.drawnRgb); // rgb8uc3 to rgb888, 1 deep copy
+	display->setImage(fileRgb888); 
 	display->update();
 	
+	//// UPDATE DASHBOARD
+
 	//// PUMP THREAD FPS
 	now = QTime::currentTime();
 	pumpFps = 1000.0 / pumpLastTime.msecsTo(now);
@@ -823,8 +1242,8 @@ void MainWindow::pumpSlot(const UevaData &data)
 	plotter->setPlot(buffer);
 	plotter->plot->update();
 
-	//// RECORD
-	if (guiFlag & RECORD_DATA)
+	//// RECORD DATA
+	if (settings.flag & UevaSettings::RECORD_DATA)
 	{
 		if (!UevaData::fileStream.is_open()) // first time
 		{
@@ -838,7 +1257,16 @@ void MainWindow::pumpSlot(const UevaData &data)
 		}
 		data.writeToFile();
 	}
-
+	//// RECORD RAW
+	if (settings.flag & UevaSettings::RECORD_RAW)
+	{
+		rawVideoWriter << data.rawGray;
+	}
+	//// RECORD DRAWN
+	if (settings.flag & UevaSettings::RECORD_DRAWN)
+	{
+		drawnVideoWriter << data.drawnBgr;
+	}
 	//// PONG
 	if (!pingTimeStamps.isEmpty())
 	{

@@ -19,15 +19,18 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 
 #include "uevastructures.h"
 
-
-
+//// SETTINGS
 UevaSettings::UevaSettings()
 {
 	flag = 0;
+	for (int i = 0; i < 10; i++)
+	{
+		linkChannels.push_back(false);
+		inverseLinkChannels.push_back(false);
+	}
 }
 
-
-
+//// DATA
 UevaData::UevaData()
 {
 	//// PUMP
@@ -37,9 +40,27 @@ UevaData::UevaData()
 	map["inletWrite"] = inletWrite;
 	map["inletRead"] = inletRead;
 	map["inletTime"] = inletTime;
-
-	//// xxx
+	//// CTRL
+	QVector<qreal> raws;
+	QVector<qreal> measures;
+	QVector<qreal> estimates;
+	QVector<qreal> references;
+	QVector<qreal> states;
+	QVector<qreal> integralStates;
+	QVector<qreal> commands;
+	QVector<qreal> measureOffsets;
+	QVector<qreal> referenceOffsets;
+	map["ctrlRaw"] = raws;
+	map["ctrlMeasure"] = measures;
+	map["ctrlEstimate"] = estimates;
+	map["ctrlReference"] = references;
+	map["ctrlState"] = states;
+	map["ctrlIntegraState"] = integralStates;
+	map["ctrlCommand"] = commands;
 }
+
+std::ofstream UevaData::fileStream;
+QTime UevaData::startTime;
 
 void UevaData::headerToFile() const
 {
@@ -57,7 +78,7 @@ void UevaData::headerToFile() const
 		}
 	}
 
-	fileStream << endl;
+	fileStream << std::endl;
 }
 
 void UevaData::writeToFile() const
@@ -77,14 +98,10 @@ void UevaData::writeToFile() const
 		}
 	}
 
-	fileStream << endl;
+	fileStream << std::endl;
 }
 
-ofstream UevaData::fileStream;
-QTime UevaData::startTime;
-
-
-
+//// BUFFER
 UevaBuffer::UevaBuffer()
 {
 	index = 0;
@@ -160,16 +177,39 @@ void UevaBuffer::write(const UevaData &data)
 	}
 }
 
-
-
-
-
+//// CTRL
 UevaCtrl::UevaCtrl()
 {
 
 }
 
+int UevaCtrl::index = 0;
 int UevaCtrl::numPlantState = 0;
 int UevaCtrl::numPlantInput = 0;
 int UevaCtrl::numPlantOutput = 0;
 double UevaCtrl::samplePeriod = 0;
+
+//// CHANNEL
+UevaChannel::UevaChannel()
+{
+	direction = 0;
+	selectedMarkerIndex = -1;
+
+}
+
+//// DROPLET
+UevaDroplet::UevaDroplet()
+{
+	accomodatingChannelIndex = -1;
+}
+
+std::ofstream UevaDroplet::fileStream;
+
+//// MARKER
+UevaMarker::UevaMarker()
+{
+	accomodatingChannelIndex = -1;
+}
+
+cv::Size_<int> UevaMarker::imageSize = cv::Size_<int>(0, 0);
+int UevaMarker::sortGridSize = 0;

@@ -24,7 +24,6 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include <QWidget >
 #include <algorithm >
 #include <cmath>
-using namespace std;
 
 class Plot : public QWidget
 {

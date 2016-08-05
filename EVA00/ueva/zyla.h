@@ -31,9 +31,6 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include <vector>
 #include <string>
 
-using namespace std;
-using namespace cv;
-
 struct ZylaSettings
 {
 	ZylaSettings();
@@ -45,14 +42,14 @@ struct ZylaSettings
 
 	QMap<QString, QString> allMap;
 
-	map<AT_WC*, AT_BOOL> boolMap;
-	map<AT_WC*, AT_BOOL>::iterator boolMapIterator;
-	map<AT_WC*, AT_64> intMap;
-	map<AT_WC*, AT_64>::iterator intMapIterator;
-	map<AT_WC*, double> floatMap;
-	map<AT_WC*, double>::iterator floatMapIterator;
-	map<AT_WC*, AT_WC*> enumMap;
-	map<AT_WC*, AT_WC*>::iterator enumMapIterator;
+	std::map<AT_WC*, AT_BOOL> boolMap;
+	std::map<AT_WC*, AT_BOOL>::iterator boolMapIterator;
+	std::map<AT_WC*, AT_64> intMap;
+	std::map<AT_WC*, AT_64>::iterator intMapIterator;
+	std::map<AT_WC*, double> floatMap;
+	std::map<AT_WC*, double>::iterator floatMapIterator;
+	std::map<AT_WC*, AT_WC*> enumMap;
+	std::map<AT_WC*, AT_WC*>::iterator enumMapIterator;
 };
 
 class Zyla
@@ -66,7 +63,7 @@ public:
 	void set(ZylaSettings &s);
 	void start(const int &Ts);
 	void stop();
-	void process(Mat &image);
+	void process(cv::Mat &image);
 
 
 protected:

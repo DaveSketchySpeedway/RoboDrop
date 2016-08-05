@@ -81,7 +81,6 @@ void PumpThread::run()
 		if (!idle)
 		{
 			mutex.lock();
-
 			if (settings.flag & UevaSettings::PUMP_ON)
 			{
 				for (int i = 0; i < settings.inletInfo.size(); i++)

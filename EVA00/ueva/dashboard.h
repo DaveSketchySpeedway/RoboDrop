@@ -22,6 +22,7 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 
 #include <QtGui >
 #include <QDialog>
+#include <QCheckBox>
 #include "ui_dashboard.h"
 #include "inletwidget.h"
 
@@ -34,21 +35,27 @@ public:
 	~Dashboard();
 
 	void resetInletWidgets(QVector<QVector<int>> inletInfo);
+	void resetAutoCatchBox(int numChannel);
 
 	public slots:
 
 signals:
 	void sendInletRequests(const QVector<qreal> &values);
+	void sendAutoCatchRequests(const QVector<bool> &values);
 
 protected:
+	void keyPressEvent(QKeyEvent *event);
 
 private:
-	QVector<InletWidget*> inlets;
+	QVector<InletWidget*> inletWidgets;
 	QVector<qreal> inletValues;
+	QVector<QCheckBox*> autoCatchBoxes;
+	QVector<bool> autoCatchValues;
 
 	private slots:
 	void zeroPump();
 	void inletRequests();
+	void autoCatchRequests();
 };
 
 #endif // DASHBOARD_H

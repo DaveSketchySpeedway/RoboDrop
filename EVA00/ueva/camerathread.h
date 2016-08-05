@@ -30,9 +30,6 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 
 #include "zyla.h"
 
-using namespace std;
-using namespace cv;
-
 class CameraThread : public QThread
 {
 	Q_OBJECT
@@ -41,7 +38,7 @@ public:
 	CameraThread(QObject *parent = 0);
 	~CameraThread();
 
-	void getCurrentImage(Mat &image);
+	void getCurrentImage(cv::Mat &image);
 	void addCamera();
 	void deleteCamera();
 	QMap<QString, QString> defaultSettings();
@@ -61,7 +58,7 @@ private:
 	int cameraConnected;
 	int cameraAcquiring;
 	QMutex mutex;
-	Mat currentImage;
+	cv::Mat currentImage;
 
 	private slots:
 
