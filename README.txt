@@ -4,6 +4,16 @@ https://github.com/DaveSketchySpeedway/uEva
 
 
 
+EVA00
+	pre-prototype version
+EVA01 
+	replace grid sort with object tracking
+	replace observer with kalman filter
+
+
+
+
+
 Platform:
 	Source code is platform independent, EXCEPT for:
 		camera class (zyla.h, zyla.cpp)
