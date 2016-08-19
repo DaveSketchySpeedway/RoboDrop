@@ -45,8 +45,8 @@ struct UevaSettings
 		RECORD_DRAWN = 4096,
 	};
 	int flag;
-	QVector<bool> linkChannels;
-	QVector<bool> inverseLinkChannels;
+	QVector<bool> linkRequests;
+	QVector<bool> inverseLinkRequests;
 	QVector<bool> autoCatchRequests;
 	QVector<QVector<int>> inletInfo;
 	QVector<qreal> inletRequests;

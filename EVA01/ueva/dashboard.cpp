@@ -39,7 +39,7 @@ Dashboard::Dashboard(QWidget *parent)
 	connect(pumpButton, SIGNAL(clicked()),
 		parent, SLOT(pumpOnOff()));
 	connect(zeroPumpButton, SIGNAL(clicked()),
-		this, SLOT(zeroPump()));
+		this, SLOT(zeroInlets()));
 	connect(this, SIGNAL(sendInletRequests(QVector<qreal>)),
 		parent, SLOT(receiveInletRequests(QVector<qreal>)));
 
@@ -98,14 +98,14 @@ void Dashboard::resetInletWidgets(QVector<QVector<int>> inletInfo)
 			inletInfo[i][3], 
 			this);
 		connect(inletWidget->slider, SIGNAL(valueChanged(int)),
-			this, SLOT(inletRequests()));
+			this, SLOT(requestInlets()));
 		pumpLayout->addWidget(inletWidget);
 		inletWidgets.push_back(inletWidget);
 	}
 	pumpLayout->addStretch();
 
 	//// INITIALIZE
-	inletRequests();
+	requestInlets();
 }
 
 void Dashboard::resetAutoCatchBox(int numChannel)
@@ -125,14 +125,26 @@ void Dashboard::resetAutoCatchBox(int numChannel)
 	{
 		QCheckBox *autoCatchBox = new QCheckBox(QString::number(i), this);
 		connect(autoCatchBox, SIGNAL(clicked()),
-			this, SLOT(autoCatchRequests()));
+			this, SLOT(requestAutoCatches()));
 		ctrlLayout->addWidget(autoCatchBox);
 		autoCatchBoxes.push_back(autoCatchBox);
 	}
 	ctrlLayout->addStretch();
 
 	//// INITIALIZE
-	autoCatchRequests();
+	requestAutoCatches();
+}
+
+void Dashboard::regurgitateInlets(QVector<qreal> values)
+{
+	for (int i = 0; i < inletWidgets.size(); i++)
+	{
+		if (i < values.size())
+		{
+			inletWidgets[i]->slider->setValue(values[i]);
+			inletWidgets[i]->spinBox->setValue(values[i]);
+		}
+	}
 }
 
 void Dashboard::keyPressEvent(QKeyEvent *event)
@@ -143,7 +155,7 @@ void Dashboard::keyPressEvent(QKeyEvent *event)
 	}
 }
 
-void Dashboard::zeroPump()
+void Dashboard::zeroInlets()
 {
 	foreach (InletWidget *inletWidget, inletWidgets)
 	{
@@ -152,7 +164,7 @@ void Dashboard::zeroPump()
 	}
 }
 
-void Dashboard::inletRequests()
+void Dashboard::requestInlets()
 {
 	inletValues.clear();
 	foreach(InletWidget *inletWidget, inletWidgets)
@@ -162,7 +174,7 @@ void Dashboard::inletRequests()
 	emit sendInletRequests(inletValues);
 }
 
-void Dashboard::autoCatchRequests()
+void Dashboard::requestAutoCatches()
 {
 	autoCatchValues.clear();
 	foreach(QCheckBox *autoCatchBox, autoCatchBoxes)

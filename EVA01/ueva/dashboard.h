@@ -38,6 +38,7 @@ public:
 	void resetAutoCatchBox(int numChannel);
 
 	public slots:
+	void regurgitateInlets(QVector<qreal> values);
 
 signals:
 	void sendInletRequests(const QVector<qreal> &values);
@@ -53,9 +54,9 @@ private:
 	QVector<bool> autoCatchValues;
 
 	private slots:
-	void zeroPump();
-	void inletRequests();
-	void autoCatchRequests();
+	void zeroInlets();
+	void requestInlets();
+	void requestAutoCatches();
 };
 
 #endif // DASHBOARD_H

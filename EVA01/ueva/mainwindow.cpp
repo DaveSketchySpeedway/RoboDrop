@@ -631,12 +631,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[0] = !settings.linkChannels[0];
-				settings.inverseLinkChannels[0] = settings.linkChannels[0];
+				settings.linkRequests[0] = !settings.linkRequests[0];
+				settings.inverseLinkRequests[0] = settings.linkRequests[0];
 			}
 			else
 			{
-				settings.linkChannels[0] = !settings.linkChannels[0];
+				settings.linkRequests[0] = !settings.linkRequests[0];
 			}
 			break;
 		}
@@ -644,12 +644,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[1] = !settings.linkChannels[1];
-				settings.inverseLinkChannels[1] = settings.linkChannels[1];
+				settings.linkRequests[1] = !settings.linkRequests[1];
+				settings.inverseLinkRequests[1] = settings.linkRequests[1];
 			}
 			else
 			{
-				settings.linkChannels[1] = !settings.linkChannels[1];
+				settings.linkRequests[1] = !settings.linkRequests[1];
 			}
 			break;
 		}
@@ -657,12 +657,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[2] = !settings.linkChannels[2];
-				settings.inverseLinkChannels[2] = settings.linkChannels[2];
+				settings.linkRequests[2] = !settings.linkRequests[2];
+				settings.inverseLinkRequests[2] = settings.linkRequests[2];
 			}
 			else
 			{
-				settings.linkChannels[2] = !settings.linkChannels[2];
+				settings.linkRequests[2] = !settings.linkRequests[2];
 			}
 			break;
 		}
@@ -670,12 +670,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[3] = !settings.linkChannels[3];
-				settings.inverseLinkChannels[3] = settings.linkChannels[3];
+				settings.linkRequests[3] = !settings.linkRequests[3];
+				settings.inverseLinkRequests[3] = settings.linkRequests[3];
 			}
 			else
 			{
-				settings.linkChannels[3] = !settings.linkChannels[3];
+				settings.linkRequests[3] = !settings.linkRequests[3];
 			}
 			break;
 		}
@@ -683,12 +683,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[4] = !settings.linkChannels[4];
-				settings.inverseLinkChannels[4] = settings.linkChannels[4];
+				settings.linkRequests[4] = !settings.linkRequests[4];
+				settings.inverseLinkRequests[4] = settings.linkRequests[4];
 			}
 			else
 			{
-				settings.linkChannels[4] = !settings.linkChannels[4];
+				settings.linkRequests[4] = !settings.linkRequests[4];
 			}
 			break;
 		}
@@ -696,12 +696,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[5] = !settings.linkChannels[5];
-				settings.inverseLinkChannels[5] = settings.linkChannels[5];
+				settings.linkRequests[5] = !settings.linkRequests[5];
+				settings.inverseLinkRequests[5] = settings.linkRequests[5];
 			}
 			else
 			{
-				settings.linkChannels[5] = !settings.linkChannels[5];
+				settings.linkRequests[5] = !settings.linkRequests[5];
 			}
 			break;
 		}
@@ -709,12 +709,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[6] = !settings.linkChannels[6];
-				settings.inverseLinkChannels[6] = settings.linkChannels[6];
+				settings.linkRequests[6] = !settings.linkRequests[6];
+				settings.inverseLinkRequests[6] = settings.linkRequests[6];
 			}
 			else
 			{
-				settings.linkChannels[6] = !settings.linkChannels[6];
+				settings.linkRequests[6] = !settings.linkRequests[6];
 			}
 			break;
 		}
@@ -722,12 +722,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[7] = !settings.linkChannels[7];
-				settings.inverseLinkChannels[7] = settings.linkChannels[7];
+				settings.linkRequests[7] = !settings.linkRequests[7];
+				settings.inverseLinkRequests[7] = settings.linkRequests[7];
 			}
 			else
 			{
-				settings.linkChannels[7] = !settings.linkChannels[7];
+				settings.linkRequests[7] = !settings.linkRequests[7];
 			}
 			break;
 		}
@@ -735,12 +735,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[8] = !settings.linkChannels[8];
-				settings.inverseLinkChannels[8] = settings.linkChannels[8];
+				settings.linkRequests[8] = !settings.linkRequests[8];
+				settings.inverseLinkRequests[8] = settings.linkRequests[8];
 			}
 			else
 			{
-				settings.linkChannels[8] = !settings.linkChannels[8];
+				settings.linkRequests[8] = !settings.linkRequests[8];
 			}
 			break;
 		}
@@ -748,12 +748,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[9] = !settings.linkChannels[9];
-				settings.inverseLinkChannels[9] = settings.linkChannels[9];
+				settings.linkRequests[9] = !settings.linkRequests[9];
+				settings.inverseLinkRequests[9] = settings.linkRequests[9];
 			}
 			else
 			{
-				settings.linkChannels[9] = !settings.linkChannels[9];
+				settings.linkRequests[9] = !settings.linkRequests[9];
 			}
 			break;
 		}
@@ -1221,6 +1221,7 @@ void MainWindow::engineSlot(const UevaData &data)
 	display->update();
 	
 	//// UPDATE DASHBOARD
+	dashboard->regurgitateInlets(data.map["inletRegurgitate"]);
 
 	//// PUMP THREAD FPS
 	now = QTime::currentTime();

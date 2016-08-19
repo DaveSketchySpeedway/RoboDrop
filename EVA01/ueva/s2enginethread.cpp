@@ -669,9 +669,9 @@ void S2EngineThread::run()
 						{
 							for (int i = 0; i < activatedChannels.size(); i++)
 							{
-								if (settings.linkChannels[activatedChannels[i]])
+								if (settings.linkRequests[activatedChannels[i]])
 								{
-									if (settings.inverseLinkChannels[activatedChannels[i]])
+									if (settings.inverseLinkRequests[activatedChannels[i]])
 									{
 										r_new.at<double>(i) -= dr;
 									}
@@ -799,7 +799,7 @@ void S2EngineThread::run()
 						{
 						case 0:
 						{
-							if (settings.inverseLinkChannels[i])
+							if (settings.inverseLinkRequests[i])
 								dir = "(v)";
 							else
 								dir = "^";
@@ -807,7 +807,7 @@ void S2EngineThread::run()
 						}
 						case 1:
 						{
-							if (settings.inverseLinkChannels[i])
+							if (settings.inverseLinkRequests[i])
 								dir = "(^)";
 							else
 								dir = "v";
@@ -815,7 +815,7 @@ void S2EngineThread::run()
 						}
 						case 2:
 						{
-							if (settings.inverseLinkChannels[i])
+							if (settings.inverseLinkRequests[i])
 								dir = "(>)";
 							else
 								dir = "<";
@@ -823,14 +823,14 @@ void S2EngineThread::run()
 						}
 						case 3:
 						{
-							if (settings.inverseLinkChannels[i])
+							if (settings.inverseLinkRequests[i])
 								dir = "(<)";
 							else
 								dir = ">";
 							break;
 						}
 						}
-						if (settings.linkChannels[i])
+						if (settings.linkRequests[i])
 						{
 							fontScale = 1;
 							lineColor = cv::Scalar(0, 0, 255); // red

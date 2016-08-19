@@ -25,8 +25,8 @@ UevaSettings::UevaSettings()
 	flag = 0;
 	for (int i = 0; i < 10; i++)
 	{
-		linkChannels.push_back(false);
-		inverseLinkChannels.push_back(false);
+		linkRequests.push_back(false);
+		inverseLinkRequests.push_back(false);
 	}
 }
 
@@ -37,9 +37,11 @@ UevaData::UevaData()
 	QVector<qreal> inletWrite;
 	QVector<qreal> inletRead;
 	QVector<qreal> inletTime;
+	QVector<qreal> inletRegurgitate;
 	map["inletWrite"] = inletWrite;
 	map["inletRead"] = inletRead;
 	map["inletTime"] = inletTime;
+	map["inletRegurgitate"] = inletRegurgitate;
 	//// CTRL
 	QVector<qreal> raws;
 	QVector<qreal> measures;
