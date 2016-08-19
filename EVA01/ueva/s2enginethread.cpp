@@ -126,7 +126,7 @@ void S2EngineThread::sortChannels(std::map<std::string, std::vector<int> > &chan
 }
 
 void S2EngineThread::loadCtrl(std::string fileName,
-	int *numState, int *numIn, int *numOut, int *numCtrl, double *ctrlTs)
+	int *numPlantState, int *numPlantInput, int *numPlantOutput, int *numCtrl, double *ctrlTs)
 {
 	mutex.lock();
 
@@ -134,9 +134,9 @@ void S2EngineThread::loadCtrl(std::string fileName,
 	cv::FileStorage fs(fileName, cv::FileStorage::READ);
 	*numCtrl = (int)fs["numCtrl"];
 	*ctrlTs = (double)fs["samplePeriod"];
-	*numState = (int)fs["numPlantState"];
-	*numIn = (int)fs["numPlantInput"];
-	*numOut = (int)fs["numPlantOutput"];
+	*numPlantState = (int)fs["numPlantState"];
+	*numPlantInput = (int)fs["numPlantInput"];
+	*numPlantOutput = (int)fs["numPlantOutput"];
 	UevaCtrl::samplePeriod = (double)fs["samplePeriod"];
 	UevaCtrl::numPlantState = (int)fs["numPlantState"];
 	UevaCtrl::numPlantInput = (int)fs["numPlantInput"];
@@ -144,11 +144,14 @@ void S2EngineThread::loadCtrl(std::string fileName,
 
 	for (int i = 0; i < *numCtrl; i++)
 	{
-		std::string ctrlName = "ctrl" + std::to_string(i);
+		std::string ctrlName = "ctrl " + std::to_string(i);
 		cv::FileNode c = fs[ctrlName];
 		UevaCtrl ctrl;
 
 		ctrl.uncoUnob = (int)c["uncoUnob"];
+		ctrl.n = (int)c["n"];
+		ctrl.m = (int)c["m"];
+		ctrl.p = (int)c["p"];
 		c["outputIdx"] >> ctrl.outputIndices;
 		c["stateIdx"] >> ctrl.stateIndices;
 		c["A"] >> ctrl.A;
@@ -158,13 +161,20 @@ void S2EngineThread::loadCtrl(std::string fileName,
 		c["K1"] >> ctrl.K1;
 		c["K2"] >> ctrl.K2;
 		c["H"] >> ctrl.H;
+		c["Ad"] >> ctrl.Ad;
+		c["Bd"] >> ctrl.Bd;
+		c["Cd"] >> ctrl.Cd;
+		c["Wd"] >> ctrl.Wd;
 
 		ctrls.push_back(ctrl);
 
 		std::cerr << "controller " << ctrlName << std::endl;
 		std::cerr << "unco unob " << ctrl.uncoUnob << std::endl;
-		std::cerr << "output index " << ctrl.outputIndices << std::endl;
-		std::cerr << "state index " << ctrl.stateIndices << std::endl;
+		std::cerr << "n " << ctrl.n << std::endl;
+		std::cerr << "m " << ctrl.m << std::endl;
+		std::cerr << "p " << ctrl.p << std::endl;
+		std::cerr << "output indices " << ctrl.outputIndices << std::endl;
+		std::cerr << "state indices " << ctrl.stateIndices << std::endl;
 		//std::cerr << "A " << ctrl.A << std::endl;
 		//std::cerr << "B " << ctrl.B << std::endl;
 		//std::cerr << "C " << ctrl.C << std::endl;
@@ -172,6 +182,10 @@ void S2EngineThread::loadCtrl(std::string fileName,
 		//std::cerr << "K1 " << ctrl.K1 << std::endl;
 		//std::cerr << "K2 " << ctrl.K2 << std::endl;
 		//std::cerr << "H " << ctrl.H << std::endl;
+		//std::cerr << "Ad " << ctrl.Ad << std::endl;
+		//std::cerr << "Bd " << ctrl.Bd << std::endl;
+		//std::cerr << "Cd " << ctrl.Cd << std::endl;
+		//std::cerr << "Wd " << ctrl.Wd << std::endl;
 		std::cerr << std::endl;
 	}
 	fs.release();

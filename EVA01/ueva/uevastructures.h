@@ -109,6 +109,9 @@ struct UevaCtrl
 	static double samplePeriod;
 
 	int uncoUnob;
+	int n;
+	int m;
+	int p;
 	cv::Mat outputIndices;
 	cv::Mat stateIndices;
 	cv::Mat A;
@@ -118,6 +121,10 @@ struct UevaCtrl
 	cv::Mat K1;
 	cv::Mat K2;
 	cv::Mat H;
+	cv::Mat Ad;
+	cv::Mat Bd;
+	cv::Mat Cd;
+	cv::Mat Wd;
 };
 
 struct UevaChannel
