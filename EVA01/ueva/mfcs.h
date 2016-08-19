@@ -27,13 +27,13 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 class Mfcs
 {
 public:
-	Mfcs(unsigned short sn = 0, int ez = 0);
+	Mfcs(unsigned short sn = 0, int ez = 0); 
 	~Mfcs();
-	void purge_on();
-	void purge_off();
 
-	void write(unsigned char* s); // not used in operation
-	void read(unsigned char* s); // not used in operation
+	void purge_on(); // deprecated
+	void purge_off(); // deprecated
+	void write(unsigned char* s); // deprecated
+	void read(unsigned char* s); // deprecated
 
 	void measure(int channel, float* pressure, float* pump_time);
 	void command(int channel, float pressure);

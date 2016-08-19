@@ -116,9 +116,12 @@ Mfcs::Mfcs(unsigned short sn, int ez)
 		// set gains
 		if (set_alpha_ptr)
 		{
-			unsigned char c = set_alpha_ptr(
-				mfcs_handle, (unsigned char)0, (unsigned char)5);
-			std::cerr << "mfcs set gain return " << (int)c << std::endl;
+			for (int i = 1; i <= 10; i++)
+			{
+				unsigned char c = set_alpha_ptr(
+					mfcs_handle, (unsigned char)i, (unsigned char)5);
+				std::cerr << "mfcs set gain return " << (int)c << std::endl;
+			}
 		}
 		else
 		{
@@ -137,8 +140,11 @@ Mfcs::~Mfcs()
 	// set zero
 	if (set_auto_ptr)
 	{
-		unsigned char c = set_auto_ptr(mfcs_handle, (unsigned char)0, (float)0);
-		std::cerr << "mfcs all channel zeroed, return " << (int)c << std::endl;
+		for (int i = 1; i <= 10; i++)
+		{
+			unsigned char c = set_auto_ptr(mfcs_handle, (unsigned char)i, (float)0);
+			std::cerr << "mfcs command zero, return " << (int)c << std::endl;
+		}
 	}
 	else
 	{
