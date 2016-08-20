@@ -23,7 +23,7 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 UevaSettings::UevaSettings()
 {
 	flag = 0;
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 10; i++) // limited by 0-9 on keyboard
 	{
 		linkRequests.push_back(false);
 		inverseLinkRequests.push_back(false);
@@ -108,16 +108,6 @@ UevaBuffer::UevaBuffer()
 {
 	index = 0;
 	size = 100; // 10 seconds of data
-
-	//// PUMP
-	QVector<QVector<qreal>> inletWrite;
-	QVector<QVector<qreal>> inletRead;
-	QVector<QVector<qreal>> inletTime;
-	map["inletWrite"] = inletWrite;
-	map["inletRead"] = inletRead;
-	map["inletTime"] = inletTime;
-
-	//// xxx
 }
 
 void UevaBuffer::write(const UevaData &data)
