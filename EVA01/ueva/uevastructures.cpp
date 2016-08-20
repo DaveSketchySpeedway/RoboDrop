@@ -19,6 +19,8 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 
 #include "uevastructures.h"
 
+
+
 //// SETTINGS
 UevaSettings::UevaSettings()
 {
@@ -30,6 +32,8 @@ UevaSettings::UevaSettings()
 	}
 }
 
+
+
 //// DATA
 UevaData::UevaData()
 {
@@ -37,11 +41,10 @@ UevaData::UevaData()
 	QVector<qreal> inletWrite;
 	QVector<qreal> inletRead;
 	QVector<qreal> inletTime;
-	QVector<qreal> inletRegurgitate;
 	map["inletWrite"] = inletWrite;
 	map["inletRead"] = inletRead;
 	map["inletTime"] = inletTime;
-	map["inletRegurgitate"] = inletRegurgitate;
+
 	//// CTRL
 	QVector<qreal> raws;
 	QVector<qreal> measures;
@@ -102,6 +105,8 @@ void UevaData::writeToFile() const
 
 	fileStream << std::endl;
 }
+
+
 
 //// BUFFER
 UevaBuffer::UevaBuffer()
@@ -169,6 +174,8 @@ void UevaBuffer::write(const UevaData &data)
 	}
 }
 
+
+
 //// CTRL
 UevaCtrl::UevaCtrl()
 {
@@ -181,27 +188,34 @@ int UevaCtrl::numPlantInput = 0;
 int UevaCtrl::numPlantOutput = 0;
 double UevaCtrl::samplePeriod = 0;
 
+
+
 //// CHANNEL
 UevaChannel::UevaChannel()
 {
 	direction = 0;
-	selectedMarkerIndex = -1;
-
+	biggestDropletIndex = -1;
+	measuringMarkerIndex = -1;
+	neckDropletIndex = -1;
 }
+
+
 
 //// DROPLET
 UevaDroplet::UevaDroplet()
 {
-	accomodatingChannelIndex = -1;
+	kinkIndex = -1;
+	neckIndex = -1;
 }
 
 std::ofstream UevaDroplet::fileStream;
 
+
+
 //// MARKER
 UevaMarker::UevaMarker()
 {
-	accomodatingChannelIndex = -1;
+
 }
 
-cv::Size_<int> UevaMarker::imageSize = cv::Size_<int>(0, 0);
-int UevaMarker::sortGridSize = 0;
+int UevaMarker::counter = 0;

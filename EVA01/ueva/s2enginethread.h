@@ -58,7 +58,10 @@ public:
 	void sortChannels(std::map<std::string, std::vector<int> > &channelInfo);
 	void loadCtrl(std::string fileName,
 		int *numState, int *numIn, int *numOut, int *numCtrl, double *ctrlTs);
+	void initImgproc();
+	void finalizeImgproc();
 	void initCtrl();
+	void finalizeCtrl(QVector<qreal> &inletRegurgitate);
 
 signals:
 	void engineSignal(const UevaData &d);
@@ -74,56 +77,75 @@ private:
 	UevaSettings settings;
 	UevaData data;
 
-	//// PERSISTENT VARIABLES
-	std::vector<UevaCtrl> ctrls;
-	std::vector<int> activatedChannels;
+	//// MULTI CYCLE LIFESPAN
 	double micronPerPixel;
 	cv::Mat bkgd;
+	std::vector<UevaCtrl> ctrls;
 	cv::Mat dropletMask;
 	cv::Mat markerMask;
 	cv::Mat allChannels;
 	std::vector<std::vector<cv::Point_<int>>> channelContours;
 	std::vector<UevaChannel> channels;
-	QVector<qreal> estimates;
-	QVector<qreal> raws;
-	QVector<qreal> measures;
-	QVector<qreal> references;
-	QVector<qreal> states;
-	QVector<qreal> integralStates;
-	QVector<qreal> commands;
-	QVector<qreal> measureOffsets;
-	std::vector<double> grounds;
-
-	//// NON PERSISTANT VARIABLES
-	bool isFirstTime;
 	bool needSelecting;
 	bool needReleasing;
-	bool needSwapping;
-	bool needResetting;
-	std::vector<int> desiredChannels;
-	cv::Mat allDroplets;
-	cv::Mat allMarkers;
+
+	//// DOUBLE CYCLE LIFESPAN
+	std::vector<UevaMarker> oldMarkers;
+	std::vector<UevaMarker> newMarkers;
+	std::vector<int> activatedChannelIndices;
+
+	QVector<qreal> grounds;
+	QVector<qreal> corrections;
+	cv::Mat posteriorErrorCov;
+	cv::Mat processNoiseCov;
+	cv::Mat sensorNoiseCov;
+	QVector<qreal> references;
+	QVector<qreal> output;
+	QVector<qreal> outputRaw;
+	QVector<qreal> outputOffsets;
+	QVector<qreal> outputPredictions;
+	QVector<qreal> statePredictions;
+	QVector<qreal> stateEstimates;
+	QVector<qreal> states;
+	QVector<qreal> disturbances;
+	QVector<qreal> stateIntegrals;
+	QVector<qreal> commands;
+
+	//// SINGLE CYCLE LIFESPAN
+	cv::Mat allDroplets; 
 	std::vector<std::vector< cv::Point_<int> >> dropletContours;
+	cv::Mat allMarkers;
 	std::vector<std::vector< cv::Point_<int> >> markerContours;
+	
+	std::vector<int> desiredChannelIndices;
 	std::vector<UevaDroplet> droplets;
-	std::vector<UevaMarker> markers;
-	cv::Mat x; 
-	cv::Mat z;
-	cv::Mat u;
-	cv::Mat r_new;
-	cv::Mat y_raw;
-	cv::Mat y_new;
-	cv::Mat y_est;
-	cv::Mat x_new;
-	cv::Mat z_new;
-	cv::Mat u_new;
+
 	cv::Point_<int> mousePressLeft;
 	cv::Point_<int> mousePressRight;
 	cv::Point_<int> mousePressPrevious;
 	cv::Point_<int> mousePressCurrent;
 	cv::Point_<int> mousePressDisplacement;
 
-	//// CONVENIENT PARAMETERS
+	int directedChannelIndex;
+
+	cv::Mat k;
+	cv::Mat pp;
+	cv::Mat pe;
+	cv::Mat rw;
+	cv::Mat rv;
+	cv::Mat r;
+	cv::Mat dr;
+	cv::Mat y;
+	cv::Mat y_raw;
+	cv::Mat yp;
+	cv::Mat xp;
+	cv::Mat xe;
+	cv::Mat x;
+	cv::Mat d;
+	cv::Mat z;
+	cv::Mat u;
+
+	//// FOR CONVENIENCE
 	enum EngineConstants
 	{
 		LOW_VALUE = 0,
@@ -140,11 +162,8 @@ private:
 	cv::Point_<int> anchor;
 	cv::Moments mom;
 	cv::Rect rect;
-	int directedChannel;
-	double dr;
 
 	private slots:
-
 };
 
 

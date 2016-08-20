@@ -180,14 +180,17 @@ void MainWindow::imgprocOnOff()
 	{
 		dashboard->imgprocButton->setText(tr("Off"));
 		settings.flag |= UevaSettings::IMGPROC_ON;
-		// initialize settings
+		// initialize
 		imgprocSettings();
 		ctrlSettings();
+		engineThread->initImgproc();
 	}
 	else
 	{
 		dashboard->imgprocButton->setText(tr("On"));
 		settings.flag ^= UevaSettings::IMGPROC_ON;
+		// finalize
+		engineThread->finalizeImgproc();
 	}
 }
 
@@ -238,16 +241,19 @@ void MainWindow::ctrlOnOff()
 	{
 		dashboard->ctrlButton->setText(tr("Off"));
 		settings.flag |= UevaSettings::CTRL_ON;
-		// initialize settings
+		// initialize
 		imgprocSettings();
 		ctrlSettings();
-		// initialize ctrl
 		engineThread->initCtrl();
 	}
 	else
 	{
 		dashboard->ctrlButton->setText(tr("On"));
 		settings.flag ^= UevaSettings::CTRL_ON;
+		// finalize
+		QVector<qreal> inletRegurgitates;
+		engineThread->finalizeCtrl(inletRegurgitates);
+		dashboard->regurgitateInlets(inletRegurgitates);
 	}
 }
 
@@ -1220,9 +1226,6 @@ void MainWindow::engineSlot(const UevaData &data)
 	display->setImage(fileRgb888); 
 	display->update();
 	
-	//// UPDATE DASHBOARD
-	dashboard->regurgitateInlets(data.map["inletRegurgitate"]);
-
 	//// PUMP THREAD FPS
 	now = QTime::currentTime();
 	pumpFps = 1000.0 / pumpLastTime.msecsTo(now);

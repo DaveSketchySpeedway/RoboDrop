@@ -78,13 +78,13 @@ struct UevaData
 	void headerToFile() const;
 	void writeToFile() const;
 
-	static std::ofstream fileStream;
-	static QTime startTime;
-
 	cv::Mat rawGray;
 	cv::Mat drawnBgr;
 	cv::Mat drawnRgb;
 	QMap<QString, QVector<qreal>> map;
+
+	static std::ofstream fileStream;
+	static QTime startTime;
 };
 
 struct UevaBuffer
@@ -134,38 +134,33 @@ struct UevaChannel
 	int index;
 	cv::Mat mask;
 	int direction;
-	int selectedMarkerIndex;
-
-	std::vector<int> currentMarkerIndices;
-	std::vector<int> previousMarkerIndices;	
+	
+	int biggestDropletIndex;
+	int measuringMarkerIndex;
+	int neckDropletIndex;
 };
 
 struct UevaDroplet
 {
 	UevaDroplet();
 
-	static std::ofstream fileStream;
-
 	cv::Mat mask;
 	int kinkIndex;
 	int neckIndex;
-	
-	int accomodatingChannelIndex;
+	double neckDistance;
+
+	static std::ofstream fileStream;
 };
 
 struct UevaMarker
 {
 	UevaMarker();
 
-	static cv::Size_<int> imageSize;
-	static int sortGridSize;
-
-	int type;
-	double value;
+	int identity;
 	cv::Point_<int> centroid;
 	cv::Rect_<int> rect;
 	
-	int accomodatingChannelIndex;
+	static int counter;
 };
 
 Q_DECLARE_METATYPE(UevaSettings)
