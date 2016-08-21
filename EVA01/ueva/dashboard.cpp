@@ -83,7 +83,7 @@ void Dashboard::resetInletWidgets(QVector<QVector<int>> inletInfo)
 	foreach(InletWidget *inletWidget, inletWidgets)
 	{
 		disconnect(inletWidget->slider, SIGNAL(valueChanged(int)),
-			this, SLOT(inletRequests()));
+			this, SLOT(requestInlets()));
 		pumpLayout->removeWidget(inletWidget);
 		delete inletWidget;
 	}
@@ -114,7 +114,7 @@ void Dashboard::resetAutoCatchBox(int numChannel)
 	foreach(QCheckBox *autoCatchBox, autoCatchBoxes)
 	{
 		disconnect(autoCatchBox, SIGNAL(clicked()),
-			this, SLOT(autoCatchRequests()));
+			this, SLOT(requestAutoCatches()));
 		ctrlLayout->removeWidget(autoCatchBox);
 		delete autoCatchBox;
 	}

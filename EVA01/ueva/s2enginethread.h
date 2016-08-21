@@ -154,7 +154,8 @@ private:
 	};
 	cv::Mat structuringElement;
 	cv::Point_<int> seed;
-	int alwaysTrue;
+	int floodFillReturn;
+	bool floodFillSuccess;
 	cv::Scalar_<int> lineColor;
 	int lineThickness;
 	int lineType;

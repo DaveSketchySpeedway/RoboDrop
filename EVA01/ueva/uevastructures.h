@@ -60,6 +60,7 @@ struct UevaSettings
 	int maskOpenSize;
 	int channelErodeSize;
 	int channelCutThickness;
+
 	int imgprogThreshold;
 	int imgprogErodeSize;
 	int imgprogContourSize;

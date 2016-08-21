@@ -497,7 +497,7 @@ void MainWindow::sepSortOnOff()
 	{
 		setup->sepSortButton->setText(tr("Sort Channels"));
 		// create channel objects
-		int numChan;
+		int numChan = 0;
 		engineThread->separateChannels(numChan);
 		// create channel info widgets
 		setup->createChannelInfoWidgets(numChan);
