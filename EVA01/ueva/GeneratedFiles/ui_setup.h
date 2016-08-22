@@ -274,7 +274,7 @@ public:
         blockSlider = new QSlider(imgprocTab);
         blockSlider->setObjectName(QStringLiteral("blockSlider"));
         blockSlider->setMinimum(1);
-        blockSlider->setMaximum(10);
+        blockSlider->setMaximum(20);
         blockSlider->setPageStep(1);
         blockSlider->setValue(5);
         blockSlider->setSliderPosition(5);
@@ -314,10 +314,11 @@ public:
 
         openSizeSlider = new QSlider(imgprocTab);
         openSizeSlider->setObjectName(QStringLiteral("openSizeSlider"));
+        openSizeSlider->setMinimum(1);
         openSizeSlider->setMaximum(10);
         openSizeSlider->setPageStep(1);
-        openSizeSlider->setValue(0);
-        openSizeSlider->setSliderPosition(0);
+        openSizeSlider->setValue(1);
+        openSizeSlider->setSliderPosition(1);
         openSizeSlider->setOrientation(Qt::Horizontal);
 
         gridLayout_5->addWidget(openSizeSlider, 3, 1, 1, 1);
@@ -350,6 +351,7 @@ public:
 
         erodeSizeSlider = new QSlider(imgprocTab);
         erodeSizeSlider->setObjectName(QStringLiteral("erodeSizeSlider"));
+        erodeSizeSlider->setMinimum(1);
         erodeSizeSlider->setMaximum(20);
         erodeSizeSlider->setPageStep(1);
         erodeSizeSlider->setOrientation(Qt::Horizontal);

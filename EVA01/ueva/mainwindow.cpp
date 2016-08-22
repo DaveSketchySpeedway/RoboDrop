@@ -197,40 +197,23 @@ void MainWindow::imgprocOnOff()
 void MainWindow::imgprocSettings()
 {
 	int threshold = dashboard->threshSlider->value();
-	int erodeSize = dashboard->erodeSizeSlider->value() * 2 + 3;
+	int erodeSize = dashboard->erodeSizeSlider->value() * 2 + 1;
 	int contourSize = dashboard->contourSizeSlider->value();
-	int sortGridSize = dashboard->sortGridSizeSlider->value();
-	int sortOrder = dashboard->sortOrderSlider->value();
+	int trackTooFar = dashboard->trackTooFarSlider->value();
 	int convexSize = dashboard->convexSizeSlider->value();
 	int persistence = dashboard->persistenceSlider->value();
 
 	settings.imgprogThreshold = threshold;
 	settings.imgprogErodeSize = erodeSize;
 	settings.imgprogContourSize = contourSize;
-	settings.imgprogSortGridSize = sortGridSize;
-	settings.imgprogSortOrder = sortOrder;
+	settings.imgprogTrackTooFar = trackTooFar;
 	settings.imgprocConvexSize = convexSize;
 	settings.imgprocPersistence = persistence;
-
-	QString sortOrderString;
-	switch (sortOrder)
-	{
-	case 0:
-	{
-		sortOrderString = QString("Sort Row First");
-		break;
-	}
-	case 1:
-	{
-		sortOrderString = QString("Sort Column First");
-	}
-	}
 
 	dashboard->threshLabel->setText(QString::number(threshold));
 	dashboard->erodeSizeLabel->setText(QString::number(erodeSize));
 	dashboard->contourSizeLabel->setText(QString::number(contourSize));
-	dashboard->sorGridSizeLabel->setText(QString::number(sortGridSize));
-	dashboard->sortOrderLabel->setText(sortOrderString);
+	dashboard->trackTooFarLabel->setText(QString::number(trackTooFar));
 	dashboard->convexSizeLabel->setText(QString::number(convexSize));
 	dashboard->persistenceLabel->setText(QString::number(persistence));
 }
@@ -260,18 +243,32 @@ void MainWindow::ctrlOnOff()
 void MainWindow::ctrlSettings()
 {
 	int markerSize = dashboard->markerSizeSlider->value();
-	int autoMargin = dashboard->autoMarginSlider->value();
+	int autoHorzExcl = dashboard->autoHorzExclSlider->value();
+	int autoVertExcl = dashboard->autoVertExclSlider->value();
+	double modelCov = pow(10.0, dashboard->modelCovSlider->value() / 10.0);
+	double disturbanceCov = pow(10.0, dashboard->disturbanceCovSlider->value() / 10.0);
 
 	settings.ctrlMarkerSize = markerSize;
-	settings.ctrlAutoMargin = autoMargin;
+	settings.ctrlAutoHorzExcl = autoHorzExcl;
+	settings.ctrlAutoVertExcl = autoVertExcl;
+	settings.ctrlModelCov = modelCov;
+	settings.ctrlDisturbanceCov = disturbanceCov;
 
 	dashboard->markerSizeLabel->setText(QString::number(markerSize));
-	dashboard->autoMarginLabel->setText(QString::number(autoMargin));
+	dashboard->autoHorzExclLabel->setText(QString::number(autoHorzExcl));
+	dashboard->autoVertExclLabel->setText(QString::number(autoVertExcl));
+	dashboard->modelCovLabel->setText(QString::number(modelCov));
+	dashboard->disturbanceCovLabel->setText(QString::number(disturbanceCov));
 }
 
 void MainWindow::receiveAutoCatchRequests(const QVector<bool> &values)
 {
 	settings.autoCatchRequests = values;
+}
+
+void MainWindow::receiveUseNeckRequests(const QVector<bool> &values)
+{
+	settings.useNeckRequests = values;
 }
 
 //// COMMUNICATE WITH SETUP
@@ -445,10 +442,9 @@ void MainWindow::maskOnOff()
 
 void MainWindow::maskSetup()
 {
-	// * 2 + 3 because they have to be odd and > 1
-	int block = setup->blockSlider->value() * 2 + 3;
 	int threshold = (127 - setup->thresholdSlider->value());
-	int openSize = setup->openSizeSlider->value() * 2 + 3;
+	int block = setup->blockSlider->value() * 2 + 1;
+	int openSize = setup->openSizeSlider->value() * 2 + 1;
 
 	settings.maskBlockSize = block;
 	settings.maskThreshold = threshold;
@@ -481,7 +477,7 @@ void MainWindow::channelOnOff()
 
 void MainWindow::channelSetup()
 {
-	int erodeSize = setup->erodeSizeSlider->value() * 2 + 3;
+	int erodeSize = setup->erodeSizeSlider->value() * 2 + 1;
 	int cutThickness = setup->cutThicknessSlider->value();
 
 	settings.channelErodeSize = erodeSize;
@@ -510,8 +506,9 @@ void MainWindow::sepSortOnOff()
 		setup->deleteChannelInfoWidgets(channelInfo);
 		// sort channel objects
 		engineThread->sortChannels(channelInfo);
-		// reset auto catch checkboxes
-		dashboard->resetAutoCatchBox(channelInfo["newIndices"].size());
+		// reset checkboxes
+		dashboard->resetAutoCatchBoxes(channelInfo["newIndices"].size());
+		dashboard->resetUseNeckBoxes(channelInfo["newIndices"].size());
 	}
 }
 

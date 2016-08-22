@@ -198,59 +198,7 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="2" column="1">
-           <widget class="QSlider" name="erodeSizeSlider">
-            <property name="minimum">
-             <number>0</number>
-            </property>
-            <property name="maximum">
-             <number>3</number>
-            </property>
-            <property name="pageStep">
-             <number>1</number>
-            </property>
-            <property name="value">
-             <number>0</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QLabel" name="erodeSizeLabel">
-            <property name="text">
-             <string>TextLabel</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>Neck Min Convex:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
-           <widget class="QSlider" name="convexSizeSlider">
-            <property name="minimum">
-             <number>0</number>
-            </property>
-            <property name="maximum">
-             <number>100</number>
-            </property>
-            <property name="pageStep">
-             <number>1</number>
-            </property>
-            <property name="value">
-             <number>7</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="2">
+          <item row="5" column="2">
            <widget class="QLabel" name="convexSizeLabel">
             <property name="text">
              <string>TextLabel</string>
@@ -283,48 +231,15 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="2">
+          <item row="6" column="2">
            <widget class="QLabel" name="persistenceLabel">
             <property name="text">
              <string>TextLabel</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_10">
-            <property name="text">
-             <string>Sort Grid Size:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QSlider" name="sortGridSizeSlider">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>100</number>
-            </property>
-            <property name="pageStep">
-             <number>1</number>
-            </property>
-            <property name="value">
-             <number>40</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="2">
            <widget class="QLabel" name="threshLabel">
-            <property name="text">
-             <string>TextLabel</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="2">
-           <widget class="QLabel" name="sorGridSizeLabel">
             <property name="text">
              <string>TextLabel</string>
             </property>
@@ -344,6 +259,58 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="1">
+           <widget class="QSlider" name="erodeSizeSlider">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>4</number>
+            </property>
+            <property name="pageStep">
+             <number>1</number>
+            </property>
+            <property name="value">
+             <number>1</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLabel" name="erodeSizeLabel">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Neck Min Convex:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QSlider" name="convexSizeSlider">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="pageStep">
+             <number>1</number>
+            </property>
+            <property name="value">
+             <number>10</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
           <item row="3" column="1">
            <widget class="QSlider" name="contourSizeSlider">
             <property name="minimum">
@@ -351,6 +318,9 @@
             </property>
             <property name="maximum">
              <number>1000</number>
+            </property>
+            <property name="pageStep">
+             <number>1</number>
             </property>
             <property name="value">
              <number>10</number>
@@ -367,17 +337,17 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="0">
+          <item row="6" column="0">
            <widget class="QLabel" name="label_13">
             <property name="text">
              <string>Neck Persistence:</string>
             </property>
            </widget>
           </item>
-          <item row="7" column="1">
+          <item row="6" column="1">
            <widget class="QSlider" name="persistenceSlider">
             <property name="minimum">
-             <number>0</number>
+             <number>1</number>
             </property>
             <property name="maximum">
              <number>100</number>
@@ -386,41 +356,41 @@
              <number>1</number>
             </property>
             <property name="value">
-             <number>7</number>
+             <number>10</number>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="5" column="1">
-           <widget class="QSlider" name="sortOrderSlider">
+          <item row="4" column="1">
+           <widget class="QSlider" name="trackTooFarSlider">
             <property name="minimum">
-             <number>0</number>
+             <number>1</number>
             </property>
             <property name="maximum">
-             <number>1</number>
+             <number>100</number>
             </property>
             <property name="pageStep">
              <number>1</number>
             </property>
             <property name="value">
-             <number>0</number>
+             <number>30</number>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="label_14">
             <property name="text">
-             <string>Sort Order:</string>
+             <string>Track Too Far:</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="2">
-           <widget class="QLabel" name="sortOrderLabel">
+          <item row="4" column="2">
+           <widget class="QLabel" name="trackTooFarLabel">
             <property name="text">
              <string>TextLabel</string>
             </property>
@@ -447,14 +417,33 @@
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_7">
+        <item row="5" column="2">
+         <widget class="QLabel" name="autoVertExclLabel">
           <property name="text">
-           <string>Marker Rectangle  Size:</string>
+           <string>TextLabel</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
+        <item row="5" column="1">
+         <widget class="QSlider" name="autoVertExclSlider">
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
+          <property name="pageStep">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>5</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
          <widget class="QSlider" name="markerSizeSlider">
           <property name="minimum">
            <number>0</number>
@@ -473,41 +462,41 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="2">
+        <item row="3" column="2">
          <widget class="QLabel" name="markerSizeLabel">
           <property name="text">
            <string>TextLabel</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="0">
+        <item row="4" column="0">
          <widget class="QLabel" name="label_15">
           <property name="text">
-           <string>Auto Catch Margin:</string>
+           <string>Auto Catch Horizontal Exclude:</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
-         <widget class="QSlider" name="autoMarginSlider">
+        <item row="4" column="1">
+         <widget class="QSlider" name="autoHorzExclSlider">
           <property name="minimum">
            <number>0</number>
           </property>
           <property name="maximum">
-           <number>200</number>
+           <number>100</number>
           </property>
           <property name="pageStep">
            <number>1</number>
           </property>
           <property name="value">
-           <number>100</number>
+           <number>5</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </item>
-        <item row="2" column="2">
-         <widget class="QLabel" name="autoMarginLabel">
+        <item row="4" column="2">
+         <widget class="QLabel" name="autoHorzExclLabel">
           <property name="text">
            <string>TextLabel</string>
           </property>
@@ -523,19 +512,123 @@
           </property>
          </widget>
         </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Marker Rectangle  Size:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_19">
+          <property name="text">
+           <string>Model Noise Covariance:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_17">
+          <property name="text">
+           <string>Auto Catch Verticle Exclude:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_20">
+          <property name="text">
+           <string>Disturbance Noise Covariance:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLabel" name="modelCovLabel">
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLabel" name="disturbanceCovLabel">
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSlider" name="modelCovSlider">
+          <property name="minimum">
+           <number>-80</number>
+          </property>
+          <property name="maximum">
+           <number>20</number>
+          </property>
+          <property name="pageStep">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>-20</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSlider" name="disturbanceCovSlider">
+          <property name="minimum">
+           <number>-80</number>
+          </property>
+          <property name="maximum">
+           <number>20</number>
+          </property>
+          <property name="singleStep">
+           <number>1</number>
+          </property>
+          <property name="pageStep">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>-50</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="ctrlLayout">
+       <layout class="QHBoxLayout" name="autoCatchLayout">
         <item>
          <widget class="QLabel" name="label_16">
           <property name="text">
-           <string>Auto Catch Channel:</string>
+           <string>Auto Catch Channels:</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QWidget" name="widget_2" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="useNeckLayout">
+        <item>
+         <widget class="QLabel" name="label_18">
+          <property name="text">
+           <string>Use Neck Channels:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="widget_3" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>

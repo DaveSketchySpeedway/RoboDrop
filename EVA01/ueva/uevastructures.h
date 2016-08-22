@@ -45,11 +45,14 @@ struct UevaSettings
 		RECORD_DRAWN = 4096,
 	};
 	int flag;
+
+	QVector<QVector<int>> inletInfo;
+	QVector<qreal> inletRequests;
 	QVector<bool> linkRequests;
 	QVector<bool> inverseLinkRequests;
 	QVector<bool> autoCatchRequests;
-	QVector<QVector<int>> inletInfo;
-	QVector<qreal> inletRequests;
+	QVector<bool> useNeckRequests;
+
 	QVector<QLine> mouseLines;
 	QPoint rightPressPosition;
 	QPoint leftPressPosition;
@@ -64,12 +67,15 @@ struct UevaSettings
 	int imgprogThreshold;
 	int imgprogErodeSize;
 	int imgprogContourSize;
-	int imgprogSortGridSize;
-	int imgprogSortOrder;
+	int imgprogTrackTooFar;
 	int imgprocConvexSize;
 	int imgprocPersistence;
+	int ctrlModelCov;
+	int ctrlDisturbanceCov;
 	int ctrlMarkerSize;
-	int ctrlAutoMargin;
+	int ctrlAutoHorzExcl;
+	int ctrlAutoVertExcl;
+
 };
 
 struct UevaData

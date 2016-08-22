@@ -366,7 +366,7 @@ void S2EngineThread::run()
 					// Exclude noise with masks
 					cv::bitwise_and(allMarkers, markerMask, allMarkers);
 					cv::bitwise_and(allDroplets, dropletMask, allDroplets);
-					// polish droplets with erosion
+					// polish droplets with erosion for better kink detection
 					structuringElement = cv::getStructuringElement(cv::MORPH_RECT,
 						cv::Size_<int>(settings.imgprogErodeSize, settings.imgprogErodeSize));
 					cv::erode(allDroplets, allDroplets, structuringElement);

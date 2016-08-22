@@ -46,15 +46,13 @@ Dashboard::Dashboard(QWidget *parent)
 	// imgproc
 	connect(imgprocButton, SIGNAL(clicked()),
 		parent, SLOT(imgprocOnOff()));
-	connect(erodeSizeSlider, SIGNAL(valueChanged(int)),
-		parent, SLOT(imgprocSettings()));
 	connect(threshSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(imgprocSettings()));
+	connect(erodeSizeSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(imgprocSettings()));
 	connect(contourSizeSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(imgprocSettings()));
-	connect(sortGridSizeSlider, SIGNAL(valueChanged(int)),
-		parent, SLOT(imgprocSettings()));
-	connect(sortOrderSlider, SIGNAL(valueChanged(int)),
+	connect(trackTooFarSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(imgprocSettings()));
 	connect(convexSizeSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(imgprocSettings()));
@@ -64,12 +62,20 @@ Dashboard::Dashboard(QWidget *parent)
 	// ctrl
 	connect(ctrlButton, SIGNAL(clicked()),
 		parent, SLOT(ctrlOnOff()));
+	connect(modelCovSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(ctrlSettings()));
+	connect(disturbanceCovSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(ctrlSettings()));
 	connect(markerSizeSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(ctrlSettings()));
-	connect(autoMarginSlider, SIGNAL(valueChanged(int)),
+	connect(autoHorzExclSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(ctrlSettings()));
+	connect(autoVertExclSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(ctrlSettings()));
 	connect(this, SIGNAL(sendAutoCatchRequests(QVector<bool>)),
 		parent, SLOT(receiveAutoCatchRequests(QVector<bool>)));
+	connect(this, SIGNAL(sendUseNeckRequests(QVector<bool>)),
+		parent, SLOT(receiveUseNeckRequests(QVector<bool>)));
 }
 
 Dashboard::~Dashboard()
@@ -102,20 +108,19 @@ void Dashboard::resetInletWidgets(QVector<QVector<int>> inletInfo)
 		pumpLayout->addWidget(inletWidget);
 		inletWidgets.push_back(inletWidget);
 	}
-	pumpLayout->addStretch();
 
 	//// INITIALIZE
 	requestInlets();
 }
 
-void Dashboard::resetAutoCatchBox(int numChannel)
+void Dashboard::resetAutoCatchBoxes(int numChannel)
 {
 	//// DELETE
 	foreach(QCheckBox *autoCatchBox, autoCatchBoxes)
 	{
 		disconnect(autoCatchBox, SIGNAL(clicked()),
 			this, SLOT(requestAutoCatches()));
-		ctrlLayout->removeWidget(autoCatchBox);
+		autoCatchLayout->removeWidget(autoCatchBox);
 		delete autoCatchBox;
 	}
 	autoCatchBoxes.clear();
@@ -126,13 +131,38 @@ void Dashboard::resetAutoCatchBox(int numChannel)
 		QCheckBox *autoCatchBox = new QCheckBox(QString::number(i), this);
 		connect(autoCatchBox, SIGNAL(clicked()),
 			this, SLOT(requestAutoCatches()));
-		ctrlLayout->addWidget(autoCatchBox);
+		autoCatchLayout->addWidget(autoCatchBox);
 		autoCatchBoxes.push_back(autoCatchBox);
 	}
-	ctrlLayout->addStretch();
 
 	//// INITIALIZE
 	requestAutoCatches();
+}
+
+void Dashboard::resetUseNeckBoxes(int numChannel)
+{
+	//// DELETE
+	foreach(QCheckBox *useNeckBox, useNeckBoxes)
+	{
+		disconnect(useNeckBox, SIGNAL(clicked()),
+			this, SLOT(requestUseNecks()));
+		useNeckLayout->removeWidget(useNeckBox);
+		delete useNeckBox;
+	}
+	useNeckBoxes.clear();
+
+	//// NEW
+	for (int i = 0; i < numChannel; i++)
+	{
+		QCheckBox *useNeckBox = new QCheckBox(QString::number(i), this);
+		connect(useNeckBox, SIGNAL(clicked()),
+			this, SLOT(requestUseNecks()));
+		useNeckLayout->addWidget(useNeckBox);
+		useNeckBoxes.push_back(useNeckBox);
+	}
+
+	//// INITIALIZE
+	requestUseNecks();
 }
 
 void Dashboard::regurgitateInlets(QVector<qreal> values)
@@ -182,4 +212,14 @@ void Dashboard::requestAutoCatches()
 		autoCatchValues.push_back(autoCatchBox->isChecked());
 	}
 	emit sendAutoCatchRequests(autoCatchValues);
+}
+
+void Dashboard::requestUseNecks()
+{
+	useNeckValues.clear();
+	foreach(QCheckBox *useNeckBox, useNeckBoxes)
+	{
+		useNeckValues.push_back(useNeckBox->isChecked());
+	}
+	emit sendUseNeckRequests(useNeckValues);
 }
