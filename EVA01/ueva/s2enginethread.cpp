@@ -92,23 +92,23 @@ void S2EngineThread::setBkgd()
 void S2EngineThread::separateChannels(int &numChan)
 {
 	mutex.lock();
-
-	if (!allChannels.empty())
+		
+	CV_Assert(!allChannels.empty());
+		
+	channelContours.clear();
+	channels.clear();
+	// find all channel contours
+	cv::findContours(allChannels, channelContours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
+	numChan = channelContours.size();
+	// seprate into vector of UevaChannel
+	for (int i = 0; i < numChan; i++)
 	{
-		channelContours.clear();
-		channels.clear();
-		// find all channel contours
-		cv::findContours(allChannels, channelContours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
-		numChan = channelContours.size();
-		// seprate into vector of UevaChannel
-		for (int i = 0; i < numChan; i++)
-		{
-			UevaChannel channel;
-			channel.index = i;
-			channel.mask = Ueva::contour2Mask(channelContours[i], allChannels.size());
-			channels.push_back(channel);
-		}
+		UevaChannel channel;
+		channel.index = i;
+		channel.mask = Ueva::contour2Mask(channelContours[i], allChannels.size());
+		channels.push_back(channel);
 	}
+
 
 	mutex.unlock();
 }
@@ -210,13 +210,9 @@ void S2EngineThread::loadCtrl(std::string fileName,
 void S2EngineThread::initImgproc()
 {
 	mutex.lock();
-	if (!bkgd.empty()
-		&& !dropletMask.empty()
-		&& !markerMask.empty()
-		&& !channels.empty())
-	{
-		// nothing to do
-	}
+
+	// nothing to do
+
 	mutex.unlock();
 }
 
@@ -238,32 +234,38 @@ void S2EngineThread::finalizeImgproc()
 void S2EngineThread::initCtrl()
 {
 	mutex.lock();
-	if (!ctrls.empty() && !channels.empty() && !settings.inletRequests.empty())
+
+	CV_Assert(!channels.empty());
+	CV_Assert(!ctrls.empty());
+	CV_Assert(!settings.inletRequests.empty());
+	
+	needSelecting = true;
+	needReleasing = true;
+	grounds = QVector<qreal>(UevaCtrl::numPlantInput, 0);
+	corrections = QVector<qreal>(UevaCtrl::numPlantInput, 0);
+	for (int i = 0; i < UevaCtrl::numPlantInput; i++)
 	{
-		needSelecting = true;
-		needReleasing = true;
-		grounds = QVector<qreal>(UevaCtrl::numPlantInput, 0);
-		corrections = QVector<qreal>(UevaCtrl::numPlantInput, 0);
-		for (int i = 0; i < UevaCtrl::numPlantInput; i++)
-		{
-			grounds[i] = settings.inletRequests[i];
-		}
+		grounds[i] = settings.inletRequests[i];
 	}
+
 	mutex.unlock();
 }
 
 void S2EngineThread::finalizeCtrl(QVector<qreal> &inletRegurgitates)
 {
 	mutex.lock();
-	if (!ctrls.empty() && !channels.empty() && !settings.inletRequests.empty())
+
+	CV_Assert(!channels.empty());
+	CV_Assert(!ctrls.empty());
+	CV_Assert(!settings.inletRequests.empty());
+	
+	needSelecting = false;
+	needReleasing = false;
+	for (int i = 0; i < UevaCtrl::numPlantInput; i++)
 	{
-		needSelecting = false;
-		needReleasing = false;
-		for (int i = 0; i < UevaCtrl::numPlantInput; i++)
-		{
-			inletRegurgitates.push_back(grounds[i] + corrections[i]);
-		}
+		inletRegurgitates.push_back(grounds[i] + corrections[i]);
 	}
+
 	
 	mutex.unlock();
 }
@@ -281,9 +283,9 @@ void S2EngineThread::run()
 			//QTime entrance = QTime::currentTime();
 
 			//// MASK MAKING
-			if ((settings.flag & UevaSettings::MASK_MAKING)
-				&& !bkgd.empty())
+			if (settings.flag & UevaSettings::MASK_MAKING)
 			{
+				CV_Assert(!bkgd.empty());
 				// detect walls with adaptive threshold (most time consuming)
 				cv::adaptiveThreshold(bkgd, dropletMask,
 					HIGH_VALUE,
@@ -314,9 +316,9 @@ void S2EngineThread::run()
 			}
 
 			//// CHANNEL CUTTING
-			else if ((settings.flag & UevaSettings::CHANNEL_CUTTING)
-				&& !dropletMask.empty())
+			else if (settings.flag & UevaSettings::CHANNEL_CUTTING)
 			{
+				CV_Assert(!dropletMask.empty());
 				// further erode to get thinner mask
 				structuringElement = cv::getStructuringElement(cv::MORPH_RECT,
 					cv::Size_<int>(settings.channelErodeSize, settings.channelErodeSize));
@@ -342,73 +344,49 @@ void S2EngineThread::run()
 			else
 			{	
 				//// IMGPROC
-				if ((settings.flag & UevaSettings::IMGPROC_ON) 
-					&& !bkgd.empty()
-					&& !dropletMask.empty()
-					&& !markerMask.empty()
-					&& !channels.empty())
+				if (settings.flag & UevaSettings::IMGPROC_ON) 
 				{
-					// background subtraction to get markers (droplets edges)
+					CV_Assert(!bkgd.empty());
+					CV_Assert(!dropletMask.empty());
+					CV_Assert(!markerMask.empty());
+					CV_Assert(!channels.empty());
+					// background subtraction to get edges
 					cv::absdiff(data.rawGray, bkgd, allMarkers);
 					cv::threshold(allMarkers, allMarkers,
 						settings.imgprogThreshold,
 						HIGH_VALUE,
 						cv::THRESH_BINARY);
-					qDebug() << "done back ground subtraction";
-					// flood and complement to get droplets (droplets internal)
+					// flood and complement to get internals
 					allDroplets = allMarkers.clone();
 					seed = cv::Point(0, 0);
+					floodFillReturn = cv::floodFill(allDroplets, seed, HIGH_VALUE);
+					allDroplets = HIGH_VALUE - allDroplets;
+					// combine edges and internals to get whole droplets 
+					cv::bitwise_or(allMarkers, allDroplets, allDroplets);
+					// Exclude noise with masks
+					cv::bitwise_and(allMarkers, markerMask, allMarkers);
+					cv::bitwise_and(allDroplets, dropletMask, allDroplets);
+					// polish droplets with erosion
+					structuringElement = cv::getStructuringElement(cv::MORPH_RECT,
+						cv::Size_<int>(settings.imgprogErodeSize, settings.imgprogErodeSize));
+					cv::erode(allDroplets, allDroplets, structuringElement);
+					// find countours
+					dropletContours.clear();
+					markerContours.clear();
+					cv::findContours(allMarkers, markerContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+					cv::findContours(allDroplets, dropletContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+					// filter contours base on size	
+					Ueva::bigPassFilter(markerContours, settings.imgprogContourSize);
+					Ueva::bigPassFilter(dropletContours, settings.imgprogContourSize);
 
-					floodFillSuccess = true;
-					qDebug() << "going to try now";
-					try
-					{
-						floodFillReturn = cv::floodFill(allDroplets,
-							seed,
-							HIGH_VALUE,
-							0, cv::Scalar_<int>(0), cv::Scalar_<int>(0),
-							cv::FLOODFILL_FIXED_RANGE);
-					}
-					catch (...)
-					{
-						floodFillSuccess = false;
-						qDebug() << "caught an exception";
-					}
-					qDebug() << "try result is: " << floodFillSuccess;
-
-					if (floodFillSuccess)
-					{
-						allDroplets = HIGH_VALUE - allDroplets;
-						// combine edges and internals to get whole droplets 
-						cv::bitwise_or(allMarkers, allDroplets, allDroplets);
-						// Exclude noise with masks
-						cv::bitwise_and(allMarkers, markerMask, allMarkers);
-						cv::bitwise_and(allDroplets, dropletMask, allDroplets);
-						// polish droplets with erosion
-						structuringElement = cv::getStructuringElement(cv::MORPH_RECT,
-							cv::Size_<int>(settings.imgprogErodeSize, settings.imgprogErodeSize));
-						cv::erode(allDroplets, allDroplets, structuringElement);
-						// find countours
-						dropletContours.clear();
-						markerContours.clear();
-						cv::findContours(allMarkers, markerContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
-						cv::findContours(allDroplets, dropletContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-						// filter contours base on size	
-						Ueva::bigPassFilter(markerContours, settings.imgprogContourSize);
-						Ueva::bigPassFilter(dropletContours, settings.imgprogContourSize);
-
-
-						cv::cvtColor(allDroplets, data.drawnBgr, CV_GRAY2BGR);
-						cv::cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
-					}
 				}
 				//// CTRL
-				if ((settings.flag & UevaSettings::CTRL_ON)
-					&& !channels.empty()
-					&& !ctrls.empty() 
-					&& !settings.inletRequests.empty()
-					&& floodFillSuccess)
+				if (settings.flag & UevaSettings::CTRL_ON)
 				{
+					CV_Assert(!channels.empty());
+					CV_Assert(!ctrls.empty());
+					CV_Assert(!settings.inletRequests.empty());
+
 					qDebug() << 'c';
 				}
 				//// DRAW
@@ -416,7 +394,7 @@ void S2EngineThread::run()
 				{
 					cv::cvtColor(data.rawGray, data.drawnBgr, CV_GRAY2BGR);
 					// draw channel contour
-					if (settings.flag & UevaSettings::DRAW_CHANNEL && floodFillSuccess)
+					if (settings.flag & UevaSettings::DRAW_CHANNEL)
 					{
 						lineColor = cv::Scalar(255, 255, 255); // white
 						lineThickness = CV_FILLED; 
@@ -425,7 +403,7 @@ void S2EngineThread::run()
 							lineColor, lineThickness, lineType);
 					}
 					// draw droplet contour
-					if (settings.flag & UevaSettings::DRAW_DROPLET && floodFillSuccess)
+					if (settings.flag & UevaSettings::DRAW_DROPLET)
 					{
 						lineColor = cv::Scalar(255, 0, 255); // magenta
 						lineThickness = 1;
@@ -434,7 +412,7 @@ void S2EngineThread::run()
 							lineColor, lineThickness, lineType);
 					}
 					// draw marker contour
-					if (settings.flag & UevaSettings::DRAW_MARKER && floodFillSuccess)
+					if (settings.flag & UevaSettings::DRAW_MARKER)
 					{
 						lineColor = cv::Scalar(255, 255, 0); // cyan
 						lineThickness = 1;
@@ -443,7 +421,7 @@ void S2EngineThread::run()
 							lineColor, lineThickness, lineType);
 					}
 					// draw kink and neck
-					if (settings.flag & UevaSettings::DRAW_NECK && floodFillSuccess)
+					if (settings.flag & UevaSettings::DRAW_NECK)
 					{
 						lineColor = cv::Scalar(0, 255, 255); // yellow
 						lineThickness = 3;
@@ -463,16 +441,10 @@ void S2EngineThread::run()
 						}
 					}
 					// draw marker rect and identity
-					if (floodFillSuccess)
-					{
 
-					}
 					
 					// draw channel text and measuring marker rect
-					if (floodFillSuccess)
-					{
 
-					}
 
 					cv::cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
 				}
@@ -493,4 +465,5 @@ void S2EngineThread::run()
 		}
 	}
 }
+
 
