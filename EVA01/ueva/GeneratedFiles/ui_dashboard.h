@@ -21,6 +21,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSlider>
+#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -47,7 +48,7 @@ public:
     QPushButton *pumpButton;
     QPushButton *zeroPumpButton;
     QLabel *label_2;
-    QWidget *widget;
+    QSpacerItem *horizontalSpacer;
     QGroupBox *groupBox_3;
     QGridLayout *gridLayout_5;
     QVBoxLayout *verticalLayout;
@@ -92,10 +93,8 @@ public:
     QSlider *disturbanceCovSlider;
     QHBoxLayout *autoCatchLayout;
     QLabel *label_16;
-    QWidget *widget_2;
     QHBoxLayout *useNeckLayout;
     QLabel *label_18;
-    QWidget *widget_3;
 
     void setupUi(QWidget *Dashboard)
     {
@@ -208,15 +207,9 @@ public:
 
         pumpLayout->addLayout(verticalLayout_2);
 
-        widget = new QWidget(groupBox);
-        widget->setObjectName(QStringLiteral("widget"));
-        QSizePolicy sizePolicy3(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        sizePolicy3.setHorizontalStretch(0);
-        sizePolicy3.setVerticalStretch(0);
-        sizePolicy3.setHeightForWidth(widget->sizePolicy().hasHeightForWidth());
-        widget->setSizePolicy(sizePolicy3);
+        horizontalSpacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        pumpLayout->addWidget(widget);
+        pumpLayout->addItem(horizontalSpacer);
 
 
         gridLayout_2->addLayout(pumpLayout, 0, 0, 1, 1);
@@ -502,13 +495,6 @@ public:
 
         autoCatchLayout->addWidget(label_16);
 
-        widget_2 = new QWidget(groupBox_4);
-        widget_2->setObjectName(QStringLiteral("widget_2"));
-        sizePolicy3.setHeightForWidth(widget_2->sizePolicy().hasHeightForWidth());
-        widget_2->setSizePolicy(sizePolicy3);
-
-        autoCatchLayout->addWidget(widget_2);
-
 
         verticalLayout_4->addLayout(autoCatchLayout);
 
@@ -519,13 +505,6 @@ public:
         label_18->setObjectName(QStringLiteral("label_18"));
 
         useNeckLayout->addWidget(label_18);
-
-        widget_3 = new QWidget(groupBox_4);
-        widget_3->setObjectName(QStringLiteral("widget_3"));
-        sizePolicy3.setHeightForWidth(widget_3->sizePolicy().hasHeightForWidth());
-        widget_3->setSizePolicy(sizePolicy3);
-
-        useNeckLayout->addWidget(widget_3);
 
 
         verticalLayout_4->addLayout(useNeckLayout);
