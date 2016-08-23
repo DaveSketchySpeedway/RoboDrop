@@ -219,6 +219,8 @@ void S2EngineThread::initImgproc()
 void S2EngineThread::finalizeImgproc()
 {
 	mutex.lock();
+
+	UevaMarker::counter = 0;
 	newMarkers.clear();
 	oldMarkers.clear();
 	activatedChannelIndices.clear();
@@ -228,6 +230,7 @@ void S2EngineThread::finalizeImgproc()
 		channels[i].measuringMarkerIndex = -1;
 		channels[i].neckDropletIndex = -1;
 	}
+
 	mutex.unlock();
 }
 
@@ -350,6 +353,7 @@ void S2EngineThread::run()
 					CV_Assert(!dropletMask.empty());
 					CV_Assert(!markerMask.empty());
 					CV_Assert(!channels.empty());
+
 					// background subtraction to get edges
 					cv::absdiff(data.rawGray, bkgd, allMarkers);
 					cv::threshold(allMarkers, allMarkers,
@@ -379,6 +383,46 @@ void S2EngineThread::run()
 					Ueva::bigPassFilter(markerContours, settings.imgprogContourSize);
 					Ueva::bigPassFilter(dropletContours, settings.imgprogContourSize);
 
+					// vector of marker
+					newMarkers.clear();
+					for (int i = 0; i < markerContours.size(); i++)
+					{
+						UevaMarker marker;
+						mom = cv::moments(markerContours[i]);
+						marker.centroid.x = mom.m10 / mom.m00;
+						marker.centroid.y = mom.m01 / mom.m00;
+						marker.rect = cv::Rect_<int>(
+							marker.centroid.x - settings.ctrlMarkerSize / 2,
+							marker.centroid.y - settings.ctrlMarkerSize / 2,
+							settings.ctrlMarkerSize,
+							settings.ctrlMarkerSize);
+						newMarkers.push_back(marker);
+					}
+					// old to new markers (object tracking)
+					Ueva::trackMarkerIdentities(newMarkers, oldMarkers, settings.imgprogTrackTooFar);
+					// vector of droplet
+
+					// give neck to channel
+
+
+					// check measuring marker identity and weather to keep using neck
+					oldMarkers.clear();
+					oldMarkers = newMarkers;
+
+					// user inputs
+					mousePressLeft.x = settings.leftPressPosition.x();
+					mousePressLeft.y = settings.leftPressPosition.y();
+					mousePressRight.x = settings.rightPressPosition.x();
+					mousePressRight.y = settings.rightPressPosition.y();
+					mousePressPrevious.x = settings.leftPressMovement.x1();
+					mousePressPrevious.y = settings.leftPressMovement.y1();
+					mousePressCurrent.x = settings.leftPressMovement.x2();
+					mousePressCurrent.y = settings.leftPressMovement.y2();
+					mousePressDisplacement = mousePressCurrent - mousePressPrevious;
+					// user add and remove marker
+
+					// auto catch and use neck
+					
 				}
 				//// CTRL
 				if (settings.flag & UevaSettings::CTRL_ON)
@@ -434,17 +478,37 @@ void S2EngineThread::run()
 									dropletContours[i][droplets[i].kinkIndex],
 									dropletContours[i][droplets[i].neckIndex],
 									lineColor, lineThickness, lineType);
-								//cv::circle(data.drawnBgr,
-								//	dropletContours[i][droplets[i].kinkIndex],
-								//	10, lineColor, lineThickness, lineType);
 							}
 						}
 					}
 					// draw marker rect and identity
-
-					
+					for (int i = 0; i < newMarkers.size(); i++)
+					{
+						lineColor = cv::Scalar(255, 255, 0); // cyan
+						lineThickness = 1;
+						lineType = 8;
+						cv::rectangle(data.drawnBgr, newMarkers[i].rect,
+							lineColor, lineThickness, lineType);
+						fontScale = 1;
+						anchor.x = newMarkers[i].rect.x - 30; // offset left from leftmost
+						anchor.y = newMarkers[i].rect.y - 30; // offset up from top
+						str = std::to_string(newMarkers[i].identity);
+						cv::putText(data.drawnBgr, str, anchor,
+							cv::FONT_HERSHEY_SIMPLEX, fontScale, lineColor, lineThickness, lineType);
+					}
 					// draw channel text and measuring marker rect
-
+					for (int i = 0; i < channels.size(); i++)
+					{
+						channels[i].makeChannelText(str, fontScale, lineColor,
+							settings.linkRequests[i], settings.inverseLinkRequests[i]);
+						rect = cv::boundingRect(channelContours[i]);
+						anchor.x = rect.x + 60; // offset right from leftmost
+						anchor.y = rect.y + rect.height / 2 - 30; // offset up from center
+						lineThickness = 1;
+						lineType = 8;
+						cv::putText(data.drawnBgr, str, anchor,
+							cv::FONT_HERSHEY_SIMPLEX, fontScale, lineColor, lineThickness, lineType);
+					}
 
 					cv::cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
 				}

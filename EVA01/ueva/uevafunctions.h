@@ -19,11 +19,16 @@ namespace Ueva
 
 	QImage cvMat2qImage(const cv::Mat &cvMat);
 
+	void bigPassFilter(std::vector<std::vector< cv::Point_<int> >> &contours, const int &size);
+
+	void trackMarkerIdentities(std::vector<UevaMarker> &newMarkers, std::vector<UevaMarker> &oldMarkers, int &trackTooFar);
+
+
+
+
 	cv::Mat contour2Mask(const std::vector<cv::Point_<int>> &contour, const cv::Size_<int> &sz);
 
 	std::vector<cv::Point_<int>> mask2Contour(const cv::Mat &mask);
-
-	void bigPassFilter(std::vector<std::vector< cv::Point_<int> >> &contours, const int &size);
 
 	bool isPointInMask(cv::Point_<int> &point, cv::Mat &mask);
 

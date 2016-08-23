@@ -21,6 +21,8 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #define UEVASTRUCTURES_H
 
 #include <QtGui >
+#include <string>
+#include <sstream>
 #include <fstream>
 #include "opencv2/core.hpp"
 
@@ -137,6 +139,9 @@ struct UevaCtrl
 struct UevaChannel
 {
 	UevaChannel();
+
+	void makeChannelText(std::string &str, double &fontScale, cv::Scalar_<int> &lineColor,
+		const bool &linkRequest, const bool &inverseLinkRequest);
 
 	int index;
 	cv::Mat mask;

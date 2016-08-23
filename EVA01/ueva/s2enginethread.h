@@ -162,6 +162,7 @@ private:
 	cv::Point_<int> anchor;
 	cv::Moments mom;
 	cv::Rect rect;
+	std::string str;
 
 	private slots:
 };

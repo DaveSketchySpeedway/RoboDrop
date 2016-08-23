@@ -342,7 +342,7 @@ public:
         trackTooFarSlider->setMinimum(1);
         trackTooFarSlider->setMaximum(100);
         trackTooFarSlider->setPageStep(1);
-        trackTooFarSlider->setValue(30);
+        trackTooFarSlider->setValue(50);
         trackTooFarSlider->setOrientation(Qt::Horizontal);
 
         gridLayout->addWidget(trackTooFarSlider, 4, 1, 1, 1);

@@ -43,22 +43,6 @@ QImage Ueva::cvMat2qImage(const cv::Mat &cvMat)
 	return qImage; // no deep copy
 }
 
-cv::Mat Ueva::contour2Mask(const std::vector< cv::Point_<int> > &contour, const cv::Size_<int> &sz)
-{
-	std::vector< std::vector< cv::Point_<int> >> contours;
-	contours.push_back(contour);
-	cv::Mat mask = cv::Mat(sz, CV_8UC1, cv::Scalar_<int>(0));
-	cv::drawContours(mask, contours, -1, cv::Scalar_<int>(255), -1);
-	return mask;
-}
-
-std::vector<cv::Point_<int>> Ueva::mask2Contour(const cv::Mat &mask)
-{
-	std::vector<std::vector< cv::Point_<int> >> contours;
-	cv::findContours(mask, contours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
-	return contours[0];
-}
-
 void Ueva::bigPassFilter(std::vector<std::vector< cv::Point_<int> >> &contours, const int &size)
 {
 	std::vector<std::vector< cv::Point_<int> >>::iterator iter;
@@ -76,6 +60,113 @@ void Ueva::bigPassFilter(std::vector<std::vector< cv::Point_<int> >> &contours, 
 		}
 	}
 }
+
+void Ueva::trackMarkerIdentities(std::vector<UevaMarker> &newMarkers, std::vector<UevaMarker> &oldMarkers, int &trackTooFar)
+{
+	// distance matrix (each row corresponds to a newMarker)
+	std::vector<std::vector<float>> l2NormMatrix;
+	for (int i = 0; i < newMarkers.size(); i++)
+	{
+		std::vector<float> l2NormVector;
+		for (int j = 0; j < oldMarkers.size(); j++)
+		{
+			float l2Norm = sqrt(
+				pow(float(newMarkers[i].centroid.x - oldMarkers[j].centroid.x), 2) +
+				pow(float(newMarkers[i].centroid.y - oldMarkers[j].centroid.y), 2)
+				);
+			l2NormVector.push_back(l2Norm);
+		}
+		l2NormMatrix.push_back(l2NormVector);
+	}
+	// distance matrix transpose (each row corresponds to an oldMarker)
+	std::vector<std::vector<float>> l2NormMatrixT;
+	for (int j = 0; j < oldMarkers.size(); j++)
+	{
+		std::vector<float> l2NormVectorT;
+		for (int i = 0; i < newMarkers.size(); i++)
+		{
+			float l2NormT = l2NormMatrix[i][j];
+			l2NormVectorT.push_back(l2NormT);
+		}
+		l2NormMatrixT.push_back(l2NormVectorT);
+	}
+	// newMarker assiociates itself with oldMarker
+	std::vector<int> newOldIndices;
+	if (l2NormMatrixT.size() > 0)
+	{
+		for (int i = 0; i < l2NormMatrix.size(); i++)
+		{
+			std::vector<float>::iterator iter = std::min_element(l2NormMatrix[i].begin(), l2NormMatrix[i].end());
+			if (*iter <= trackTooFar)
+			{
+				newOldIndices.push_back(iter - l2NormMatrix[i].begin());
+			}
+			else
+			{
+				newOldIndices.push_back(-1);
+			}
+		}
+	}
+	// oldMarker associates itself with newMarker
+	std::vector<int> oldNewIndices;
+	if (l2NormMatrix.size() > 0)
+	{
+		for (int j = 0; j < l2NormMatrixT.size(); j++)
+		{
+			std::vector<float>::iterator iter = std::min_element(l2NormMatrixT[j].begin(), l2NormMatrixT[j].end());
+			if (*iter <= trackTooFar)
+			{
+				oldNewIndices.push_back(iter - l2NormMatrixT[j].begin());
+			}
+			else
+			{
+				oldNewIndices.push_back(-1);
+			}
+		}
+	}
+	// round trip consensus
+	for (int i = 0; i < newOldIndices.size(); i++)
+	{
+		int j = newOldIndices[i];
+		if (j > -1)
+		{
+			int iReturn = oldNewIndices[j];
+			if (i == iReturn)
+			{
+				newMarkers[i].identity = oldMarkers[j].identity;
+			}
+		}
+	}
+	// give identity to newly appeared markers
+	for (int i = 0; i < newMarkers.size(); i++)
+	{
+		if (newMarkers[i].identity == -1)
+		{
+			UevaMarker::counter++;
+			newMarkers[i].identity = UevaMarker::counter;
+		}
+	}
+}
+
+
+
+
+cv::Mat Ueva::contour2Mask(const std::vector< cv::Point_<int> > &contour, const cv::Size_<int> &sz)
+{
+	std::vector< std::vector< cv::Point_<int> >> contours;
+	contours.push_back(contour);
+	cv::Mat mask = cv::Mat(sz, CV_8UC1, cv::Scalar_<int>(0));
+	cv::drawContours(mask, contours, -1, cv::Scalar_<int>(255), -1);
+	return mask;
+}
+
+std::vector<cv::Point_<int>> Ueva::mask2Contour(const cv::Mat &mask)
+{
+	std::vector<std::vector< cv::Point_<int> >> contours;
+	cv::findContours(mask, contours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
+	return contours[0];
+}
+
 
 bool Ueva::isPointInMask(cv::Point_<int> &point, cv::Mat &mask)
 {

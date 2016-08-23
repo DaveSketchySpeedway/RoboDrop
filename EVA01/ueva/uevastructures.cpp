@@ -199,6 +199,61 @@ UevaChannel::UevaChannel()
 	neckDropletIndex = -1;
 }
 
+void UevaChannel::makeChannelText(std::string &str, double &fontScale, cv::Scalar_<int> &lineColor,
+	const bool &linkRequest, const bool &inverseLinkRequest)
+{
+	std::string dir;
+	switch (direction)
+	{
+	case 0:
+	{
+		if (inverseLinkRequest)
+			dir = "(v)";
+		else
+			dir = "^";
+		break;
+	}
+	case 1:
+	{
+		if (inverseLinkRequest)
+			dir = "(^)";
+		else
+			dir = "v";
+		break;
+	}
+	case 2:
+	{
+		if (inverseLinkRequest)
+			dir = "(>)";
+		else
+			dir = "<";
+		break;
+	}
+	case 3:
+	{
+		if (inverseLinkRequest)
+			dir = "(<)";
+		else
+			dir = ">";
+		break;
+	}
+	}
+	if (linkRequest)
+	{
+		fontScale = 1;
+		lineColor = cv::Scalar(0, 0, 255); // red
+	}
+	else
+	{
+		fontScale = 0.8;
+		lineColor = cv::Scalar(0, 255, 0); // green
+	}
+	std::ostringstream oss;
+	oss << "CH" << index << " " << dir;
+	str = oss.str();
+
+	return;
+}
 
 
 //// DROPLET
@@ -215,7 +270,7 @@ std::ofstream UevaDroplet::fileStream;
 //// MARKER
 UevaMarker::UevaMarker()
 {
-
+	identity = -1;
 }
 
 int UevaMarker::counter = 0;
