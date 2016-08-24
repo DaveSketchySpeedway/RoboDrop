@@ -43,6 +43,22 @@ QImage Ueva::cvMat2qImage(const cv::Mat &cvMat)
 	return qImage; // no deep copy
 }
 
+cv::Mat Ueva::contour2Mask(const std::vector< cv::Point_<int> > &contour, const cv::Size_<int> &sz)
+{
+	std::vector< std::vector< cv::Point_<int> >> contours;
+	contours.push_back(contour);
+	cv::Mat mask = cv::Mat(sz, CV_8UC1, cv::Scalar_<int>(0));
+	cv::drawContours(mask, contours, -1, cv::Scalar_<int>(255), -1);
+	return mask;
+}
+
+std::vector<cv::Point_<int>> Ueva::mask2Contour(const cv::Mat &mask)
+{
+	std::vector<std::vector< cv::Point_<int> >> contours;
+	cv::findContours(mask, contours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
+	return contours[0];
+}
+
 void Ueva::bigPassFilter(std::vector<std::vector< cv::Point_<int> >> &contours, const int &size)
 {
 	std::vector<std::vector< cv::Point_<int> >>::iterator iter;
@@ -148,41 +164,6 @@ void Ueva::trackMarkerIdentities(std::vector<UevaMarker> &newMarkers, std::vecto
 	}
 }
 
-
-
-
-cv::Mat Ueva::contour2Mask(const std::vector< cv::Point_<int> > &contour, const cv::Size_<int> &sz)
-{
-	std::vector< std::vector< cv::Point_<int> >> contours;
-	contours.push_back(contour);
-	cv::Mat mask = cv::Mat(sz, CV_8UC1, cv::Scalar_<int>(0));
-	cv::drawContours(mask, contours, -1, cv::Scalar_<int>(255), -1);
-	return mask;
-}
-
-std::vector<cv::Point_<int>> Ueva::mask2Contour(const cv::Mat &mask)
-{
-	std::vector<std::vector< cv::Point_<int> >> contours;
-	cv::findContours(mask, contours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
-	return contours[0];
-}
-
-
-bool Ueva::isPointInMask(cv::Point_<int> &point, cv::Mat &mask)
-{
-	uchar *p = mask.ptr<uchar>(point.y);
-	if (p[point.x])
-		return true;
-	return false;
-}
-
-int Ueva::masksOverlap(cv::Mat &mask1, cv::Mat &mask2)
-{
-	cv::Mat mask3 = cv::Mat(mask1.size(), CV_8UC1, cv::Scalar_<int>(0));
-	cv::bitwise_and(mask1, mask2, mask3);
-	return cv::countNonZero(mask3);
-}
-
 int Ueva::detectKink(std::vector< cv::Point_<int>> &contour, const int &convexSize)
 {
 	std::vector<int> hull;
@@ -193,7 +174,7 @@ int Ueva::detectKink(std::vector< cv::Point_<int>> &contour, const int &convexSi
 
 	int kinkIndex = -1;
 	int depth = 0;
-	for (int i = 0; i < defects.size(); i++) 
+	for (int i = 0; i < defects.size(); i++)
 	{
 		if (defects[i][2] > defects[i][0] && defects[i][2] < defects[i][1]) // filter opencv bug
 		{
@@ -207,10 +188,11 @@ int Ueva::detectKink(std::vector< cv::Point_<int>> &contour, const int &convexSi
 			}
 		}
 	}
-	return kinkIndex; 
+
+	return kinkIndex;
 }
 
-int Ueva::detectNeck(std::vector< cv::Point_<int>> &contour, int &kinkIndex, float &neck, const int threshold)
+int Ueva::detectNeck(std::vector< cv::Point_<int>> &contour, int &kinkIndex, float &neckDistance, const int threshold)
 {
 	std::vector<float> profile;
 	for (int i = kinkIndex; i < contour.size(); i++)
@@ -237,15 +219,16 @@ int Ueva::detectNeck(std::vector< cv::Point_<int>> &contour, int &kinkIndex, flo
 			UevaDroplet::fileStream << l2Norm << ",";
 		}
 	}
-	
+
 	p1d::Persistence1D persistence;
 	persistence.RunPersistence(profile);
 
 	std::vector< p1d::TPairedExtrema > extremas;
 	persistence.GetPairedExtrema(extremas, float(threshold));
 
+	std::vector<int> indices;
 	int neckIndex = -1;
-	neck = 0.0;
+	neckDistance = 0.0;
 	if (extremas.size() == 2) // 2 maxima droplet is healthy, 1st minima is neck
 	{
 		sort(extremas.begin(), extremas.end(),
@@ -253,15 +236,19 @@ int Ueva::detectNeck(std::vector< cv::Point_<int>> &contour, int &kinkIndex, flo
 		{
 			return a.MinIndex < b.MinIndex;
 		});
-		if (extremas[0].MinIndex < (contour.size() - kinkIndex))
+		for (int i = 0; i < extremas.size(); i++)
 		{
-			neckIndex = kinkIndex + extremas[0].MinIndex;
+			if (extremas[i].MinIndex < (contour.size() - kinkIndex))
+			{
+				indices.push_back(kinkIndex + extremas[i].MinIndex);
+			}
+			else
+			{
+				indices.push_back(extremas[i].MinIndex - (contour.size() - kinkIndex));
+			}
 		}
-		else
-		{
-			neckIndex = extremas[0].MinIndex - (contour.size() - kinkIndex);
-		}
-		neck = profile[extremas[0].MinIndex];
+		neckIndex = indices[0];
+		neckDistance = profile[extremas[0].MinIndex];
 	}
 	else if (extremas.size() >= 3)  // 3 or more maxima droplet is overgrown, 2nd maxima is neck
 	{
@@ -270,18 +257,44 @@ int Ueva::detectNeck(std::vector< cv::Point_<int>> &contour, int &kinkIndex, flo
 		{
 			return a.MaxIndex < b.MaxIndex;
 		});
-		if (extremas[1].MaxIndex < (contour.size() - kinkIndex))
+		for (int i = 0; i < extremas.size(); i++)
 		{
-			neckIndex = kinkIndex + extremas[0].MaxIndex;
+			if (extremas[i].MaxIndex < (contour.size() - kinkIndex))
+			{
+				indices.push_back(kinkIndex + extremas[i].MaxIndex);
+			}
+			else
+			{
+				indices.push_back(extremas[1].MaxIndex - (contour.size() - kinkIndex));
+			}
 		}
-		else
-		{
-			neckIndex = extremas[1].MaxIndex - (contour.size() - kinkIndex);
-		}
-		neck = profile[extremas[1].MaxIndex];
+		neckIndex = indices[1];
+		neckDistance = profile[extremas[1].MaxIndex];
 	}
+
 	return neckIndex;
 }
+
+
+
+
+
+bool Ueva::isPointInMask(cv::Point_<int> &point, cv::Mat &mask)
+{
+	uchar *p = mask.ptr<uchar>(point.y);
+	if (p[point.x])
+		return true;
+	return false;
+}
+
+int Ueva::masksOverlap(cv::Mat &mask1, cv::Mat &mask2)
+{
+	cv::Mat mask3 = cv::Mat(mask1.size(), CV_8UC1, cv::Scalar_<int>(0));
+	cv::bitwise_and(mask1, mask2, mask3);
+	return cv::countNonZero(mask3);
+}
+
+
 
 bool Ueva::isCombinationPossible(std::vector<int> &combination, std::vector<UevaCtrl> &ctrls)
 {

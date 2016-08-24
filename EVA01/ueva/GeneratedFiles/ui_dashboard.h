@@ -302,7 +302,8 @@ public:
         convexSizeSlider->setMinimum(1);
         convexSizeSlider->setMaximum(100);
         convexSizeSlider->setPageStep(1);
-        convexSizeSlider->setValue(10);
+        convexSizeSlider->setValue(7);
+        convexSizeSlider->setSliderPosition(7);
         convexSizeSlider->setOrientation(Qt::Horizontal);
 
         gridLayout->addWidget(convexSizeSlider, 5, 1, 1, 1);
@@ -332,7 +333,7 @@ public:
         persistenceSlider->setMinimum(1);
         persistenceSlider->setMaximum(100);
         persistenceSlider->setPageStep(1);
-        persistenceSlider->setValue(10);
+        persistenceSlider->setValue(7);
         persistenceSlider->setOrientation(Qt::Horizontal);
 
         gridLayout->addWidget(persistenceSlider, 6, 1, 1, 1);

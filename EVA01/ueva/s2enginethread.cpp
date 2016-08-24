@@ -401,7 +401,25 @@ void S2EngineThread::run()
 					// old to new markers (object tracking)
 					Ueva::trackMarkerIdentities(newMarkers, oldMarkers, settings.imgprogTrackTooFar);
 					// vector of droplet
-
+					droplets.clear();
+					for (int i = 0; i < dropletContours.size(); i++)
+					{
+						UevaDroplet droplet;
+						droplet.mask = Ueva::contour2Mask(dropletContours[i], allDroplets.size());
+						droplet.kinkIndex = Ueva::detectKink(dropletContours[i], settings.imgprocConvexSize);
+						if (droplet.kinkIndex != -1)
+						{
+							droplet.neckIndex = Ueva::detectNeck(dropletContours[i],
+								droplet.kinkIndex,
+								droplet.neckDistance,
+								settings.imgprocPersistence);
+						}
+						droplets.push_back(droplet);
+					}
+					if (UevaDroplet::fileStream.is_open())
+					{
+						UevaDroplet::fileStream << std::endl;
+					}
 					// give neck to channel
 
 
@@ -468,16 +486,23 @@ void S2EngineThread::run()
 					if (settings.flag & UevaSettings::DRAW_NECK)
 					{
 						lineColor = cv::Scalar(0, 255, 255); // yellow
-						lineThickness = 3;
 						lineType = 8;
 						for (int i = 0; i < droplets.size(); i++)
 						{
-							if (droplets[i].kinkIndex >= 0 && droplets[i].neckIndex >= 0)
+							if (droplets[i].kinkIndex != -1)
 							{
-								cv::line(data.drawnBgr,
+								lineThickness = 1;
+								cv::circle(data.drawnBgr,
 									dropletContours[i][droplets[i].kinkIndex],
-									dropletContours[i][droplets[i].neckIndex],
-									lineColor, lineThickness, lineType);
+									settings.ctrlMarkerSize / 2, lineColor, lineThickness, lineType);
+								if (droplets[i].neckIndex != -1)
+								{
+									lineThickness = 3;
+									cv::line(data.drawnBgr,
+										dropletContours[i][droplets[i].kinkIndex],
+										dropletContours[i][droplets[i].neckIndex],
+										lineColor, lineThickness, lineType);
+								}
 							}
 						}
 					}

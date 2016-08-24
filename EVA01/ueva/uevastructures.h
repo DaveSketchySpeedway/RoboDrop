@@ -159,7 +159,7 @@ struct UevaDroplet
 	cv::Mat mask;
 	int kinkIndex;
 	int neckIndex;
-	double neckDistance;
+	float neckDistance;
 
 	static std::ofstream fileStream;
 };
