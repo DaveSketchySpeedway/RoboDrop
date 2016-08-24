@@ -143,8 +143,9 @@ struct UevaChannel
 	void makeChannelText(std::string &str, double &fontScale, cv::Scalar_<int> &lineColor,
 		const bool &linkRequest, const bool &inverseLinkRequest);
 
-	int index;
 	cv::Mat mask;
+	cv::Rect rect;
+	int index;
 	int direction;
 	
 	int biggestDropletIndex;

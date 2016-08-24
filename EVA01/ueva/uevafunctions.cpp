@@ -282,19 +282,35 @@ int Ueva::masksOverlap(cv::Mat &mask1, cv::Mat &mask2)
 	return cv::countNonZero(mask3);
 }
 
-bool Ueva::isPointInMask(cv::Point_<int> &point, cv::Mat &mask, int xMargin, int yMargin)
+bool Ueva::isMarkerInChannel(UevaMarker &marker, UevaChannel &channel, int xMargin, int yMargin)
 {
-	if (point.x > xMargin &&
-		point.x < (mask.cols - xMargin) &&
-		point.y > yMargin &&
-		point.y < (mask.rows - yMargin))
+	// channel is vertical
+	if (channel.direction <= 1)
 	{
-		uchar *p = mask.ptr<uchar>(point.y);
-		if (p[point.x])
+		if (marker.centroid.y > (channel.rect.y + yMargin) &&
+			marker.centroid.y < (channel.rect.y + channel.rect.height - yMargin))
 		{
-			return true;
+			uchar*p = channel.mask.ptr<uchar>(marker.centroid.y);
+			if (p[marker.centroid.x] > 0)
+			{
+				return true;
+			}
 		}
 	}
+	// channel is horizontal
+	if (channel.direction >= 2)
+	{
+		if (marker.centroid.x >(channel.rect.x + xMargin) &&
+			marker.centroid.x < (channel.rect.x + channel.rect.width - xMargin))
+		{
+			uchar*p = channel.mask.ptr<uchar>(marker.centroid.y);
+			if (p[marker.centroid.x] > 0)
+			{
+				return true;
+			}
+		}
+	}
+
 	return false;
 }
 

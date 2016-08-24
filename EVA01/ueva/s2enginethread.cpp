@@ -106,6 +106,7 @@ void S2EngineThread::separateChannels(int &numChan)
 		UevaChannel channel;
 		channel.index = i;
 		channel.mask = Ueva::contour2Mask(channelContours[i], allChannels.size());
+		channel.rect = cv::boundingRect(channelContours[i]);
 		channels.push_back(channel);
 	}
 
@@ -456,7 +457,7 @@ void S2EngineThread::run()
 							}
 							if (stillExistMarkerIndex != -1)
 							{
-								if (Ueva::isPointInMask(newMarkers[stillExistMarkerIndex].centroid, channels[i].mask, 0, 0))
+								if (Ueva::isMarkerInChannel(newMarkers[stillExistMarkerIndex], channels[i], 0, 0))
 								{
 									// droplet in channel 
 									channels[i].measuringMarkerIndex = stillExistMarkerIndex;
@@ -530,7 +531,7 @@ void S2EngineThread::run()
 						{
 							for (int j = 0; j < channels.size(); j++)
 							{
-								if (Ueva::isPointInMask(newMarkers[i].centroid, channels[j].mask, 0, 0))
+								if (Ueva::isMarkerInChannel(newMarkers[i], channels[j], 0, 0))
 								{
 									// channel already activated
 									if (channels[j].measuringMarkerIndex != -1 && channels[j].neckDropletIndex == -1)
@@ -590,7 +591,7 @@ void S2EngineThread::run()
 						{
 							for (int j = 0; j < newMarkers.size(); j++)
 							{
-								if (Ueva::isPointInMask(newMarkers[j].centroid, channels[i].mask,
+								if (Ueva::isMarkerInChannel(newMarkers[j], channels[i],
 									settings.ctrlAutoHorzExcl, settings.ctrlAutoVertExcl))
 								{
 									desiredChannelIndices = activatedChannelIndices;
@@ -726,9 +727,8 @@ void S2EngineThread::run()
 					{
 						channels[i].makeChannelText(str, fontScale, lineColor,
 							settings.linkRequests[i], settings.inverseLinkRequests[i]);
-						rect = cv::boundingRect(channelContours[i]);
-						anchor.x = rect.x + 60; // offset right from leftmost
-						anchor.y = rect.y + rect.height / 2 - 30; // offset up from center
+						anchor.x = channels[i].rect.x + 60; // offset right from leftmost
+						anchor.y = channels[i].rect.y + channels[i].rect.height / 2 - 30; // offset up from center
 						lineThickness = 1;
 						lineType = 8;
 						cv::putText(data.drawnBgr, str, anchor,

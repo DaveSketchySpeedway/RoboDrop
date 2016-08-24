@@ -33,13 +33,11 @@ namespace Ueva
 
 	int masksOverlap(cv::Mat &mask1, cv::Mat &mask2);
 
-	bool isPointInMask(cv::Point_<int> &point, cv::Mat &mask, int xMargin, int yMargin);
+	bool isMarkerInChannel(UevaMarker &marker, UevaChannel &channel, int xMargin, int yMargin);
 
 	bool isCombinationPossible(std::vector<int> &combination, std::vector<UevaCtrl> &ctrls);
 
 	void deleteFromCombination(std::vector<int> &combination, const int value);
-
-
 
 
 
