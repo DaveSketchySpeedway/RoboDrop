@@ -398,8 +398,10 @@ void S2EngineThread::run()
 							settings.ctrlMarkerSize);
 						newMarkers.push_back(marker);
 					}
+					
 					// old to new markers (object tracking)
 					Ueva::trackMarkerIdentities(newMarkers, oldMarkers, settings.imgprogTrackTooFar);
+					
 					// vector of droplet
 					droplets.clear();
 					for (int i = 0; i < dropletContours.size(); i++)
@@ -420,6 +422,7 @@ void S2EngineThread::run()
 					{
 						UevaDroplet::fileStream << std::endl;
 					}
+
 					// droplet to channel
 					for (int i = 0; i < channels.size(); i++)
 					{
@@ -435,7 +438,8 @@ void S2EngineThread::run()
 							}
 						}
 					}
-					// check measuring marker identity and weather to keep using neck
+
+					// renew marker index base on identity and whether to keep using neck
 					for (int i = 0; i < channels.size(); i++)
 					{
 						// last cycle has marker
@@ -518,19 +522,125 @@ void S2EngineThread::run()
 					mousePressCurrent.x = settings.leftPressMovement.x2();
 					mousePressCurrent.y = settings.leftPressMovement.y2();
 					mousePressDisplacement = mousePressCurrent - mousePressPrevious;
-					// user add and remove marker
 
+					// user add or remove marker
+					for (int i = 0; i < newMarkers.size(); i++)
+					{
+						if (mousePressLeft.inside(newMarkers[i].rect))
+						{
+							for (int j = 0; j < channels.size(); j++)
+							{
+								if (Ueva::isPointInMask(newMarkers[i].centroid, channels[j].mask, 0, 0))
+								{
+									// channel already activated
+									if (channels[j].measuringMarkerIndex != -1 && channels[j].neckDropletIndex == -1)
+									{
+										if (channels[j].measuringMarkerIndex == i)
+										{
+											// same marker
+										}
+										else
+										{
+											// swap marker 
+											channels[j].measuringMarkerIndex = i;
+											needSelecting = true;
+										}
+									}
+									// channel not activated
+									if (channels[j].measuringMarkerIndex == -1 && channels[j].neckDropletIndex == -1)
+									{
+										desiredChannelIndices = activatedChannelIndices;
+										desiredChannelIndices.push_back(j);
+										if (Ueva::isCombinationPossible(desiredChannelIndices, ctrls))
+										{
+											// activate channel
+											activatedChannelIndices = desiredChannelIndices;
+											channels[j].measuringMarkerIndex = i;
+											needSelecting = true;
+										}
+									}
+									break;
+								}
+							}
+						}
+						if (mousePressRight.inside(newMarkers[i].rect))
+						{
+							for (int j = 0; j < channels.size(); j++)
+							{
+								if (channels[j].measuringMarkerIndex == i)
+								{
+									// deactivate channel
+									channels[j].measuringMarkerIndex = -1;
+									Ueva::deleteFromCombination(activatedChannelIndices, j);
+									alwaysTrue = Ueva::isCombinationPossible(activatedChannelIndices, ctrls);
+									needReleasing = true;
+									break;
+								}
+							}
+						}
+					}
+										
 					// auto catch and use neck
-					
-
-					// debug
 					for (int i = 0; i < channels.size(); i++)
 					{
-						qDebug() << "ch" << i << " " 
+						// marker takes priority if both marker and neck are available
+						if (settings.autoCatchRequests[i] &&
+							channels[i].measuringMarkerIndex == -1 &&
+							channels[i].neckDropletIndex == -1)
+						{
+							for (int j = 0; j < newMarkers.size(); j++)
+							{
+								if (Ueva::isPointInMask(newMarkers[j].centroid, channels[i].mask,
+									settings.ctrlAutoHorzExcl, settings.ctrlAutoVertExcl))
+								{
+									desiredChannelIndices = activatedChannelIndices;
+									desiredChannelIndices.push_back(i);
+									if (Ueva::isCombinationPossible(desiredChannelIndices, ctrls))
+									{
+										// activate channel with marker
+										activatedChannelIndices = desiredChannelIndices;
+										channels[i].measuringMarkerIndex = j;
+										needSelecting = true;
+									}
+									break;
+								}
+							}
+						}
+						if (settings.useNeckRequests[i] &&
+							channels[i].measuringMarkerIndex == -1 &&
+							channels[i].neckDropletIndex == -1)
+						{
+							if (droplets[channels[i].biggestDropletIndex].kinkIndex != -1 &&
+								droplets[channels[i].biggestDropletIndex].neckIndex != -1)
+							{
+								desiredChannelIndices = activatedChannelIndices;
+								desiredChannelIndices.push_back(i);
+								if (Ueva::isCombinationPossible(desiredChannelIndices, ctrls))
+								{
+									// activate channel with neck
+									activatedChannelIndices = desiredChannelIndices;
+									channels[i].neckDropletIndex = channels[i].biggestDropletIndex;
+									needSelecting = true;
+								}
+							}
+
+						}
+					}
+
+					// debug
+					std::cerr << std::endl;
+					for (int i = 0; i < channels.size(); i++)
+					{
+						std::cerr << "ch" << i << " "
 							<< channels[i].biggestDropletIndex << " "
 							<< channels[i].measuringMarkerIndex << " "
-							<< channels[i].neckDropletIndex << "\n";
+							<< channels[i].neckDropletIndex << std::endl;
 					}
+					for (int i = 0; i < activatedChannelIndices.size(); i++)
+					{
+						std::cerr << activatedChannelIndices[i] << " ";
+					}
+					std::cerr << std::endl;
 				}
 				//// CTRL
 				if (settings.flag & UevaSettings::CTRL_ON)
@@ -623,6 +733,12 @@ void S2EngineThread::run()
 						lineType = 8;
 						cv::putText(data.drawnBgr, str, anchor,
 							cv::FONT_HERSHEY_SIMPLEX, fontScale, lineColor, lineThickness, lineType);
+						if (channels[i].measuringMarkerIndex != -1)
+						{
+							lineColor = cv::Scalar(255, 0, 0); // blue
+							cv::rectangle(data.drawnBgr, newMarkers[channels[i].measuringMarkerIndex].rect,
+								lineColor, lineThickness, lineType);
+						}
 					}
 
 					cv::cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
