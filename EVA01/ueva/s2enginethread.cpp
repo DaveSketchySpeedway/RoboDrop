@@ -420,10 +420,91 @@ void S2EngineThread::run()
 					{
 						UevaDroplet::fileStream << std::endl;
 					}
-					// give neck to channel
-
-
+					// droplet to channel
+					for (int i = 0; i < channels.size(); i++)
+					{
+						channels[i].biggestDropletIndex = -1;
+						int maxOverlap = 0;
+						for (int j = 0; j < droplets.size(); j++)
+						{
+							int overlap = Ueva::masksOverlap(droplets[j].mask, channels[i].mask);
+							if (overlap > maxOverlap)
+							{
+								maxOverlap = overlap;
+								channels[i].biggestDropletIndex = j;
+							}
+						}
+					}
 					// check measuring marker identity and weather to keep using neck
+					for (int i = 0; i < channels.size(); i++)
+					{
+						// last cycle has marker
+						if (channels[i].measuringMarkerIndex != -1 && channels[i].neckDropletIndex == -1)
+						{
+							int stillExistMarkerIndex = -1;
+							for (int j = 0; j < newMarkers.size(); j++)
+							{
+								if (newMarkers[j].identity == oldMarkers[channels[i].measuringMarkerIndex].identity)
+								{
+									stillExistMarkerIndex = j;
+									break;
+								}
+							}
+							if (stillExistMarkerIndex != -1)
+							{
+								if (Ueva::isPointInMask(newMarkers[stillExistMarkerIndex].centroid, channels[i].mask, 0, 0))
+								{
+									// droplet in channel 
+									channels[i].measuringMarkerIndex = stillExistMarkerIndex;
+								}
+								else
+								{
+									// droplet escaped channel
+									channels[i].measuringMarkerIndex = -1;
+									Ueva::deleteFromCombination(activatedChannelIndices, i);
+									alwaysTrue = Ueva::isCombinationPossible(activatedChannelIndices, ctrls);
+									needReleasing = true;
+								}
+							}
+							else
+							{
+								// droplet disappeared from image
+								channels[i].measuringMarkerIndex = -1;
+								Ueva::deleteFromCombination(activatedChannelIndices, i);
+								alwaysTrue = Ueva::isCombinationPossible(activatedChannelIndices, ctrls);
+								needReleasing = true;
+							}
+						}
+						// last cycle has neck
+						if (channels[i].measuringMarkerIndex == -1 && channels[i].neckDropletIndex != -1)
+						{
+							if (channels[i].biggestDropletIndex != -1 && settings.useNeckRequests[i])
+							{
+								if (droplets[channels[i].biggestDropletIndex].kinkIndex != 1 &&
+									droplets[channels[i].biggestDropletIndex].neckIndex != 1)
+								{
+									// neck still exist 
+									channels[i].neckDropletIndex = channels[i].biggestDropletIndex;
+								}
+								else
+								{
+									// neck no longer exist
+									channels[i].neckDropletIndex = -1;
+									Ueva::deleteFromCombination(activatedChannelIndices, i);
+									alwaysTrue = Ueva::isCombinationPossible(activatedChannelIndices, ctrls);
+									needReleasing = true;
+								}
+							}
+							else
+							{
+								// droplet disappeared from image or neck not used anymore
+								channels[i].neckDropletIndex = -1;
+								Ueva::deleteFromCombination(activatedChannelIndices, i);
+								alwaysTrue = Ueva::isCombinationPossible(activatedChannelIndices, ctrls);
+								needReleasing = true;
+							}
+						}
+					}
 					oldMarkers.clear();
 					oldMarkers = newMarkers;
 
@@ -441,6 +522,15 @@ void S2EngineThread::run()
 
 					// auto catch and use neck
 					
+
+					// debug
+					for (int i = 0; i < channels.size(); i++)
+					{
+						qDebug() << "ch" << i << " " 
+							<< channels[i].biggestDropletIndex << " "
+							<< channels[i].measuringMarkerIndex << " "
+							<< channels[i].neckDropletIndex << "\n";
+					}
 				}
 				//// CTRL
 				if (settings.flag & UevaSettings::CTRL_ON)

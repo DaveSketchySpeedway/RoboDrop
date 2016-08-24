@@ -163,6 +163,7 @@ private:
 	cv::Moments mom;
 	cv::Rect rect;
 	std::string str;
+	bool alwaysTrue;
 
 	private slots:
 };

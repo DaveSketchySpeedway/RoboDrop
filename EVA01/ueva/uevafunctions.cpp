@@ -59,7 +59,7 @@ std::vector<cv::Point_<int>> Ueva::mask2Contour(const cv::Mat &mask)
 	return contours[0];
 }
 
-void Ueva::bigPassFilter(std::vector<std::vector< cv::Point_<int> >> &contours, const int &size)
+void Ueva::bigPassFilter(std::vector<std::vector< cv::Point_<int> >> &contours, const int size)
 {
 	std::vector<std::vector< cv::Point_<int> >>::iterator iter;
 	iter = contours.begin();
@@ -77,7 +77,7 @@ void Ueva::bigPassFilter(std::vector<std::vector< cv::Point_<int> >> &contours, 
 	}
 }
 
-void Ueva::trackMarkerIdentities(std::vector<UevaMarker> &newMarkers, std::vector<UevaMarker> &oldMarkers, int &trackTooFar)
+void Ueva::trackMarkerIdentities(std::vector<UevaMarker> &newMarkers, std::vector<UevaMarker> &oldMarkers, int trackTooFar)
 {
 	// distance matrix (each row corresponds to a newMarker)
 	std::vector<std::vector<float>> l2NormMatrix;
@@ -164,7 +164,7 @@ void Ueva::trackMarkerIdentities(std::vector<UevaMarker> &newMarkers, std::vecto
 	}
 }
 
-int Ueva::detectKink(std::vector< cv::Point_<int>> &contour, const int &convexSize)
+int Ueva::detectKink(std::vector< cv::Point_<int>> &contour, const int convexSize)
 {
 	std::vector<int> hull;
 	cv::convexHull(contour, hull);
@@ -275,18 +275,6 @@ int Ueva::detectNeck(std::vector< cv::Point_<int>> &contour, int &kinkIndex, flo
 	return neckIndex;
 }
 
-
-
-
-
-bool Ueva::isPointInMask(cv::Point_<int> &point, cv::Mat &mask)
-{
-	uchar *p = mask.ptr<uchar>(point.y);
-	if (p[point.x])
-		return true;
-	return false;
-}
-
 int Ueva::masksOverlap(cv::Mat &mask1, cv::Mat &mask2)
 {
 	cv::Mat mask3 = cv::Mat(mask1.size(), CV_8UC1, cv::Scalar_<int>(0));
@@ -294,7 +282,21 @@ int Ueva::masksOverlap(cv::Mat &mask1, cv::Mat &mask2)
 	return cv::countNonZero(mask3);
 }
 
-
+bool Ueva::isPointInMask(cv::Point_<int> &point, cv::Mat &mask, int xMargin, int yMargin)
+{
+	if (point.x > xMargin &&
+		point.x < (mask.cols - xMargin) &&
+		point.y > yMargin &&
+		point.y < (mask.rows - yMargin))
+	{
+		uchar *p = mask.ptr<uchar>(point.y);
+		if (p[point.x])
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 bool Ueva::isCombinationPossible(std::vector<int> &combination, std::vector<UevaCtrl> &ctrls)
 {
@@ -302,12 +304,11 @@ bool Ueva::isCombinationPossible(std::vector<int> &combination, std::vector<Ueva
 	for (int i = 0; i < ctrls.size(); i++)
 	{
 		std::vector<int> ctrlOutputIdx;
-		for (int j = 0; j < ctrls[i].outputIndices.rows; j++)
+		for (int j = 0; j < ctrls[i].outputIndices.cols; j++)
 		{
 			ctrlOutputIdx.push_back(ctrls[i].outputIndices.at<uchar>(j));
 		}
-		if (combination == ctrlOutputIdx &&
-			ctrls[i].uncoUnob == 0)
+		if (combination == ctrlOutputIdx &&	ctrls[i].uncoUnob == 0)
 		{
 			UevaCtrl::index = i;
 			return true;
@@ -316,7 +317,7 @@ bool Ueva::isCombinationPossible(std::vector<int> &combination, std::vector<Ueva
 	return false;
 }
 
-void Ueva::deleteFromCombination(std::vector<int> &combination, const int &value)
+void Ueva::deleteFromCombination(std::vector<int> &combination, const int value)
 {
 	std::vector<int>::iterator iter;
 	iter = combination.begin();
@@ -332,6 +333,8 @@ void Ueva::deleteFromCombination(std::vector<int> &combination, const int &value
 		}
 	}
 }
+
+
 
 double Ueva::screen2ctrl(const cv::Point_<int> &point, const int &direction, const double &multiplier)
 {
