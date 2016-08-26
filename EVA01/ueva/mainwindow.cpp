@@ -247,18 +247,21 @@ void MainWindow::ctrlSettings()
 	int autoVertExcl = dashboard->autoVertExclSlider->value();
 	double modelCov = pow(10.0, dashboard->modelCovSlider->value() / 10.0);
 	double disturbanceCov = pow(10.0, dashboard->disturbanceCovSlider->value() / 10.0);
+	double disturbanceCorr = dashboard->disturbanceCorrSlider->value() / 100.0;
 
 	settings.ctrlMarkerSize = markerSize;
 	settings.ctrlAutoHorzExcl = autoHorzExcl;
 	settings.ctrlAutoVertExcl = autoVertExcl;
 	settings.ctrlModelCov = modelCov;
 	settings.ctrlDisturbanceCov = disturbanceCov;
+	settings.ctrlDisturbanceCorr = disturbanceCorr;
 
 	dashboard->markerSizeLabel->setText(QString::number(markerSize));
 	dashboard->autoHorzExclLabel->setText(QString::number(autoHorzExcl));
 	dashboard->autoVertExclLabel->setText(QString::number(autoVertExcl));
 	dashboard->modelCovLabel->setText(QString::number(modelCov));
 	dashboard->disturbanceCovLabel->setText(QString::number(disturbanceCov));
+	dashboard->disturbanceCorrLabel->setText(QString::number(disturbanceCorr));
 }
 
 void MainWindow::receiveAutoCatchRequests(const QVector<bool> &values)

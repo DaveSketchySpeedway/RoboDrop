@@ -72,11 +72,13 @@ struct UevaSettings
 	int imgprogTrackTooFar;
 	int imgprocConvexSize;
 	int imgprocPersistence;
-	int ctrlModelCov;
-	int ctrlDisturbanceCov;
+
 	int ctrlMarkerSize;
 	int ctrlAutoHorzExcl;
 	int ctrlAutoVertExcl;
+	double ctrlModelCov;
+	double ctrlDisturbanceCov;
+	double ctrlDisturbanceCorr;
 
 };
 

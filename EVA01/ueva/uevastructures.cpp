@@ -46,22 +46,28 @@ UevaData::UevaData()
 	map["inletTime"] = inletTime;
 
 	//// CTRL
-	QVector<qreal> raws;
-	QVector<qreal> measures;
-	QVector<qreal> estimates;
+	QVector<qreal> grounds;
+	QVector<qreal> corrections;
 	QVector<qreal> references;
+	QVector<qreal> outputs;
+	QVector<qreal> outputRaws;
+	QVector<qreal> outputOffsets;
+	QVector<qreal> outputPredictions;
 	QVector<qreal> states;
-	QVector<qreal> integralStates;
+	QVector<qreal> disturbances;
+	QVector<qreal> stateIntegrals;
 	QVector<qreal> commands;
-	QVector<qreal> measureOffsets;
-	QVector<qreal> referenceOffsets;
-	map["ctrlRaw"] = raws;
-	map["ctrlMeasure"] = measures;
-	map["ctrlEstimate"] = estimates;
+	map["ctrlGround"] = grounds;
+	map["ctrlCorrection"] = corrections;
 	map["ctrlReference"] = references;
+	map["ctrlOutput"] = outputs;
+	map["ctrlOutputRaw"] = outputRaws;
+	map["ctrlOutputOffset"] = outputOffsets;
+	map["ctrlOutputPrediction"] = outputPredictions;
 	map["ctrlState"] = states;
-	map["ctrlIntegraState"] = integralStates;
-	map["ctrlCommand"] = commands;
+	map["ctrlDisturbance"] = disturbances;
+	map["ctrlStateIntegral"] = stateIntegrals;
+	map["ctrlcommand"] = commands;
 }
 
 std::ofstream UevaData::fileStream;

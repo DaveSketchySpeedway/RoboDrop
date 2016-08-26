@@ -51,7 +51,7 @@ public:
 	void setData(const UevaData &d);
 	void wake();
 
-	//// SINGLE TIME 
+	//// SINGLE TIME FUNCTION
 	void setCalib(double micronLength);
 	void setBkgd();
 	void separateChannels(int &numChan);
@@ -67,7 +67,7 @@ signals:
 	void engineSignal(const UevaData &d);
 
 protected:
-	//// CONTINUOUS 
+	//// CONTINUOUS FUNCTION
 	void run();
 
 private:
@@ -77,7 +77,7 @@ private:
 	UevaSettings settings;
 	UevaData data;
 
-	//// MULTI CYCLE LIFESPAN
+	//// MULTI CYCLE VARIABLES
 	double micronPerPixel;
 	cv::Mat bkgd;
 	std::vector<UevaCtrl> ctrls;
@@ -89,7 +89,7 @@ private:
 	bool needSelecting;
 	bool needReleasing;
 
-	//// DOUBLE CYCLE LIFESPAN
+	//// DOUBLE CYCLE VARIABLES
 	std::vector<UevaMarker> oldMarkers;
 	std::vector<UevaMarker> newMarkers;
 	std::vector<int> activatedChannelIndices;
@@ -97,21 +97,21 @@ private:
 	QVector<qreal> grounds;
 	QVector<qreal> corrections;
 	cv::Mat posteriorErrorCov;
+	cv::Mat modelNoiseCov;
+	cv::Mat disturbanceNoiseCov;
 	cv::Mat processNoiseCov;
 	cv::Mat sensorNoiseCov;
 	QVector<qreal> references;
-	QVector<qreal> output;
-	QVector<qreal> outputRaw;
+	QVector<qreal> outputs;
+	QVector<qreal> outputRaws;
 	QVector<qreal> outputOffsets;
 	QVector<qreal> outputPredictions;
-	QVector<qreal> statePredictions;
-	QVector<qreal> stateEstimates;
 	QVector<qreal> states;
 	QVector<qreal> disturbances;
 	QVector<qreal> stateIntegrals;
 	QVector<qreal> commands;
 
-	//// SINGLE CYCLE LIFESPAN
+	//// SINGLE CYCLE VARIABLES
 	cv::Mat allDroplets; 
 	std::vector<std::vector< cv::Point_<int> >> dropletContours;
 	cv::Mat allMarkers;
@@ -137,15 +137,14 @@ private:
 	cv::Mat dr;
 	cv::Mat y;
 	cv::Mat y_raw;
+	cv::Mat y_off;
 	cv::Mat yp;
 	cv::Mat xp;
 	cv::Mat xe;
-	cv::Mat x;
-	cv::Mat d;
 	cv::Mat z;
 	cv::Mat u;
 
-	//// FOR CONVENIENCE
+	//// CONVENIENCE VARIABLES
 	enum EngineConstants
 	{
 		LOW_VALUE = 0,

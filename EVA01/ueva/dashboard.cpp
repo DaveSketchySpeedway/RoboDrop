@@ -66,6 +66,8 @@ Dashboard::Dashboard(QWidget *parent)
 		parent, SLOT(ctrlSettings()));
 	connect(disturbanceCovSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(ctrlSettings()));
+	connect(disturbanceCorrSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(ctrlSettings()));
 	connect(markerSizeSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(ctrlSettings()));
 	connect(autoHorzExclSlider, SIGNAL(valueChanged(int)),

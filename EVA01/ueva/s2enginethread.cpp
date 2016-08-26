@@ -245,13 +245,23 @@ void S2EngineThread::initCtrl()
 	
 	needSelecting = true;
 	needReleasing = true;
-	grounds = QVector<qreal>(UevaCtrl::numPlantInput, 0);
-	corrections = QVector<qreal>(UevaCtrl::numPlantInput, 0);
+
+	grounds = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
+	corrections = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
+	references = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	outputs = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	outputRaws = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	outputOffsets = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	outputPredictions = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	states = QVector<qreal>(UevaCtrl::numPlantState, 0.0);
+	disturbances = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
+	stateIntegrals = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	commands = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
+
 	for (int i = 0; i < UevaCtrl::numPlantInput; i++)
 	{
 		grounds[i] = settings.inletRequests[i];
 	}
-
 	mutex.unlock();
 }
 
@@ -269,8 +279,6 @@ void S2EngineThread::finalizeCtrl(QVector<qreal> &inletRegurgitates)
 	{
 		inletRegurgitates.push_back(grounds[i] + corrections[i]);
 	}
-
-	
 	mutex.unlock();
 }
 
@@ -285,6 +293,9 @@ void S2EngineThread::run()
 		{
 			mutex.lock();
 			//QTime entrance = QTime::currentTime();
+
+			//// OPEN LOOP
+			data.map["inletWrite"] = settings.inletRequests;
 
 			//// MASK MAKING
 			if (settings.flag & UevaSettings::MASK_MAKING)
@@ -629,19 +640,21 @@ void S2EngineThread::run()
 					}
 
 					// debug
-					std::cerr << std::endl;
-					for (int i = 0; i < channels.size(); i++)
-					{
-						std::cerr << "ch" << i << " "
-							<< channels[i].biggestDropletIndex << " "
-							<< channels[i].measuringMarkerIndex << " "
-							<< channels[i].neckDropletIndex << std::endl;
-					}
-					for (int i = 0; i < activatedChannelIndices.size(); i++)
-					{
-						std::cerr << activatedChannelIndices[i] << " ";
-					}
-					std::cerr << std::endl;
+					//std::cerr << std::endl;
+					//std::cerr << "dx: " << mousePressDisplacement.x << std::endl;
+					//std::cerr << "dy: " << mousePressDisplacement.y << std::endl;
+					//for (int i = 0; i < channels.size(); i++)
+					//{
+					//	std::cerr << "ch" << i << " "
+					//		<< channels[i].biggestDropletIndex << " "
+					//		<< channels[i].measuringMarkerIndex << " "
+					//		<< channels[i].neckDropletIndex << std::endl;
+					//}
+					//for (int i = 0; i < activatedChannelIndices.size(); i++)
+					//{
+					//	std::cerr << activatedChannelIndices[i] << " ";
+					//}
+					//std::cerr << std::endl;
 				}
 				//// CTRL
 				if (settings.flag & UevaSettings::CTRL_ON)
@@ -649,8 +662,213 @@ void S2EngineThread::run()
 					CV_Assert(!channels.empty());
 					CV_Assert(!ctrls.empty());
 					CV_Assert(!settings.inletRequests.empty());
+					if (!activatedChannelIndices.empty())
+					{
+						UevaCtrl ctrl = ctrls[UevaCtrl::index];
 
-					qDebug() << 'c';
+						// reset
+						if (needReleasing || needSelecting)
+						{
+							posteriorErrorCov = 1000.0 * cv::Mat::eye(
+								ctrl.n + ctrl.m, ctrl.n + ctrl.m, CV_64FC1);
+
+							modelNoiseCov = settings.ctrlModelCov * cv::Mat::eye(
+								ctrl.n, ctrl.n,	CV_64FC1);
+
+							disturbanceNoiseCov = settings.ctrlDisturbanceCorr * cv::Mat::eye(
+								ctrl.m,	ctrl.m, CV_64FC1);
+
+							cv::Mat zerosNbyM = cv::Mat(ctrl.n,	ctrl.m,	CV_64FC1, cv::Scalar(0.0));
+
+							cv::Mat zerosMbyN = cv::Mat(ctrl.m,	ctrl.n,	CV_64FC1, cv::Scalar(0.0));
+
+							cv::Mat onesNbyNplusM;
+							cv::Mat onesMbyNplusM;
+							cv::hconcat(modelNoiseCov, zerosNbyM, onesNbyNplusM);
+							cv::hconcat(zerosMbyN, disturbanceNoiseCov, onesMbyNplusM);
+							cv::vconcat(onesNbyNplusM, onesMbyNplusM, processNoiseCov);
+							
+							sensorNoiseCov = pow(micronPerPixel, 2) / 12.0 * cv::Mat::eye(
+								ctrl.p, ctrl.p,	CV_64FC1);
+							qDebug() << "done selecting";
+						}
+						if (needReleasing)
+						{
+							references = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+							outputs = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+							outputRaws = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+							outputOffsets = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+							outputPredictions = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+							states = QVector<qreal>(UevaCtrl::numPlantState, 0.0);
+							disturbances = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
+							stateIntegrals = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+							commands = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
+							qDebug() << "done releasing";
+						}
+
+						// from previous
+						k = cv::Mat(ctrl.n + ctrl.m, ctrl.p, CV_64FC1, cv::Scalar(0.0));
+						pp = cv::Mat(ctrl.n + ctrl.m, ctrl.n + ctrl.m, CV_64FC1, cv::Scalar(0.0));
+						pe = posteriorErrorCov.clone();
+						rw = processNoiseCov.clone();
+						rv = sensorNoiseCov.clone();
+
+						r = cv::Mat(ctrl.p, 1, CV_64FC1, cv::Scalar(0.0));
+						dr = cv::Mat(ctrl.p, 1, CV_64FC1, cv::Scalar(0.0));
+						y = cv::Mat(ctrl.p, 1, CV_64FC1, cv::Scalar(0.0));
+						y_raw = cv::Mat(ctrl.p, 1, CV_64FC1, cv::Scalar(0.0));
+						y_off = cv::Mat(ctrl.p, 1, CV_64FC1, cv::Scalar(0.0));
+						yp = cv::Mat(ctrl.p, 1, CV_64FC1, cv::Scalar(0.0));
+						xp = cv::Mat(ctrl.n + ctrl.m, 1, CV_64FC1, cv::Scalar(0.0));
+						xe = cv::Mat(ctrl.n + ctrl.m, 1, CV_64FC1, cv::Scalar(0.0));
+						z = cv::Mat(ctrl.p, 1, CV_64FC1, cv::Scalar(0.0));
+						u = cv::Mat(ctrl.m, 1, CV_64FC1, cv::Scalar(0.0));
+
+						for (int i = 0; i < ctrl.p; i++)
+						{
+							r.at<double>(i) = references[ctrl.outputIndices.at<uchar>(i)];
+							y_raw.at<double>(i) = outputRaws[ctrl.outputIndices.at<uchar>(i)];
+							y_off.at<double>(i) = outputOffsets[ctrl.outputIndices.at<uchar>(i)];
+							z.at<double>(i) = stateIntegrals[ctrl.outputIndices.at<uchar>(i)];
+						}
+						for (int i = 0; i < ctrl.n; i++)
+						{
+							xe.at<double>(i) = states[ctrl.stateIndices.at<uchar>(i)];
+						}
+						for (int i = 0; i < ctrl.m; i++)
+						{
+							xe.at<double>(i + ctrl.n) = disturbances[i];
+							u.at<double>(i) = commands[i];
+						}
+						qDebug() << "done from previous";
+
+						// direct request
+						directedChannelIndex = -1;
+						for (int i = 0; i < activatedChannelIndices.size(); i++)
+						{
+							rect = newMarkers[channels[activatedChannelIndices[i]].measuringMarkerIndex].rect;
+							if (mousePressPrevious.inside(rect) && mousePressCurrent.inside(rect))
+							{
+								directedChannelIndex = i;
+								dr.at<double>(i) = Ueva::screen2ctrl(mousePressDisplacement,
+									channels[activatedChannelIndices[i]].direction, micronPerPixel);
+								break;
+							}
+						}
+						qDebug() << "done direct request";
+
+						// link requests
+						for (int i = 0; i < activatedChannelIndices.size(); i++)
+						{
+							if (directedChannelIndex != i && directedChannelIndex != -1)
+							{
+								if (settings.inverseLinkRequests[activatedChannelIndices[i]])
+								{
+									dr.at<double>(i) = -dr.at<double>(directedChannelIndex);
+								}
+								if (settings.linkRequests[activatedChannelIndices[i]])
+								{
+									dr.at<double>(i) = dr.at<double>(directedChannelIndex);
+								}
+							}
+						}
+						qDebug() << "done link request";
+
+						// reference
+						r += dr;
+						qDebug() << "done reference";
+
+						// measurment
+						for (int i = 0; i < activatedChannelIndices.size(); i++)
+						{
+							if (channels[activatedChannelIndices[i]].measuringMarkerIndex != -1 &&
+								channels[activatedChannelIndices[i]].neckDropletIndex == -1)
+							{
+								// use marker
+								y.at<double>(i) = Ueva::screen2ctrl(
+									newMarkers[channels[activatedChannelIndices[i]].measuringMarkerIndex].centroid,
+									channels[activatedChannelIndices[i]].direction,
+									micronPerPixel);
+							}
+							if (channels[activatedChannelIndices[i]].measuringMarkerIndex == -1 &&
+								channels[activatedChannelIndices[i]].neckDropletIndex != -1)
+							{
+								// use neck
+								y.at<double>(i) = y_raw.at<double>(i) + 0.0; // + neck2ctrl(dr)
+							}
+						}
+						if (needSelecting)
+						{
+							y_off += y - y_raw;
+						}
+						y_raw = y.clone();
+						y -= y_off;	
+						qDebug() << "done measurment";
+
+						// kalman filter
+						pp = ctrl.Ad * pe * ctrl.Ad.t() + ctrl.Wd * rw * ctrl.Wd.t();
+						cv::Mat mat = ctrl.Cd * pp * ctrl.Cd.t() + rv;
+						cv::Mat matInv;
+						cv::invert(mat, matInv);
+						k = pp * ctrl.Cd.t() * matInv;
+						cv::Mat eyeNplusM = cv::Mat::eye(ctrl.n + ctrl.m, ctrl.n + ctrl.m, CV_64FC1);
+						pe = (eyeNplusM - k * ctrl.Cd) * pp;
+						xp = ctrl.Ad * xe + ctrl.Bd * u;
+						yp = ctrl.Cd * xp;
+						xe = xp + k * (y - yp);
+						qDebug() << "done kalman";
+
+						// integral state feed back
+						z += UevaCtrl::samplePeriod * (y - r);
+						u = -ctrl.K1 * cv::Mat::Mat(xe, cv::Range(0, ctrl.n)) - ctrl.K2 * z;
+						qDebug() << "done isfb";
+
+						// carry forward
+						posteriorErrorCov = pe.clone();
+						for (int i = 0; i < ctrl.p; i++)
+						{
+							uchar outputIndex = ctrl.outputIndices.at<uchar>(i);
+							references[outputIndex] = r.at<double>(i);
+							outputs[outputIndex] = y.at<double>(i);
+							outputRaws[outputIndex] = y_raw.at<double>(i);
+							outputOffsets[outputIndex] = y_off.at<double>(i);
+							outputPredictions[outputIndex] = yp.at<double>(i);
+							stateIntegrals[outputIndex] = z.at<double>(i);
+						}
+						for (int i = 0; i < ctrl.n; i++)
+						{
+							uchar stateIndex = ctrl.stateIndices.at<uchar>(i);
+							states[stateIndex] = xe.at<double>(i);
+						}
+						for (int i = 0; i < ctrl.m; i++)
+						{
+							disturbances[i] = xe.at<double>(ctrl.n + i);
+							commands[i] = u.at<double>(i);
+							corrections[i] += settings.ctrlDisturbanceCorr * disturbances[i];
+						}
+						qDebug() << "done carry forward";
+
+						// clean up
+						needSelecting = false;
+						needReleasing = false;
+					}
+					// check out
+					for (int i = 0; i < UevaCtrl::numPlantInput; i++)
+					{
+						data.map["inletWrite"][i] = grounds[i] + corrections[i] + commands[i];
+					}
+					data.map["ctrlGround"] = grounds;
+					data.map["ctrlCorrection"] = corrections;
+					data.map["ctrlReference"] = references;
+					data.map["ctrlOutput"] = outputs;
+					data.map["ctrlOutputRaw"] = outputRaws;
+					data.map["ctrlOutputOffset"] = outputOffsets;
+					data.map["ctrlOutputPrediction"] = outputPredictions;
+					data.map["ctrlState"] = states;
+					data.map["ctrlDisturbance"] = disturbances;
+					data.map["ctrlStateIntegral"] = stateIntegrals;
+					data.map["ctrlcommand"] = commands;
+					qDebug() << "done ctrl";
 				}
 				//// DRAW
 				if (!data.rawGray.empty())
@@ -740,15 +958,8 @@ void S2EngineThread::run()
 								lineColor, lineThickness, lineType);
 						}
 					}
-
 					cv::cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
 				}
-			}
-
-			//// OPEN LOOP
-			if (data.map["inletWrite"].empty())
-			{
-				data.map["inletWrite"] = settings.inletRequests;
 			}
 
 			emit engineSignal(data);
