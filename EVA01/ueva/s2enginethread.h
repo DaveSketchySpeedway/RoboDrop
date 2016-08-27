@@ -94,22 +94,24 @@ private:
 	std::vector<UevaMarker> newMarkers;
 	std::vector<int> activatedChannelIndices;
 
-	QVector<qreal> grounds;
-	QVector<qreal> corrections;
+	QVector<qreal> ground;
+	QVector<qreal> correction;
 	cv::Mat posteriorErrorCov;
 	cv::Mat modelNoiseCov;
 	cv::Mat disturbanceNoiseCov;
 	cv::Mat processNoiseCov;
 	cv::Mat sensorNoiseCov;
-	QVector<qreal> references;
-	QVector<qreal> outputs;
-	QVector<qreal> outputRaws;
-	QVector<qreal> outputOffsets;
-	QVector<qreal> outputPredictions;
-	QVector<qreal> states;
-	QVector<qreal> disturbances;
-	QVector<qreal> stateIntegrals;
-	QVector<qreal> commands;
+	QVector<qreal> reference;
+	QVector<qreal> output;
+	QVector<qreal> outputLuenburger;
+	QVector<qreal> outputRaw;
+	QVector<qreal> outputOffset;
+	QVector<qreal> outputKalman;
+	QVector<qreal> stateKalman;
+	QVector<qreal> disturbance;
+	QVector<qreal> stateLuenburger;
+	QVector<qreal> stateIntegral;
+	QVector<qreal> command;
 
 	//// SINGLE CYCLE VARIABLES
 	cv::Mat allDroplets; 
@@ -136,11 +138,13 @@ private:
 	cv::Mat r;
 	cv::Mat dr;
 	cv::Mat y;
+	cv::Mat yl;
 	cv::Mat y_raw;
 	cv::Mat y_off;
-	cv::Mat yp;
+	cv::Mat yk;
 	cv::Mat xp;
 	cv::Mat xe;
+	cv::Mat xl;
 	cv::Mat z;
 	cv::Mat u;
 

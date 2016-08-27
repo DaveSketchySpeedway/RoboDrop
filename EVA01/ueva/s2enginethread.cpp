@@ -246,21 +246,23 @@ void S2EngineThread::initCtrl()
 	needSelecting = true;
 	needReleasing = true;
 
-	grounds = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
-	corrections = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
-	references = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-	outputs = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-	outputRaws = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-	outputOffsets = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-	outputPredictions = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-	states = QVector<qreal>(UevaCtrl::numPlantState, 0.0);
-	disturbances = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
-	stateIntegrals = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-	commands = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
+	ground = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
+	correction = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
+	reference = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	output = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	outputRaw = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	outputOffset = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	outputLuenburger = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	outputKalman = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	stateKalman = QVector<qreal>(UevaCtrl::numPlantState, 0.0);
+	disturbance = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
+	stateLuenburger = QVector<qreal>(UevaCtrl::numPlantState, 0.0);
+	stateIntegral = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+	command = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
 
 	for (int i = 0; i < UevaCtrl::numPlantInput; i++)
 	{
-		grounds[i] = settings.inletRequests[i];
+		ground[i] = settings.inletRequests[i];
 	}
 	mutex.unlock();
 }
@@ -277,7 +279,7 @@ void S2EngineThread::finalizeCtrl(QVector<qreal> &inletRegurgitates)
 	needReleasing = false;
 	for (int i = 0; i < UevaCtrl::numPlantInput; i++)
 	{
-		inletRegurgitates.push_back(grounds[i] + corrections[i]);
+		inletRegurgitates.push_back(ground[i] + correction[i]);
 	}
 	mutex.unlock();
 }
@@ -689,59 +691,61 @@ void S2EngineThread::run()
 							cv::hconcat(zerosMbyN, disturbanceNoiseCov, onesMbyNplusM);
 							cv::vconcat(onesNbyNplusM, onesMbyNplusM, processNoiseCov);
 							
-							sensorNoiseCov = pow(micronPerPixel, 2) / 12.0 * cv::Mat::eye(
+							sensorNoiseCov = std::pow(micronPerPixel, 2) / 12.0 * cv::Mat::eye(
 								ctrl.p, ctrl.p,	CV_64FC1);
-							qDebug() << "done selecting";
 						}
 						if (needReleasing)
 						{
-							references = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-							outputs = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-							outputRaws = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-							outputOffsets = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-							outputPredictions = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-							states = QVector<qreal>(UevaCtrl::numPlantState, 0.0);
-							disturbances = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
-							stateIntegrals = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
-							commands = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
-							qDebug() << "done releasing";
+							reference = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+							output = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+							outputLuenburger = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+							outputRaw = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+							outputOffset = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+							outputKalman = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+							stateKalman = QVector<qreal>(UevaCtrl::numPlantState, 0.0);
+							disturbance = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
+							stateLuenburger = QVector<qreal>(UevaCtrl::numPlantState, 0.0);
+							stateIntegral = QVector<qreal>(UevaCtrl::numPlantOutput, 0.0);
+							command = QVector<qreal>(UevaCtrl::numPlantInput, 0.0);
 						}
 
 						// from previous
 						k = cv::Mat(ctrl.n + ctrl.m, ctrl.p, CV_64FC1, cv::Scalar(0.0));
 						pp = cv::Mat(ctrl.n + ctrl.m, ctrl.n + ctrl.m, CV_64FC1, cv::Scalar(0.0));
-						pe = posteriorErrorCov.clone();
-						rw = processNoiseCov.clone();
-						rv = sensorNoiseCov.clone();
+						pe = posteriorErrorCov;
+						rw = processNoiseCov;
+						rv = sensorNoiseCov;
 
 						r = cv::Mat(ctrl.p, 1, CV_64FC1, cv::Scalar(0.0));
 						dr = cv::Mat(ctrl.p, 1, CV_64FC1, cv::Scalar(0.0));
 						y = cv::Mat(ctrl.p, 1, CV_64FC1, cv::Scalar(0.0));
 						y_raw = cv::Mat(ctrl.p, 1, CV_64FC1, cv::Scalar(0.0));
 						y_off = cv::Mat(ctrl.p, 1, CV_64FC1, cv::Scalar(0.0));
-						yp = cv::Mat(ctrl.p, 1, CV_64FC1, cv::Scalar(0.0));
+						yk = cv::Mat(ctrl.p, 1, CV_64FC1, cv::Scalar(0.0));
+						yl = cv::Mat(ctrl.p, 1, CV_64FC1, cv::Scalar(0.0));
 						xp = cv::Mat(ctrl.n + ctrl.m, 1, CV_64FC1, cv::Scalar(0.0));
 						xe = cv::Mat(ctrl.n + ctrl.m, 1, CV_64FC1, cv::Scalar(0.0));
+						xl = cv::Mat(ctrl.n, 1, CV_64FC1, cv::Scalar(0.0));
 						z = cv::Mat(ctrl.p, 1, CV_64FC1, cv::Scalar(0.0));
 						u = cv::Mat(ctrl.m, 1, CV_64FC1, cv::Scalar(0.0));
 
 						for (int i = 0; i < ctrl.p; i++)
 						{
-							r.at<double>(i) = references[ctrl.outputIndices.at<uchar>(i)];
-							y_raw.at<double>(i) = outputRaws[ctrl.outputIndices.at<uchar>(i)];
-							y_off.at<double>(i) = outputOffsets[ctrl.outputIndices.at<uchar>(i)];
-							z.at<double>(i) = stateIntegrals[ctrl.outputIndices.at<uchar>(i)];
+							r.at<double>(i) = reference[ctrl.outputIndices.at<uchar>(i)];
+							y_raw.at<double>(i) = outputRaw[ctrl.outputIndices.at<uchar>(i)];
+							y_off.at<double>(i) = outputOffset[ctrl.outputIndices.at<uchar>(i)];
+							z.at<double>(i) = stateIntegral[ctrl.outputIndices.at<uchar>(i)];
 						}
 						for (int i = 0; i < ctrl.n; i++)
 						{
-							xe.at<double>(i) = states[ctrl.stateIndices.at<uchar>(i)];
+							xe.at<double>(i) = stateKalman[ctrl.stateIndices.at<uchar>(i)];
+							xl.at<double>(i) = stateLuenburger[ctrl.stateIndices.at<uchar>(i)];
 						}
 						for (int i = 0; i < ctrl.m; i++)
 						{
-							xe.at<double>(i + ctrl.n) = disturbances[i];
-							u.at<double>(i) = commands[i];
+							u.at<double>(i) = command[i];
+							xe.at<double>(i + ctrl.n) = disturbance[i];
 						}
-						qDebug() << "done from previous";
 
 						// direct request
 						directRequestIndex = -1;
@@ -756,7 +760,6 @@ void S2EngineThread::run()
 								break;
 							}
 						}
-						qDebug() << "done direct request";
 
 						// link requests
 						for (int i = 0; i < activatedChannelIndices.size(); i++)
@@ -776,11 +779,9 @@ void S2EngineThread::run()
 								}
 							}
 						}
-						qDebug() << "done link request";
 
 						// reference
 						r += dr;
-						qDebug() << "done reference";
 
 						// measurment
 						for (int i = 0; i < activatedChannelIndices.size(); i++)
@@ -807,56 +808,51 @@ void S2EngineThread::run()
 						}
 						y_raw = y.clone();
 						y -= y_off;	
-						qDebug() << "done measurment";
+						
+						// kalman filter
+						pp = ctrl.Ad * pe * ctrl.Ad.t() + ctrl.Wd * rw * ctrl.Wd.t();
+						cv::Mat mat = ctrl.Cd * pp * ctrl.Cd.t() + rv;
+						k = pp * ctrl.Cd.t() * mat.inv();
+						cv::Mat eyeNplusM = cv::Mat::eye(ctrl.n + ctrl.m, ctrl.n + ctrl.m, CV_64FC1);
+						pe = (eyeNplusM - k * ctrl.Cd) * pp;
+						xp = ctrl.Ad * xe + ctrl.Bd * u;
+						yk = ctrl.Cd * xp;
+						xe = xp + k * (y - yk);
 
 						// luenburger
-						cv::Mat x = cv::Mat::Mat(xe, cv::Range(0, ctrl.n));
-						yp = ctrl.C * x + ctrl.D * u;
-						x = ctrl.A * x + ctrl.B * u + ctrl.H * (y - yp);
-						qDebug() << "done luenburger";
-						
-						//// kalman filter
-						//pp = ctrl.Ad * pe * ctrl.Ad.t() + ctrl.Wd * rw * ctrl.Wd.t();
-						//cv::Mat mat = ctrl.Cd * pp * ctrl.Cd.t() + rv;
-						//cv::Mat matInv;
-						//cv::invert(mat, matInv);
-						//k = pp * ctrl.Cd.t() * matInv;
-						//cv::Mat eyeNplusM = cv::Mat::eye(ctrl.n + ctrl.m, ctrl.n + ctrl.m, CV_64FC1);
-						//pe = (eyeNplusM - k * ctrl.Cd) * pp;
-						//xp = ctrl.Ad * xe + ctrl.Bd * u;
-						//yp = ctrl.Cd * xp;
-						//xe = xp + k * (y - yp);
-						//qDebug() << "done kalman";		
+						yl = ctrl.C * xl + ctrl.D * u;
+						xl = ctrl.A * xl + ctrl.B * u + ctrl.H * (y - yl);
 
 						// integral state feed back
 						z += UevaCtrl::samplePeriod * (y - r);
-						u = -ctrl.K1 * cv::Mat::Mat(xe, cv::Range(0, ctrl.n)) - ctrl.K2 * z;
-						qDebug() << "done isfb";
+						u = -ctrl.K1 * xl - ctrl.K2 * z;
 
 						// carry forward
-						posteriorErrorCov = pe.clone();
+						
 						for (int i = 0; i < ctrl.p; i++)
 						{
 							uchar outputIndex = ctrl.outputIndices.at<uchar>(i);
-							references[outputIndex] = r.at<double>(i);
-							outputs[outputIndex] = y.at<double>(i);
-							outputRaws[outputIndex] = y_raw.at<double>(i);
-							outputOffsets[outputIndex] = y_off.at<double>(i);
-							outputPredictions[outputIndex] = yp.at<double>(i);
-							stateIntegrals[outputIndex] = z.at<double>(i);
+							reference[outputIndex] = r.at<double>(i);
+							output[outputIndex] = y.at<double>(i);
+							outputLuenburger[outputIndex] = yl.at<double>(i);
+							outputRaw[outputIndex] = y_raw.at<double>(i);
+							outputOffset[outputIndex] = y_off.at<double>(i);
+							outputKalman[outputIndex] = yk.at<double>(i);
+							stateIntegral[outputIndex] = z.at<double>(i);
 						}
 						for (int i = 0; i < ctrl.n; i++)
 						{
 							uchar stateIndex = ctrl.stateIndices.at<uchar>(i);
-							states[stateIndex] = xe.at<double>(i);
+							stateLuenburger[stateIndex] = xl.at<double>(i);
+							stateKalman[stateIndex] = xe.at<double>(i);
 						}
 						for (int i = 0; i < ctrl.m; i++)
 						{
-							disturbances[i] = xe.at<double>(ctrl.n + i);
-							commands[i] = u.at<double>(i);
-							corrections[i] += settings.ctrlDisturbanceCorr * disturbances[i];
+							command[i] = u.at<double>(i);
+							disturbance[i] = xe.at<double>(ctrl.n + i);
+							correction[i] += settings.ctrlDisturbanceCorr * disturbance[i];
 						}
-						qDebug() << "done carry forward";
+						//posteriorErrorCov = pe.clone(); redundant
 
 						// clean up
 						needSelecting = false;
@@ -865,20 +861,21 @@ void S2EngineThread::run()
 					// check out
 					for (int i = 0; i < UevaCtrl::numPlantInput; i++)
 					{
-						data.map["inletWrite"][i] = grounds[i] + corrections[i] + commands[i];
+						data.map["inletWrite"][i] = ground[i] + correction[i] + command[i];
 					}
-					data.map["ctrlGround"] = grounds;
-					data.map["ctrlCorrection"] = corrections;
-					data.map["ctrlReference"] = references;
-					data.map["ctrlOutput"] = outputs;
-					data.map["ctrlOutputRaw"] = outputRaws;
-					data.map["ctrlOutputOffset"] = outputOffsets;
-					data.map["ctrlOutputPrediction"] = outputPredictions;
-					data.map["ctrlState"] = states;
-					data.map["ctrlDisturbance"] = disturbances;
-					data.map["ctrlStateIntegral"] = stateIntegrals;
-					data.map["ctrlcommand"] = commands;
-					qDebug() << "done ctrl";
+					data.map["ctrlGround"] = ground;
+					data.map["ctrlCorrection"] = correction;
+					data.map["ctrlReference"] = reference;
+					data.map["ctrlOutput"] = output;
+					data.map["ctrlOutputLuenburger"] = outputLuenburger;
+					data.map["ctrlOutputKalman"] = outputKalman;
+					data.map["ctrlOutputRaw"] = outputRaw;
+					data.map["ctrlOutputOffset"] = outputOffset;
+					data.map["ctrlStateKalman"] = stateKalman;
+					data.map["ctrlDisturbance"] = disturbance;
+					data.map["ctrlStateLuenburger"] = stateLuenburger;
+					data.map["ctrlStateIntegral"] = stateIntegral;
+					data.map["ctrlcommand"] = command;
 				}
 				//// DRAW
 				if (!data.rawGray.empty())

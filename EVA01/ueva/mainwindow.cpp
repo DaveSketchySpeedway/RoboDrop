@@ -245,9 +245,9 @@ void MainWindow::ctrlSettings()
 	int markerSize = dashboard->markerSizeSlider->value();
 	int autoHorzExcl = dashboard->autoHorzExclSlider->value();
 	int autoVertExcl = dashboard->autoVertExclSlider->value();
-	double modelCov = pow(10.0, dashboard->modelCovSlider->value() / 10.0);
-	double disturbanceCov = pow(10.0, dashboard->disturbanceCovSlider->value() / 10.0);
-	double disturbanceCorr = dashboard->disturbanceCorrSlider->value() / 100.0;
+	double modelCov = std::pow(10.0, dashboard->modelCovSlider->value() / 10.0);
+	double disturbanceCov = std::pow(10.0, dashboard->disturbanceCovSlider->value() / 10.0);
+	double disturbanceCorr = dashboard->disturbanceCorrSlider->value() / 1000.0;
 
 	settings.ctrlMarkerSize = markerSize;
 	settings.ctrlAutoHorzExcl = autoHorzExcl;

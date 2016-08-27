@@ -46,28 +46,32 @@ UevaData::UevaData()
 	map["inletTime"] = inletTime;
 
 	//// CTRL
-	QVector<qreal> grounds;
-	QVector<qreal> corrections;
-	QVector<qreal> references;
-	QVector<qreal> outputs;
-	QVector<qreal> outputRaws;
-	QVector<qreal> outputOffsets;
-	QVector<qreal> outputPredictions;
-	QVector<qreal> states;
-	QVector<qreal> disturbances;
-	QVector<qreal> stateIntegrals;
-	QVector<qreal> commands;
-	map["ctrlGround"] = grounds;
-	map["ctrlCorrection"] = corrections;
-	map["ctrlReference"] = references;
-	map["ctrlOutput"] = outputs;
-	map["ctrlOutputRaw"] = outputRaws;
-	map["ctrlOutputOffset"] = outputOffsets;
-	map["ctrlOutputPrediction"] = outputPredictions;
-	map["ctrlState"] = states;
-	map["ctrlDisturbance"] = disturbances;
-	map["ctrlStateIntegral"] = stateIntegrals;
-	map["ctrlcommand"] = commands;
+	QVector<qreal> ground;
+	QVector<qreal> correction;
+	QVector<qreal> reference;
+	QVector<qreal> output;
+	QVector<qreal> outputLuenburger;
+	QVector<qreal> outputRaw;
+	QVector<qreal> outputOffset;
+	QVector<qreal> outputKalman;
+	QVector<qreal> stateKalman;
+	QVector<qreal> disturbance;
+	QVector<qreal> stateLuenburger;
+	QVector<qreal> stateIntegral;
+	QVector<qreal> command;
+	map["ctrlGround"] = ground;
+	map["ctrlCorrection"] = correction;
+	map["ctrlReference"] = reference;
+	map["ctrlOutput"] = output;
+	map["ctrlOutputLuenburger"] = outputLuenburger;
+	map["ctrlOutputRaw"] = outputRaw;
+	map["ctrlOutputOffset"] = outputOffset;
+	map["ctrlOutputKalman"] = outputKalman;
+	map["ctrlStateKalman"] = stateKalman;
+	map["ctrlDisturbance"] = disturbance;
+	map["ctrlStateLuenburger"] = stateLuenburger;
+	map["ctrlStateIntegral"] = stateIntegral;
+	map["ctrlcommand"] = command;
 }
 
 std::ofstream UevaData::fileStream;

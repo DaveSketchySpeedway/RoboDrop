@@ -386,7 +386,7 @@ public:
         autoVertExclSlider->setMinimum(0);
         autoVertExclSlider->setMaximum(100);
         autoVertExclSlider->setPageStep(1);
-        autoVertExclSlider->setValue(5);
+        autoVertExclSlider->setValue(95);
         autoVertExclSlider->setOrientation(Qt::Horizontal);
 
         gridLayout_3->addWidget(autoVertExclSlider, 7, 1, 1, 1);
@@ -464,18 +464,18 @@ public:
 
         modelCovSlider = new QSlider(groupBox_4);
         modelCovSlider->setObjectName(QStringLiteral("modelCovSlider"));
-        modelCovSlider->setMinimum(-80);
-        modelCovSlider->setMaximum(20);
+        modelCovSlider->setMinimum(-120);
+        modelCovSlider->setMaximum(80);
         modelCovSlider->setPageStep(1);
-        modelCovSlider->setValue(-20);
+        modelCovSlider->setValue(10);
         modelCovSlider->setOrientation(Qt::Horizontal);
 
         gridLayout_3->addWidget(modelCovSlider, 2, 1, 1, 1);
 
         disturbanceCovSlider = new QSlider(groupBox_4);
         disturbanceCovSlider->setObjectName(QStringLiteral("disturbanceCovSlider"));
-        disturbanceCovSlider->setMinimum(-80);
-        disturbanceCovSlider->setMaximum(20);
+        disturbanceCovSlider->setMinimum(-120);
+        disturbanceCovSlider->setMaximum(80);
         disturbanceCovSlider->setSingleStep(1);
         disturbanceCovSlider->setPageStep(1);
         disturbanceCovSlider->setValue(-50);
@@ -496,7 +496,7 @@ public:
         disturbanceCorrSlider = new QSlider(groupBox_4);
         disturbanceCorrSlider->setObjectName(QStringLiteral("disturbanceCorrSlider"));
         disturbanceCorrSlider->setMinimum(1);
-        disturbanceCorrSlider->setMaximum(50);
+        disturbanceCorrSlider->setMaximum(1000);
         disturbanceCorrSlider->setPageStep(1);
         disturbanceCorrSlider->setValue(20);
         disturbanceCorrSlider->setOrientation(Qt::Horizontal);
