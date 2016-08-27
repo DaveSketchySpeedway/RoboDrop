@@ -190,17 +190,17 @@ void S2EngineThread::loadCtrl(std::string fileName,
 		std::cerr << "p " << ctrl.p << std::endl;
 		std::cerr << "output indices " << ctrl.outputIndices << std::endl;
 		std::cerr << "state indices " << ctrl.stateIndices << std::endl;
-		//std::cerr << "A " << ctrl.A << std::endl;
-		//std::cerr << "B " << ctrl.B << std::endl;
-		//std::cerr << "C " << ctrl.C << std::endl;
-		//std::cerr << "D " << ctrl.D << std::endl;
-		//std::cerr << "K1 " << ctrl.K1 << std::endl;
-		//std::cerr << "K2 " << ctrl.K2 << std::endl;
-		//std::cerr << "H " << ctrl.H << std::endl;
-		//std::cerr << "Ad " << ctrl.Ad << std::endl;
-		//std::cerr << "Bd " << ctrl.Bd << std::endl;
-		//std::cerr << "Cd " << ctrl.Cd << std::endl;
-		//std::cerr << "Wd " << ctrl.Wd << std::endl;
+		std::cerr << "A " << ctrl.A << std::endl;
+		std::cerr << "B " << ctrl.B << std::endl;
+		std::cerr << "C " << ctrl.C << std::endl;
+		std::cerr << "D " << ctrl.D << std::endl;
+		std::cerr << "K1 " << ctrl.K1 << std::endl;
+		std::cerr << "K2 " << ctrl.K2 << std::endl;
+		std::cerr << "H " << ctrl.H << std::endl;
+		std::cerr << "Ad " << ctrl.Ad << std::endl;
+		std::cerr << "Bd " << ctrl.Bd << std::endl;
+		std::cerr << "Cd " << ctrl.Cd << std::endl;
+		std::cerr << "Wd " << ctrl.Wd << std::endl;
 		std::cerr << std::endl;
 	}
 	fs.release();
@@ -662,6 +662,7 @@ void S2EngineThread::run()
 					CV_Assert(!channels.empty());
 					CV_Assert(!ctrls.empty());
 					CV_Assert(!settings.inletRequests.empty());
+
 					if (!activatedChannelIndices.empty())
 					{
 						UevaCtrl ctrl = ctrls[UevaCtrl::index];
@@ -743,13 +744,13 @@ void S2EngineThread::run()
 						qDebug() << "done from previous";
 
 						// direct request
-						directedChannelIndex = -1;
+						directRequestIndex = -1;
 						for (int i = 0; i < activatedChannelIndices.size(); i++)
 						{
 							rect = newMarkers[channels[activatedChannelIndices[i]].measuringMarkerIndex].rect;
 							if (mousePressPrevious.inside(rect) && mousePressCurrent.inside(rect))
 							{
-								directedChannelIndex = i;
+								directRequestIndex = i;
 								dr.at<double>(i) = Ueva::screen2ctrl(mousePressDisplacement,
 									channels[activatedChannelIndices[i]].direction, micronPerPixel);
 								break;
@@ -760,15 +761,18 @@ void S2EngineThread::run()
 						// link requests
 						for (int i = 0; i < activatedChannelIndices.size(); i++)
 						{
-							if (directedChannelIndex != i && directedChannelIndex != -1)
+							if (directRequestIndex != i && directRequestIndex != -1)
 							{
-								if (settings.inverseLinkRequests[activatedChannelIndices[i]])
-								{
-									dr.at<double>(i) = -dr.at<double>(directedChannelIndex);
-								}
 								if (settings.linkRequests[activatedChannelIndices[i]])
 								{
-									dr.at<double>(i) = dr.at<double>(directedChannelIndex);
+									if (settings.inverseLinkRequests[activatedChannelIndices[i]])
+									{
+										dr.at<double>(i) = -dr.at<double>(directRequestIndex);
+									}
+									else
+									{
+										dr.at<double>(i) = dr.at<double>(directRequestIndex);
+									}
 								}
 							}
 						}
@@ -797,7 +801,7 @@ void S2EngineThread::run()
 								y.at<double>(i) = y_raw.at<double>(i) + 0.0; // + neck2ctrl(dr)
 							}
 						}
-						if (needSelecting)
+						if (needSelecting || needReleasing)
 						{
 							y_off += y - y_raw;
 						}
@@ -805,18 +809,24 @@ void S2EngineThread::run()
 						y -= y_off;	
 						qDebug() << "done measurment";
 
-						// kalman filter
-						pp = ctrl.Ad * pe * ctrl.Ad.t() + ctrl.Wd * rw * ctrl.Wd.t();
-						cv::Mat mat = ctrl.Cd * pp * ctrl.Cd.t() + rv;
-						cv::Mat matInv;
-						cv::invert(mat, matInv);
-						k = pp * ctrl.Cd.t() * matInv;
-						cv::Mat eyeNplusM = cv::Mat::eye(ctrl.n + ctrl.m, ctrl.n + ctrl.m, CV_64FC1);
-						pe = (eyeNplusM - k * ctrl.Cd) * pp;
-						xp = ctrl.Ad * xe + ctrl.Bd * u;
-						yp = ctrl.Cd * xp;
-						xe = xp + k * (y - yp);
-						qDebug() << "done kalman";
+						// luenburger
+						cv::Mat x = cv::Mat::Mat(xe, cv::Range(0, ctrl.n));
+						yp = ctrl.C * x + ctrl.D * u;
+						x = ctrl.A * x + ctrl.B * u + ctrl.H * (y - yp);
+						qDebug() << "done luenburger";
+						
+						//// kalman filter
+						//pp = ctrl.Ad * pe * ctrl.Ad.t() + ctrl.Wd * rw * ctrl.Wd.t();
+						//cv::Mat mat = ctrl.Cd * pp * ctrl.Cd.t() + rv;
+						//cv::Mat matInv;
+						//cv::invert(mat, matInv);
+						//k = pp * ctrl.Cd.t() * matInv;
+						//cv::Mat eyeNplusM = cv::Mat::eye(ctrl.n + ctrl.m, ctrl.n + ctrl.m, CV_64FC1);
+						//pe = (eyeNplusM - k * ctrl.Cd) * pp;
+						//xp = ctrl.Ad * xe + ctrl.Bd * u;
+						//yp = ctrl.Cd * xp;
+						//xe = xp + k * (y - yp);
+						//qDebug() << "done kalman";		
 
 						// integral state feed back
 						z += UevaCtrl::samplePeriod * (y - r);

@@ -126,7 +126,7 @@ private:
 	cv::Point_<int> mousePressCurrent;
 	cv::Point_<int> mousePressDisplacement;
 
-	int directedChannelIndex;
+	int directRequestIndex;
 
 	cv::Mat k;
 	cv::Mat pp;
