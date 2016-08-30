@@ -350,8 +350,6 @@ void Ueva::deleteFromCombination(std::vector<int> &combination, const int value)
 	}
 }
 
-
-
 double Ueva::screen2ctrl(const cv::Point_<int> &point, const int &direction, const double &multiplier)
 {
 	double value;
@@ -379,4 +377,13 @@ double Ueva::screen2ctrl(const cv::Point_<int> &point, const int &direction, con
 	}
 	}
 	return value;
+}
+
+double Ueva::neck2ctrl(const double &neckPix, const double &umPerPix, double desire, double threshold, double gain)
+{
+
+
+
+
+	return 0.0;
 }

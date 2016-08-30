@@ -54,6 +54,7 @@ struct UevaSettings
 	QVector<bool> inverseLinkRequests;
 	QVector<bool> autoCatchRequests;
 	QVector<bool> useNeckRequests;
+	QVector<bool> neckDirectionRequests;
 
 	QVector<QLine> mouseLines;
 	QPoint rightPressPosition;
@@ -79,7 +80,9 @@ struct UevaSettings
 	double ctrlModelCov;
 	double ctrlDisturbanceCov;
 	double ctrlDisturbanceCorr;
-
+	double ctrlNeckDesire;
+	double ctrlNeckThreshold;
+	double ctrlNeckGain;
 };
 
 struct UevaData

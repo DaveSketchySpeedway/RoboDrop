@@ -80,6 +80,7 @@ public:
 	void ctrlSettings();
 	void receiveAutoCatchRequests(const QVector<bool> &values);
 	void receiveUseNeckRequests(const QVector<bool> &values);
+	void receiveNeckDirectionRequests(const QVector<bool> &values);
 
 	//// COMMUNICATE WITH SETUP
 	void connectCamera();

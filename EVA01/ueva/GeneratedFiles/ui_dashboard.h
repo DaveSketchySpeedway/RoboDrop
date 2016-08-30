@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
@@ -74,30 +75,39 @@ public:
     QLabel *trackTooFarLabel;
     QGroupBox *groupBox_4;
     QVBoxLayout *verticalLayout_4;
+    QHBoxLayout *autoCatchLayout;
+    QLabel *label_16;
+    QHBoxLayout *useNeckLayout;
+    QLabel *label_18;
     QGridLayout *gridLayout_3;
-    QSlider *autoVertExclSlider;
-    QSlider *markerSizeSlider;
-    QLabel *markerSizeLabel;
-    QLabel *label_15;
-    QSlider *autoHorzExclSlider;
-    QLabel *autoHorzExclLabel;
-    QPushButton *ctrlButton;
-    QLabel *label_7;
     QLabel *label_19;
-    QLabel *label_17;
     QLabel *label_20;
     QLabel *modelCovLabel;
     QLabel *disturbanceCovLabel;
     QSlider *modelCovSlider;
     QSlider *disturbanceCovSlider;
-    QLabel *autoVertExclLabel;
     QLabel *label_21;
     QSlider *disturbanceCorrSlider;
     QLabel *disturbanceCorrLabel;
-    QHBoxLayout *autoCatchLayout;
-    QLabel *label_16;
-    QHBoxLayout *useNeckLayout;
-    QLabel *label_18;
+    QPushButton *ctrlButton;
+    QLabel *markerSizeLabel;
+    QSlider *markerSizeSlider;
+    QLabel *label_7;
+    QSlider *autoHorzExclSlider;
+    QLabel *label_15;
+    QLabel *autoHorzExclLabel;
+    QLabel *label_17;
+    QSlider *autoVertExclSlider;
+    QLabel *autoVertExclLabel;
+    QGridLayout *gridLayout_4;
+    QDoubleSpinBox *neckThresholdSBox;
+    QLabel *label_10;
+    QDoubleSpinBox *neckDesireSBox;
+    QLabel *label_8;
+    QDoubleSpinBox *neckGainSBox;
+    QLabel *label_23;
+    QHBoxLayout *neckDirectionLayout;
+    QLabel *label_22;
 
     void setupUi(QWidget *Dashboard)
     {
@@ -372,145 +382,12 @@ public:
 
         groupBox_4 = new QGroupBox(Dashboard);
         groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
-        sizePolicy.setHeightForWidth(groupBox_4->sizePolicy().hasHeightForWidth());
-        groupBox_4->setSizePolicy(sizePolicy);
+        sizePolicy1.setHeightForWidth(groupBox_4->sizePolicy().hasHeightForWidth());
+        groupBox_4->setSizePolicy(sizePolicy1);
         verticalLayout_4 = new QVBoxLayout(groupBox_4);
         verticalLayout_4->setSpacing(6);
         verticalLayout_4->setContentsMargins(11, 11, 11, 11);
         verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
-        gridLayout_3 = new QGridLayout();
-        gridLayout_3->setSpacing(6);
-        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
-        autoVertExclSlider = new QSlider(groupBox_4);
-        autoVertExclSlider->setObjectName(QStringLiteral("autoVertExclSlider"));
-        autoVertExclSlider->setMinimum(0);
-        autoVertExclSlider->setMaximum(100);
-        autoVertExclSlider->setPageStep(1);
-        autoVertExclSlider->setValue(95);
-        autoVertExclSlider->setOrientation(Qt::Horizontal);
-
-        gridLayout_3->addWidget(autoVertExclSlider, 7, 1, 1, 1);
-
-        markerSizeSlider = new QSlider(groupBox_4);
-        markerSizeSlider->setObjectName(QStringLiteral("markerSizeSlider"));
-        markerSizeSlider->setMinimum(0);
-        markerSizeSlider->setMaximum(200);
-        markerSizeSlider->setPageStep(1);
-        markerSizeSlider->setValue(100);
-        markerSizeSlider->setOrientation(Qt::Horizontal);
-
-        gridLayout_3->addWidget(markerSizeSlider, 5, 1, 1, 1);
-
-        markerSizeLabel = new QLabel(groupBox_4);
-        markerSizeLabel->setObjectName(QStringLiteral("markerSizeLabel"));
-
-        gridLayout_3->addWidget(markerSizeLabel, 5, 2, 1, 1);
-
-        label_15 = new QLabel(groupBox_4);
-        label_15->setObjectName(QStringLiteral("label_15"));
-
-        gridLayout_3->addWidget(label_15, 6, 0, 1, 1);
-
-        autoHorzExclSlider = new QSlider(groupBox_4);
-        autoHorzExclSlider->setObjectName(QStringLiteral("autoHorzExclSlider"));
-        autoHorzExclSlider->setMinimum(0);
-        autoHorzExclSlider->setMaximum(100);
-        autoHorzExclSlider->setPageStep(1);
-        autoHorzExclSlider->setValue(5);
-        autoHorzExclSlider->setOrientation(Qt::Horizontal);
-
-        gridLayout_3->addWidget(autoHorzExclSlider, 6, 1, 1, 1);
-
-        autoHorzExclLabel = new QLabel(groupBox_4);
-        autoHorzExclLabel->setObjectName(QStringLiteral("autoHorzExclLabel"));
-
-        gridLayout_3->addWidget(autoHorzExclLabel, 6, 2, 1, 1);
-
-        ctrlButton = new QPushButton(groupBox_4);
-        ctrlButton->setObjectName(QStringLiteral("ctrlButton"));
-        ctrlButton->setCheckable(true);
-
-        gridLayout_3->addWidget(ctrlButton, 0, 0, 1, 3);
-
-        label_7 = new QLabel(groupBox_4);
-        label_7->setObjectName(QStringLiteral("label_7"));
-
-        gridLayout_3->addWidget(label_7, 5, 0, 1, 1);
-
-        label_19 = new QLabel(groupBox_4);
-        label_19->setObjectName(QStringLiteral("label_19"));
-
-        gridLayout_3->addWidget(label_19, 2, 0, 1, 1);
-
-        label_17 = new QLabel(groupBox_4);
-        label_17->setObjectName(QStringLiteral("label_17"));
-
-        gridLayout_3->addWidget(label_17, 7, 0, 1, 1);
-
-        label_20 = new QLabel(groupBox_4);
-        label_20->setObjectName(QStringLiteral("label_20"));
-
-        gridLayout_3->addWidget(label_20, 3, 0, 1, 1);
-
-        modelCovLabel = new QLabel(groupBox_4);
-        modelCovLabel->setObjectName(QStringLiteral("modelCovLabel"));
-
-        gridLayout_3->addWidget(modelCovLabel, 2, 2, 1, 1);
-
-        disturbanceCovLabel = new QLabel(groupBox_4);
-        disturbanceCovLabel->setObjectName(QStringLiteral("disturbanceCovLabel"));
-
-        gridLayout_3->addWidget(disturbanceCovLabel, 3, 2, 1, 1);
-
-        modelCovSlider = new QSlider(groupBox_4);
-        modelCovSlider->setObjectName(QStringLiteral("modelCovSlider"));
-        modelCovSlider->setMinimum(-120);
-        modelCovSlider->setMaximum(80);
-        modelCovSlider->setPageStep(1);
-        modelCovSlider->setValue(10);
-        modelCovSlider->setOrientation(Qt::Horizontal);
-
-        gridLayout_3->addWidget(modelCovSlider, 2, 1, 1, 1);
-
-        disturbanceCovSlider = new QSlider(groupBox_4);
-        disturbanceCovSlider->setObjectName(QStringLiteral("disturbanceCovSlider"));
-        disturbanceCovSlider->setMinimum(-120);
-        disturbanceCovSlider->setMaximum(80);
-        disturbanceCovSlider->setSingleStep(1);
-        disturbanceCovSlider->setPageStep(1);
-        disturbanceCovSlider->setValue(-50);
-        disturbanceCovSlider->setOrientation(Qt::Horizontal);
-
-        gridLayout_3->addWidget(disturbanceCovSlider, 3, 1, 1, 1);
-
-        autoVertExclLabel = new QLabel(groupBox_4);
-        autoVertExclLabel->setObjectName(QStringLiteral("autoVertExclLabel"));
-
-        gridLayout_3->addWidget(autoVertExclLabel, 7, 2, 1, 1);
-
-        label_21 = new QLabel(groupBox_4);
-        label_21->setObjectName(QStringLiteral("label_21"));
-
-        gridLayout_3->addWidget(label_21, 4, 0, 1, 1);
-
-        disturbanceCorrSlider = new QSlider(groupBox_4);
-        disturbanceCorrSlider->setObjectName(QStringLiteral("disturbanceCorrSlider"));
-        disturbanceCorrSlider->setMinimum(1);
-        disturbanceCorrSlider->setMaximum(1000);
-        disturbanceCorrSlider->setPageStep(1);
-        disturbanceCorrSlider->setValue(20);
-        disturbanceCorrSlider->setOrientation(Qt::Horizontal);
-
-        gridLayout_3->addWidget(disturbanceCorrSlider, 4, 1, 1, 1);
-
-        disturbanceCorrLabel = new QLabel(groupBox_4);
-        disturbanceCorrLabel->setObjectName(QStringLiteral("disturbanceCorrLabel"));
-
-        gridLayout_3->addWidget(disturbanceCorrLabel, 4, 2, 1, 1);
-
-
-        verticalLayout_4->addLayout(gridLayout_3);
-
         autoCatchLayout = new QHBoxLayout();
         autoCatchLayout->setSpacing(6);
         autoCatchLayout->setObjectName(QStringLiteral("autoCatchLayout"));
@@ -532,6 +409,189 @@ public:
 
 
         verticalLayout_4->addLayout(useNeckLayout);
+
+        gridLayout_3 = new QGridLayout();
+        gridLayout_3->setSpacing(6);
+        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
+        label_19 = new QLabel(groupBox_4);
+        label_19->setObjectName(QStringLiteral("label_19"));
+
+        gridLayout_3->addWidget(label_19, 6, 0, 1, 1);
+
+        label_20 = new QLabel(groupBox_4);
+        label_20->setObjectName(QStringLiteral("label_20"));
+
+        gridLayout_3->addWidget(label_20, 7, 0, 1, 1);
+
+        modelCovLabel = new QLabel(groupBox_4);
+        modelCovLabel->setObjectName(QStringLiteral("modelCovLabel"));
+
+        gridLayout_3->addWidget(modelCovLabel, 6, 2, 1, 1);
+
+        disturbanceCovLabel = new QLabel(groupBox_4);
+        disturbanceCovLabel->setObjectName(QStringLiteral("disturbanceCovLabel"));
+
+        gridLayout_3->addWidget(disturbanceCovLabel, 7, 2, 1, 1);
+
+        modelCovSlider = new QSlider(groupBox_4);
+        modelCovSlider->setObjectName(QStringLiteral("modelCovSlider"));
+        modelCovSlider->setMinimum(-120);
+        modelCovSlider->setMaximum(80);
+        modelCovSlider->setPageStep(1);
+        modelCovSlider->setValue(10);
+        modelCovSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_3->addWidget(modelCovSlider, 6, 1, 1, 1);
+
+        disturbanceCovSlider = new QSlider(groupBox_4);
+        disturbanceCovSlider->setObjectName(QStringLiteral("disturbanceCovSlider"));
+        disturbanceCovSlider->setMinimum(-120);
+        disturbanceCovSlider->setMaximum(80);
+        disturbanceCovSlider->setSingleStep(1);
+        disturbanceCovSlider->setPageStep(1);
+        disturbanceCovSlider->setValue(-50);
+        disturbanceCovSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_3->addWidget(disturbanceCovSlider, 7, 1, 1, 1);
+
+        label_21 = new QLabel(groupBox_4);
+        label_21->setObjectName(QStringLiteral("label_21"));
+
+        gridLayout_3->addWidget(label_21, 8, 0, 1, 1);
+
+        disturbanceCorrSlider = new QSlider(groupBox_4);
+        disturbanceCorrSlider->setObjectName(QStringLiteral("disturbanceCorrSlider"));
+        disturbanceCorrSlider->setMinimum(1);
+        disturbanceCorrSlider->setMaximum(1000);
+        disturbanceCorrSlider->setPageStep(1);
+        disturbanceCorrSlider->setValue(20);
+        disturbanceCorrSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_3->addWidget(disturbanceCorrSlider, 8, 1, 1, 1);
+
+        disturbanceCorrLabel = new QLabel(groupBox_4);
+        disturbanceCorrLabel->setObjectName(QStringLiteral("disturbanceCorrLabel"));
+
+        gridLayout_3->addWidget(disturbanceCorrLabel, 8, 2, 1, 1);
+
+        ctrlButton = new QPushButton(groupBox_4);
+        ctrlButton->setObjectName(QStringLiteral("ctrlButton"));
+        ctrlButton->setCheckable(true);
+
+        gridLayout_3->addWidget(ctrlButton, 2, 0, 1, 3);
+
+        markerSizeLabel = new QLabel(groupBox_4);
+        markerSizeLabel->setObjectName(QStringLiteral("markerSizeLabel"));
+
+        gridLayout_3->addWidget(markerSizeLabel, 3, 2, 1, 1);
+
+        markerSizeSlider = new QSlider(groupBox_4);
+        markerSizeSlider->setObjectName(QStringLiteral("markerSizeSlider"));
+        markerSizeSlider->setMinimum(0);
+        markerSizeSlider->setMaximum(200);
+        markerSizeSlider->setPageStep(1);
+        markerSizeSlider->setValue(100);
+        markerSizeSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_3->addWidget(markerSizeSlider, 3, 1, 1, 1);
+
+        label_7 = new QLabel(groupBox_4);
+        label_7->setObjectName(QStringLiteral("label_7"));
+
+        gridLayout_3->addWidget(label_7, 3, 0, 1, 1);
+
+        autoHorzExclSlider = new QSlider(groupBox_4);
+        autoHorzExclSlider->setObjectName(QStringLiteral("autoHorzExclSlider"));
+        autoHorzExclSlider->setMinimum(0);
+        autoHorzExclSlider->setMaximum(100);
+        autoHorzExclSlider->setPageStep(1);
+        autoHorzExclSlider->setValue(5);
+        autoHorzExclSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_3->addWidget(autoHorzExclSlider, 4, 1, 1, 1);
+
+        label_15 = new QLabel(groupBox_4);
+        label_15->setObjectName(QStringLiteral("label_15"));
+
+        gridLayout_3->addWidget(label_15, 4, 0, 1, 1);
+
+        autoHorzExclLabel = new QLabel(groupBox_4);
+        autoHorzExclLabel->setObjectName(QStringLiteral("autoHorzExclLabel"));
+
+        gridLayout_3->addWidget(autoHorzExclLabel, 4, 2, 1, 1);
+
+        label_17 = new QLabel(groupBox_4);
+        label_17->setObjectName(QStringLiteral("label_17"));
+
+        gridLayout_3->addWidget(label_17, 5, 0, 1, 1);
+
+        autoVertExclSlider = new QSlider(groupBox_4);
+        autoVertExclSlider->setObjectName(QStringLiteral("autoVertExclSlider"));
+        autoVertExclSlider->setMinimum(0);
+        autoVertExclSlider->setMaximum(100);
+        autoVertExclSlider->setPageStep(1);
+        autoVertExclSlider->setValue(95);
+        autoVertExclSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_3->addWidget(autoVertExclSlider, 5, 1, 1, 1);
+
+        autoVertExclLabel = new QLabel(groupBox_4);
+        autoVertExclLabel->setObjectName(QStringLiteral("autoVertExclLabel"));
+
+        gridLayout_3->addWidget(autoVertExclLabel, 5, 2, 1, 1);
+
+
+        verticalLayout_4->addLayout(gridLayout_3);
+
+        gridLayout_4 = new QGridLayout();
+        gridLayout_4->setSpacing(6);
+        gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
+        neckThresholdSBox = new QDoubleSpinBox(groupBox_4);
+        neckThresholdSBox->setObjectName(QStringLiteral("neckThresholdSBox"));
+        neckThresholdSBox->setValue(5);
+
+        gridLayout_4->addWidget(neckThresholdSBox, 0, 3, 1, 1);
+
+        label_10 = new QLabel(groupBox_4);
+        label_10->setObjectName(QStringLiteral("label_10"));
+
+        gridLayout_4->addWidget(label_10, 0, 2, 1, 1);
+
+        neckDesireSBox = new QDoubleSpinBox(groupBox_4);
+        neckDesireSBox->setObjectName(QStringLiteral("neckDesireSBox"));
+        neckDesireSBox->setValue(50);
+
+        gridLayout_4->addWidget(neckDesireSBox, 0, 1, 1, 1);
+
+        label_8 = new QLabel(groupBox_4);
+        label_8->setObjectName(QStringLiteral("label_8"));
+
+        gridLayout_4->addWidget(label_8, 0, 0, 1, 1);
+
+        neckGainSBox = new QDoubleSpinBox(groupBox_4);
+        neckGainSBox->setObjectName(QStringLiteral("neckGainSBox"));
+        neckGainSBox->setValue(2);
+
+        gridLayout_4->addWidget(neckGainSBox, 0, 5, 1, 1);
+
+        label_23 = new QLabel(groupBox_4);
+        label_23->setObjectName(QStringLiteral("label_23"));
+
+        gridLayout_4->addWidget(label_23, 0, 4, 1, 1);
+
+
+        verticalLayout_4->addLayout(gridLayout_4);
+
+        neckDirectionLayout = new QHBoxLayout();
+        neckDirectionLayout->setSpacing(6);
+        neckDirectionLayout->setObjectName(QStringLiteral("neckDirectionLayout"));
+        label_22 = new QLabel(groupBox_4);
+        label_22->setObjectName(QStringLiteral("label_22"));
+
+        neckDirectionLayout->addWidget(label_22);
+
+
+        verticalLayout_4->addLayout(neckDirectionLayout);
 
 
         verticalLayout_3->addWidget(groupBox_4);
@@ -573,21 +633,25 @@ public:
         label_14->setText(QApplication::translate("Dashboard", "Track Too Far:", 0));
         trackTooFarLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         groupBox_4->setTitle(QApplication::translate("Dashboard", "Controller", 0));
-        markerSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
-        label_15->setText(QApplication::translate("Dashboard", "Auto Catch Horizontal Exclude:", 0));
-        autoHorzExclLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
-        ctrlButton->setText(QApplication::translate("Dashboard", "On", 0));
-        label_7->setText(QApplication::translate("Dashboard", "Marker Rectangle  Size:", 0));
+        label_16->setText(QApplication::translate("Dashboard", "Auto Catch Channels:", 0));
+        label_18->setText(QApplication::translate("Dashboard", "Use Neck Channels:", 0));
         label_19->setText(QApplication::translate("Dashboard", "Model Noise Covariance:", 0));
-        label_17->setText(QApplication::translate("Dashboard", "Auto Catch Verticle Exclude:", 0));
         label_20->setText(QApplication::translate("Dashboard", "Disturbance Noise Covariance:", 0));
         modelCovLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         disturbanceCovLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
-        autoVertExclLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         label_21->setText(QApplication::translate("Dashboard", "Disturbance Correction Speed:", 0));
         disturbanceCorrLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
-        label_16->setText(QApplication::translate("Dashboard", "Auto Catch Channels:", 0));
-        label_18->setText(QApplication::translate("Dashboard", "Use Neck Channels:", 0));
+        ctrlButton->setText(QApplication::translate("Dashboard", "On", 0));
+        markerSizeLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
+        label_7->setText(QApplication::translate("Dashboard", "Marker Rectangle  Size:", 0));
+        label_15->setText(QApplication::translate("Dashboard", "Auto Catch Horizontal Exclude:", 0));
+        autoHorzExclLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
+        label_17->setText(QApplication::translate("Dashboard", "Auto Catch Verticle Exclude:", 0));
+        autoVertExclLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
+        label_10->setText(QApplication::translate("Dashboard", "Neck Threshold (um):", 0));
+        label_8->setText(QApplication::translate("Dashboard", "Neck Desire (um):", 0));
+        label_23->setText(QApplication::translate("Dashboard", "Neck Gain:", 0));
+        label_22->setText(QApplication::translate("Dashboard", "Neck Direction (>>/<<):", 0));
     } // retranslateUi
 
 };

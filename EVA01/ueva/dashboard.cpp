@@ -62,22 +62,31 @@ Dashboard::Dashboard(QWidget *parent)
 	// ctrl
 	connect(ctrlButton, SIGNAL(clicked()),
 		parent, SLOT(ctrlOnOff()));
-	connect(modelCovSlider, SIGNAL(valueChanged(int)),
-		parent, SLOT(ctrlSettings()));
-	connect(disturbanceCovSlider, SIGNAL(valueChanged(int)),
-		parent, SLOT(ctrlSettings()));
-	connect(disturbanceCorrSlider, SIGNAL(valueChanged(int)),
-		parent, SLOT(ctrlSettings()));
 	connect(markerSizeSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(ctrlSettings()));
 	connect(autoHorzExclSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(ctrlSettings()));
 	connect(autoVertExclSlider, SIGNAL(valueChanged(int)),
 		parent, SLOT(ctrlSettings()));
+	connect(modelCovSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(ctrlSettings()));
+	connect(disturbanceCovSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(ctrlSettings()));
+	connect(disturbanceCorrSlider, SIGNAL(valueChanged(int)),
+		parent, SLOT(ctrlSettings()));
+	connect(neckDesireSBox, SIGNAL(valueChanged(double)),
+		parent, SLOT(ctrlSettings()));
+	connect(neckThresholdSBox, SIGNAL(valueChanged(double)),
+		parent, SLOT(ctrlSettings()));
+	connect(neckGainSBox, SIGNAL(valueChanged(double)),
+		parent, SLOT(ctrlSettings()));
+
 	connect(this, SIGNAL(sendAutoCatchRequests(QVector<bool>)),
 		parent, SLOT(receiveAutoCatchRequests(QVector<bool>)));
 	connect(this, SIGNAL(sendUseNeckRequests(QVector<bool>)),
 		parent, SLOT(receiveUseNeckRequests(QVector<bool>)));
+	connect(this, SIGNAL(sendNeckDirectionRequests(QVector<bool>)),
+		parent, SLOT(receiveNeckDirectionRequests(QVector<bool>)));
 }
 
 Dashboard::~Dashboard()
@@ -115,56 +124,82 @@ void Dashboard::resetInletWidgets(QVector<QVector<int>> inletInfo)
 	requestInlets();
 }
 
-void Dashboard::resetAutoCatchBoxes(int numChannel)
+void Dashboard::resetAutoCatchCBoxes(int numChannel)
 {
 	//// DELETE
-	foreach(QCheckBox *autoCatchBox, autoCatchBoxes)
+	foreach(QCheckBox *autoCatchCBox, autoCatchCBoxes)
 	{
-		disconnect(autoCatchBox, SIGNAL(clicked()),
+		disconnect(autoCatchCBox, SIGNAL(clicked()),
 			this, SLOT(requestAutoCatches()));
-		autoCatchLayout->removeWidget(autoCatchBox);
-		delete autoCatchBox;
+		autoCatchLayout->removeWidget(autoCatchCBox);
+		delete autoCatchCBox;
 	}
-	autoCatchBoxes.clear();
+	autoCatchCBoxes.clear();
 
 	//// NEW
 	for (int i = 0; i < numChannel; i++)
 	{
-		QCheckBox *autoCatchBox = new QCheckBox(QString::number(i), this);
-		connect(autoCatchBox, SIGNAL(clicked()),
+		QCheckBox *autoCatchCBox = new QCheckBox(QString::number(i), this);
+		connect(autoCatchCBox, SIGNAL(clicked()),
 			this, SLOT(requestAutoCatches()));
-		autoCatchLayout->addWidget(autoCatchBox);
-		autoCatchBoxes.push_back(autoCatchBox);
+		autoCatchLayout->addWidget(autoCatchCBox);
+		autoCatchCBoxes.push_back(autoCatchCBox);
 	}
 
 	//// INITIALIZE
 	requestAutoCatches();
 }
 
-void Dashboard::resetUseNeckBoxes(int numChannel)
+void Dashboard::resetUseNeckCBoxes(int numChannel)
 {
 	//// DELETE
-	foreach(QCheckBox *useNeckBox, useNeckBoxes)
+	foreach(QCheckBox *useNeckCBox, useNeckCBoxes)
 	{
-		disconnect(useNeckBox, SIGNAL(clicked()),
+		disconnect(useNeckCBox, SIGNAL(clicked()),
 			this, SLOT(requestUseNecks()));
-		useNeckLayout->removeWidget(useNeckBox);
-		delete useNeckBox;
+		useNeckLayout->removeWidget(useNeckCBox);
+		delete useNeckCBox;
 	}
-	useNeckBoxes.clear();
+	useNeckCBoxes.clear();
 
 	//// NEW
 	for (int i = 0; i < numChannel; i++)
 	{
-		QCheckBox *useNeckBox = new QCheckBox(QString::number(i), this);
-		connect(useNeckBox, SIGNAL(clicked()),
+		QCheckBox *useNeckCBox = new QCheckBox(QString::number(i), this);
+		connect(useNeckCBox, SIGNAL(clicked()),
 			this, SLOT(requestUseNecks()));
-		useNeckLayout->addWidget(useNeckBox);
-		useNeckBoxes.push_back(useNeckBox);
+		useNeckLayout->addWidget(useNeckCBox);
+		useNeckCBoxes.push_back(useNeckCBox);
 	}
 
 	//// INITIALIZE
 	requestUseNecks();
+}
+
+void Dashboard::resetNeckDirectionCBoxes(int numChannel)
+{
+	//// DELETE
+	foreach(QCheckBox *neckDirectionCBox, neckDirectionCBoxes)
+	{
+		disconnect(neckDirectionCBox, SIGNAL(clicked()),
+			this, SLOT(requestNeckDirections()));
+		neckDirectionLayout->removeWidget(neckDirectionCBox);
+		delete neckDirectionCBox;
+	}
+	neckDirectionCBoxes.clear();
+
+	//// NEW
+	for (int i = 0; i < numChannel; i++)
+	{
+		QCheckBox *neckDirectionCBox = new QCheckBox(QString::number(i), this);
+		connect(neckDirectionCBox, SIGNAL(clicked()),
+			this, SLOT(requestNeckDirections()));
+		neckDirectionLayout->addWidget(neckDirectionCBox);
+		neckDirectionCBoxes.push_back(neckDirectionCBox);
+	}
+
+	//// INITIALIZE
+	requestNeckDirections();
 }
 
 void Dashboard::regurgitateInlets(QVector<qreal> values)
@@ -209,9 +244,9 @@ void Dashboard::requestInlets()
 void Dashboard::requestAutoCatches()
 {
 	autoCatchValues.clear();
-	foreach(QCheckBox *autoCatchBox, autoCatchBoxes)
+	foreach(QCheckBox *autoCatchCBox, autoCatchCBoxes)
 	{
-		autoCatchValues.push_back(autoCatchBox->isChecked());
+		autoCatchValues.push_back(autoCatchCBox->isChecked());
 	}
 	emit sendAutoCatchRequests(autoCatchValues);
 }
@@ -219,9 +254,19 @@ void Dashboard::requestAutoCatches()
 void Dashboard::requestUseNecks()
 {
 	useNeckValues.clear();
-	foreach(QCheckBox *useNeckBox, useNeckBoxes)
+	foreach(QCheckBox *useNeckCBox, useNeckCBoxes)
 	{
-		useNeckValues.push_back(useNeckBox->isChecked());
+		useNeckValues.push_back(useNeckCBox->isChecked());
 	}
 	emit sendUseNeckRequests(useNeckValues);
+}
+
+void Dashboard::requestNeckDirections()
+{
+	neckDirectionValues.clear();
+	foreach(QCheckBox *neckDirectionCBox, neckDirectionCBoxes)
+	{
+		neckDirectionValues.push_back(neckDirectionCBox->isChecked());
+	}
+	emit sendNeckDirectionRequests(neckDirectionValues);
 }

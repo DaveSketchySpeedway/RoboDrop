@@ -39,8 +39,8 @@ namespace Ueva
 
 	void deleteFromCombination(std::vector<int> &combination, const int value);
 
-
-
 	double screen2ctrl(const cv::Point_<int> &point, const int &direction, const double &multiplier);
+
+	double neck2ctrl(const double &neckPix, const double &umPerPix, double desire, double threshold, double gain);
 }
 #endif

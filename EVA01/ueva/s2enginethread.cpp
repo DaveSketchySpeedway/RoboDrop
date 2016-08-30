@@ -786,27 +786,51 @@ void S2EngineThread::run()
 						// measurment
 						for (int i = 0; i < activatedChannelIndices.size(); i++)
 						{
+							// marker raw output
 							if (channels[activatedChannelIndices[i]].measuringMarkerIndex != -1 &&
 								channels[activatedChannelIndices[i]].neckDropletIndex == -1)
 							{
-								// use marker
 								y.at<double>(i) = Ueva::screen2ctrl(
 									newMarkers[channels[activatedChannelIndices[i]].measuringMarkerIndex].centroid,
 									channels[activatedChannelIndices[i]].direction,
 									micronPerPixel);
 							}
+							// fake raw output
 							if (channels[activatedChannelIndices[i]].measuringMarkerIndex == -1 &&
 								channels[activatedChannelIndices[i]].neckDropletIndex != -1)
 							{
-								// use neck
-								y.at<double>(i) = y_raw.at<double>(i) + 0.0; // + neck2ctrl(dr)
+								if (settings.neckDirectionRequests[activatedChannelIndices[i]])
+								{
+									y.at<double>(i) = y_raw.at<double>(i) -dr.at<double>(directRequestIndex);
+								}
+								else
+								{
+									y.at<double>(i) = y_raw.at<double>(i) +dr.at<double>(directRequestIndex);
+								}
 							}
 						}
+						// update offset
 						if (needSelecting || needReleasing)
-						{
+						{								
 							y_off += y - y_raw;
 						}
+						// save raw output
 						y_raw = y.clone();
+						// modify output with neck
+						for (int i = 0; i < activatedChannelIndices.size(); i++)
+						{
+							if (channels[activatedChannelIndices[i]].measuringMarkerIndex == -1 &&
+								channels[activatedChannelIndices[i]].neckDropletIndex != -1)
+							{
+								y.at<double>(i) += Ueva::neck2ctrl(
+									droplets[channels[activatedChannelIndices[i]].neckDropletIndex].neckDistance,
+									micronPerPixel,
+									settings.ctrlNeckDesire,
+									settings.ctrlNeckThreshold,
+									settings.ctrlNeckGain);
+							}
+						}
+						// output = (raw and modified) - offset
 						y -= y_off;	
 						
 						// kalman filter

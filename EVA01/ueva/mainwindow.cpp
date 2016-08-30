@@ -248,6 +248,9 @@ void MainWindow::ctrlSettings()
 	double modelCov = std::pow(10.0, dashboard->modelCovSlider->value() / 10.0);
 	double disturbanceCov = std::pow(10.0, dashboard->disturbanceCovSlider->value() / 10.0);
 	double disturbanceCorr = dashboard->disturbanceCorrSlider->value() / 1000.0;
+	double neckDesire = dashboard->neckDesireSBox->value();
+	double neckThreshold = dashboard->neckThresholdSBox->value();
+	double neckGain = dashboard->neckDesireSBox->value();
 
 	settings.ctrlMarkerSize = markerSize;
 	settings.ctrlAutoHorzExcl = autoHorzExcl;
@@ -255,7 +258,10 @@ void MainWindow::ctrlSettings()
 	settings.ctrlModelCov = modelCov;
 	settings.ctrlDisturbanceCov = disturbanceCov;
 	settings.ctrlDisturbanceCorr = disturbanceCorr;
-
+	settings.ctrlNeckDesire = neckDesire;
+	settings.ctrlNeckThreshold = neckThreshold;
+	settings.ctrlNeckGain = neckGain;
+	
 	dashboard->markerSizeLabel->setText(QString::number(markerSize));
 	dashboard->autoHorzExclLabel->setText(QString::number(autoHorzExcl));
 	dashboard->autoVertExclLabel->setText(QString::number(autoVertExcl));
@@ -272,6 +278,11 @@ void MainWindow::receiveAutoCatchRequests(const QVector<bool> &values)
 void MainWindow::receiveUseNeckRequests(const QVector<bool> &values)
 {
 	settings.useNeckRequests = values;
+}
+
+void MainWindow::receiveNeckDirectionRequests(const QVector<bool> &values)
+{
+	settings.neckDirectionRequests = values;
 }
 
 //// COMMUNICATE WITH SETUP
@@ -510,8 +521,9 @@ void MainWindow::sepSortOnOff()
 		// sort channel objects
 		engineThread->sortChannels(channelInfo);
 		// reset checkboxes
-		dashboard->resetAutoCatchBoxes(channelInfo["newIndices"].size());
-		dashboard->resetUseNeckBoxes(channelInfo["newIndices"].size());
+		dashboard->resetAutoCatchCBoxes(channelInfo["newIndices"].size());
+		dashboard->resetUseNeckCBoxes(channelInfo["newIndices"].size());
+		dashboard->resetNeckDirectionCBoxes(channelInfo["newIndices"].size());
 	}
 }
 

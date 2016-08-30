@@ -35,8 +35,9 @@ public:
 	~Dashboard();
 
 	void resetInletWidgets(QVector<QVector<int>> inletInfo);
-	void resetAutoCatchBoxes(int numChannel);
-	void resetUseNeckBoxes(int numChannel);
+	void resetAutoCatchCBoxes(int numChannel);
+	void resetUseNeckCBoxes(int numChannel);
+	void resetNeckDirectionCBoxes(int numChannel);
 
 	public slots:
 	void regurgitateInlets(QVector<qreal> values);
@@ -45,6 +46,7 @@ signals:
 	void sendInletRequests(const QVector<qreal> &values);
 	void sendAutoCatchRequests(const QVector<bool> &values);
 	void sendUseNeckRequests(const QVector<bool> &values);
+	void sendNeckDirectionRequests(const QVector<bool> &values);
 
 protected:
 	void keyPressEvent(QKeyEvent *event);
@@ -52,16 +54,19 @@ protected:
 private:
 	QVector<InletWidget*> inletWidgets;
 	QVector<qreal> inletValues;
-	QVector<QCheckBox*> autoCatchBoxes;
+	QVector<QCheckBox*> autoCatchCBoxes;
 	QVector<bool> autoCatchValues;
-	QVector<QCheckBox*> useNeckBoxes;
+	QVector<QCheckBox*> useNeckCBoxes;
 	QVector<bool> useNeckValues;
+	QVector<QCheckBox*> neckDirectionCBoxes;
+	QVector<bool> neckDirectionValues;
 
 	private slots:
 	void zeroInlets();
 	void requestInlets();
 	void requestAutoCatches();
 	void requestUseNecks();
+	void requestNeckDirections();
 };
 
 #endif // DASHBOARD_H
