@@ -532,7 +532,7 @@ public:
         autoVertExclSlider->setMinimum(0);
         autoVertExclSlider->setMaximum(100);
         autoVertExclSlider->setPageStep(1);
-        autoVertExclSlider->setValue(95);
+        autoVertExclSlider->setValue(50);
         autoVertExclSlider->setOrientation(Qt::Horizontal);
 
         gridLayout_3->addWidget(autoVertExclSlider, 5, 1, 1, 1);
@@ -550,7 +550,7 @@ public:
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
         neckThresholdSBox = new QDoubleSpinBox(groupBox_4);
         neckThresholdSBox->setObjectName(QStringLiteral("neckThresholdSBox"));
-        neckThresholdSBox->setValue(2);
+        neckThresholdSBox->setValue(0);
 
         gridLayout_4->addWidget(neckThresholdSBox, 0, 3, 1, 1);
 
@@ -561,7 +561,7 @@ public:
 
         neckDesireSBox = new QDoubleSpinBox(groupBox_4);
         neckDesireSBox->setObjectName(QStringLiteral("neckDesireSBox"));
-        neckDesireSBox->setValue(60);
+        neckDesireSBox->setValue(70);
 
         gridLayout_4->addWidget(neckDesireSBox, 0, 1, 1, 1);
 
@@ -577,7 +577,8 @@ public:
 
         neckLowerGainSBox = new QDoubleSpinBox(groupBox_4);
         neckLowerGainSBox->setObjectName(QStringLiteral("neckLowerGainSBox"));
-        neckLowerGainSBox->setValue(3);
+        neckLowerGainSBox->setSingleStep(0.01);
+        neckLowerGainSBox->setValue(1);
 
         gridLayout_4->addWidget(neckLowerGainSBox, 1, 1, 1, 1);
 
@@ -588,7 +589,8 @@ public:
 
         neckHigherGainSBox = new QDoubleSpinBox(groupBox_4);
         neckHigherGainSBox->setObjectName(QStringLiteral("neckHigherGainSBox"));
-        neckHigherGainSBox->setValue(1);
+        neckHigherGainSBox->setSingleStep(0.01);
+        neckHigherGainSBox->setValue(0.5);
 
         gridLayout_4->addWidget(neckHigherGainSBox, 1, 3, 1, 1);
 
