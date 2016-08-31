@@ -41,6 +41,7 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include <QPainter >
 #include <algorithm>
 #include <fstream>
+#include <cmath>
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -78,6 +79,8 @@ public:
 	void ctrlOnOff();
 	void ctrlSettings();
 	void receiveAutoCatchRequests(const QVector<bool> &values);
+	void receiveUseNeckRequests(const QVector<bool> &values);
+	void receiveNeckDirectionRequests(const QVector<bool> &values);
 
 	//// COMMUNICATE WITH SETUP
 	void connectCamera();

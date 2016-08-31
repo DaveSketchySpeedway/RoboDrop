@@ -59,7 +59,7 @@ std::vector<cv::Point_<int>> Ueva::mask2Contour(const cv::Mat &mask)
 	return contours[0];
 }
 
-void Ueva::bigPassFilter(std::vector<std::vector< cv::Point_<int> >> &contours, const int &size)
+void Ueva::bigPassFilter(std::vector<std::vector< cv::Point_<int> >> &contours, const int size)
 {
 	std::vector<std::vector< cv::Point_<int> >>::iterator iter;
 	iter = contours.begin();
@@ -77,22 +77,94 @@ void Ueva::bigPassFilter(std::vector<std::vector< cv::Point_<int> >> &contours, 
 	}
 }
 
-bool Ueva::isPointInMask(cv::Point_<int> &point, cv::Mat &mask)
+void Ueva::trackMarkerIdentities(std::vector<UevaMarker> &newMarkers, std::vector<UevaMarker> &oldMarkers, int trackTooFar)
 {
-	uchar *p = mask.ptr<uchar>(point.y);
-	if (p[point.x])
-		return true;
-	return false;
+	// distance matrix (each row corresponds to a newMarker)
+	std::vector<std::vector<float>> l2NormMatrix;
+	for (int i = 0; i < newMarkers.size(); i++)
+	{
+		std::vector<float> l2NormVector;
+		for (int j = 0; j < oldMarkers.size(); j++)
+		{
+			float l2Norm = sqrt(
+				pow(float(newMarkers[i].centroid.x - oldMarkers[j].centroid.x), 2) +
+				pow(float(newMarkers[i].centroid.y - oldMarkers[j].centroid.y), 2)
+				);
+			l2NormVector.push_back(l2Norm);
+		}
+		l2NormMatrix.push_back(l2NormVector);
+	}
+	// distance matrix transpose (each row corresponds to an oldMarker)
+	std::vector<std::vector<float>> l2NormMatrixT;
+	for (int j = 0; j < oldMarkers.size(); j++)
+	{
+		std::vector<float> l2NormVectorT;
+		for (int i = 0; i < newMarkers.size(); i++)
+		{
+			float l2NormT = l2NormMatrix[i][j];
+			l2NormVectorT.push_back(l2NormT);
+		}
+		l2NormMatrixT.push_back(l2NormVectorT);
+	}
+	// newMarker assiociates itself with oldMarker
+	std::vector<int> newOldIndices;
+	if (l2NormMatrixT.size() > 0)
+	{
+		for (int i = 0; i < l2NormMatrix.size(); i++)
+		{
+			std::vector<float>::iterator iter = std::min_element(l2NormMatrix[i].begin(), l2NormMatrix[i].end());
+			if (*iter <= trackTooFar)
+			{
+				newOldIndices.push_back(iter - l2NormMatrix[i].begin());
+			}
+			else
+			{
+				newOldIndices.push_back(-1);
+			}
+		}
+	}
+	// oldMarker associates itself with newMarker
+	std::vector<int> oldNewIndices;
+	if (l2NormMatrix.size() > 0)
+	{
+		for (int j = 0; j < l2NormMatrixT.size(); j++)
+		{
+			std::vector<float>::iterator iter = std::min_element(l2NormMatrixT[j].begin(), l2NormMatrixT[j].end());
+			if (*iter <= trackTooFar)
+			{
+				oldNewIndices.push_back(iter - l2NormMatrixT[j].begin());
+			}
+			else
+			{
+				oldNewIndices.push_back(-1);
+			}
+		}
+	}
+	// round trip consensus
+	for (int i = 0; i < newOldIndices.size(); i++)
+	{
+		int j = newOldIndices[i];
+		if (j > -1)
+		{
+			int iReturn = oldNewIndices[j];
+			if (i == iReturn)
+			{
+				newMarkers[i].identity = oldMarkers[j].identity;
+			}
+		}
+	}
+	// give identity to newly appeared markers
+	for (int i = 0; i < newMarkers.size(); i++)
+	{
+		if (newMarkers[i].identity == -1)
+		{
+			UevaMarker::counter++;
+			newMarkers[i].identity = UevaMarker::counter;
+		}
+	}
 }
 
-int Ueva::masksOverlap(cv::Mat &mask1, cv::Mat &mask2)
-{
-	cv::Mat mask3 = cv::Mat(mask1.size(), CV_8UC1, cv::Scalar_<int>(0));
-	cv::bitwise_and(mask1, mask2, mask3);
-	return cv::countNonZero(mask3);
-}
-
-int Ueva::detectKink(std::vector< cv::Point_<int>> &contour, const int &convexSize)
+int Ueva::detectKink(std::vector< cv::Point_<int>> &contour, const int convexSize)
 {
 	std::vector<int> hull;
 	cv::convexHull(contour, hull);
@@ -102,7 +174,7 @@ int Ueva::detectKink(std::vector< cv::Point_<int>> &contour, const int &convexSi
 
 	int kinkIndex = -1;
 	int depth = 0;
-	for (int i = 0; i < defects.size(); i++) 
+	for (int i = 0; i < defects.size(); i++)
 	{
 		if (defects[i][2] > defects[i][0] && defects[i][2] < defects[i][1]) // filter opencv bug
 		{
@@ -116,10 +188,11 @@ int Ueva::detectKink(std::vector< cv::Point_<int>> &contour, const int &convexSi
 			}
 		}
 	}
-	return kinkIndex; 
+
+	return kinkIndex;
 }
 
-int Ueva::detectNeck(std::vector< cv::Point_<int>> &contour, int &kinkIndex, float &neck, const int threshold)
+int Ueva::detectNeck(std::vector< cv::Point_<int>> &contour, int &kinkIndex, float &neckDistance, const int threshold)
 {
 	std::vector<float> profile;
 	for (int i = kinkIndex; i < contour.size(); i++)
@@ -146,15 +219,16 @@ int Ueva::detectNeck(std::vector< cv::Point_<int>> &contour, int &kinkIndex, flo
 			UevaDroplet::fileStream << l2Norm << ",";
 		}
 	}
-	
+
 	p1d::Persistence1D persistence;
 	persistence.RunPersistence(profile);
 
 	std::vector< p1d::TPairedExtrema > extremas;
 	persistence.GetPairedExtrema(extremas, float(threshold));
 
+	std::vector<int> indices;
 	int neckIndex = -1;
-	neck = 0.0;
+	neckDistance = 0.0;
 	if (extremas.size() == 2) // 2 maxima droplet is healthy, 1st minima is neck
 	{
 		sort(extremas.begin(), extremas.end(),
@@ -162,15 +236,19 @@ int Ueva::detectNeck(std::vector< cv::Point_<int>> &contour, int &kinkIndex, flo
 		{
 			return a.MinIndex < b.MinIndex;
 		});
-		if (extremas[0].MinIndex < (contour.size() - kinkIndex))
+		for (int i = 0; i < extremas.size(); i++)
 		{
-			neckIndex = kinkIndex + extremas[0].MinIndex;
+			if (extremas[i].MinIndex < (contour.size() - kinkIndex))
+			{
+				indices.push_back(kinkIndex + extremas[i].MinIndex);
+			}
+			else
+			{
+				indices.push_back(extremas[i].MinIndex - (contour.size() - kinkIndex));
+			}
 		}
-		else
-		{
-			neckIndex = extremas[0].MinIndex - (contour.size() - kinkIndex);
-		}
-		neck = profile[extremas[0].MinIndex];
+		neckIndex = indices[0];
+		neckDistance = profile[extremas[0].MinIndex];
 	}
 	else if (extremas.size() >= 3)  // 3 or more maxima droplet is overgrown, 2nd maxima is neck
 	{
@@ -179,17 +257,61 @@ int Ueva::detectNeck(std::vector< cv::Point_<int>> &contour, int &kinkIndex, flo
 		{
 			return a.MaxIndex < b.MaxIndex;
 		});
-		if (extremas[1].MaxIndex < (contour.size() - kinkIndex))
+		for (int i = 0; i < extremas.size(); i++)
 		{
-			neckIndex = kinkIndex + extremas[0].MaxIndex;
+			if (extremas[i].MaxIndex < (contour.size() - kinkIndex))
+			{
+				indices.push_back(kinkIndex + extremas[i].MaxIndex);
+			}
+			else
+			{
+				indices.push_back(extremas[1].MaxIndex - (contour.size() - kinkIndex));
+			}
 		}
-		else
-		{
-			neckIndex = extremas[1].MaxIndex - (contour.size() - kinkIndex);
-		}
-		neck = profile[extremas[1].MaxIndex];
+		neckIndex = indices[1];
+		neckDistance = profile[extremas[1].MaxIndex];
 	}
+
 	return neckIndex;
+}
+
+int Ueva::masksOverlap(cv::Mat &mask1, cv::Mat &mask2)
+{
+	cv::Mat mask3 = cv::Mat(mask1.size(), CV_8UC1, cv::Scalar_<int>(0));
+	cv::bitwise_and(mask1, mask2, mask3);
+	return cv::countNonZero(mask3);
+}
+
+bool Ueva::isMarkerInChannel(UevaMarker &marker, UevaChannel &channel, int xMargin, int yMargin)
+{
+	// channel is vertical
+	if (channel.direction <= 1)
+	{
+		if (marker.centroid.y > (channel.rect.y + yMargin) &&
+			marker.centroid.y < (channel.rect.y + channel.rect.height - yMargin))
+		{
+			uchar*p = channel.mask.ptr<uchar>(marker.centroid.y);
+			if (p[marker.centroid.x] > 0)
+			{
+				return true;
+			}
+		}
+	}
+	// channel is horizontal
+	if (channel.direction >= 2)
+	{
+		if (marker.centroid.x >(channel.rect.x + xMargin) &&
+			marker.centroid.x < (channel.rect.x + channel.rect.width - xMargin))
+		{
+			uchar*p = channel.mask.ptr<uchar>(marker.centroid.y);
+			if (p[marker.centroid.x] > 0)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
 
 bool Ueva::isCombinationPossible(std::vector<int> &combination, std::vector<UevaCtrl> &ctrls)
@@ -198,12 +320,11 @@ bool Ueva::isCombinationPossible(std::vector<int> &combination, std::vector<Ueva
 	for (int i = 0; i < ctrls.size(); i++)
 	{
 		std::vector<int> ctrlOutputIdx;
-		for (int j = 0; j < ctrls[i].outputIndices.rows; j++)
+		for (int j = 0; j < ctrls[i].outputIndices.cols; j++)
 		{
 			ctrlOutputIdx.push_back(ctrls[i].outputIndices.at<uchar>(j));
 		}
-		if (combination == ctrlOutputIdx &&
-			ctrls[i].uncoUnob == 0)
+		if (combination == ctrlOutputIdx &&	ctrls[i].uncoUnob == 0)
 		{
 			UevaCtrl::index = i;
 			return true;
@@ -212,7 +333,7 @@ bool Ueva::isCombinationPossible(std::vector<int> &combination, std::vector<Ueva
 	return false;
 }
 
-void Ueva::deleteFromCombination(std::vector<int> &combination, const int &value)
+void Ueva::deleteFromCombination(std::vector<int> &combination, const int value)
 {
 	std::vector<int>::iterator iter;
 	iter = combination.begin();
@@ -256,4 +377,25 @@ double Ueva::screen2ctrl(const cv::Point_<int> &point, const int &direction, con
 	}
 	}
 	return value;
+}
+
+double Ueva::neck2ctrl(const float &neckPix, const double &umPerPix, double desire, double thresh, double lowGain, double highGain)
+{
+	double neckMicron = (double)neckPix * umPerPix;
+
+	double neckNonLinear = 0.0;
+	double neckSignal = 0.0;
+	if ((neckMicron - desire) > thresh)
+	{
+		neckNonLinear = neckMicron - (desire + thresh);
+		neckSignal = neckNonLinear * highGain;
+	}
+	else if ((desire - neckMicron) > thresh)
+	{
+		neckNonLinear = neckMicron - (desire - thresh);
+		neckSignal = neckNonLinear * lowGain;
+	}
+
+	qDebug() << "non linear: " << neckNonLinear << " signal: " << neckSignal;
+	return neckSignal;
 }

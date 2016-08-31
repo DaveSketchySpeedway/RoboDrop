@@ -21,6 +21,8 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #define UEVASTRUCTURES_H
 
 #include <QtGui >
+#include <string>
+#include <sstream>
 #include <fstream>
 #include "opencv2/core.hpp"
 
@@ -45,11 +47,15 @@ struct UevaSettings
 		RECORD_DRAWN = 4096,
 	};
 	int flag;
-	QVector<bool> linkChannels;
-	QVector<bool> inverseLinkChannels;
-	QVector<bool> autoCatchRequests;
+
 	QVector<QVector<int>> inletInfo;
 	QVector<qreal> inletRequests;
+	QVector<bool> linkRequests;
+	QVector<bool> inverseLinkRequests;
+	QVector<bool> autoCatchRequests;
+	QVector<bool> useNeckRequests;
+	QVector<bool> neckDirectionRequests;
+
 	QVector<QLine> mouseLines;
 	QPoint rightPressPosition;
 	QPoint leftPressPosition;
@@ -60,15 +66,24 @@ struct UevaSettings
 	int maskOpenSize;
 	int channelErodeSize;
 	int channelCutThickness;
+
 	int imgprogThreshold;
 	int imgprogErodeSize;
 	int imgprogContourSize;
-	int imgprogSortGridSize;
-	int imgprogSortOrder;
+	int imgprogTrackTooFar;
 	int imgprocConvexSize;
 	int imgprocPersistence;
+
 	int ctrlMarkerSize;
-	int ctrlAutoMargin;
+	int ctrlAutoHorzExcl;
+	int ctrlAutoVertExcl;
+	double ctrlModelCov;
+	double ctrlDisturbanceCov;
+	double ctrlDisturbanceCorr;
+	double ctrlNeckDesire;
+	double ctrlNeckThreshold;
+	double ctrlNeckLowerGain;
+	double ctrlNeckHigherGain;
 };
 
 struct UevaData
@@ -78,13 +93,13 @@ struct UevaData
 	void headerToFile() const;
 	void writeToFile() const;
 
-	static std::ofstream fileStream;
-	static QTime startTime;
-
 	cv::Mat rawGray;
 	cv::Mat drawnBgr;
 	cv::Mat drawnRgb;
 	QMap<QString, QVector<qreal>> map;
+
+	static std::ofstream fileStream;
+	static QTime startTime;
 };
 
 struct UevaBuffer
@@ -109,6 +124,9 @@ struct UevaCtrl
 	static double samplePeriod;
 
 	int uncoUnob;
+	int n;
+	int m;
+	int p;
 	cv::Mat outputIndices;
 	cv::Mat stateIndices;
 	cv::Mat A;
@@ -118,47 +136,50 @@ struct UevaCtrl
 	cv::Mat K1;
 	cv::Mat K2;
 	cv::Mat H;
+	cv::Mat Ad;
+	cv::Mat Bd;
+	cv::Mat Cd;
+	cv::Mat Wd;
 };
 
 struct UevaChannel
 {
 	UevaChannel();
 
-	int index;
-	cv::Mat mask;
-	int direction;
-	int selectedMarkerIndex;
+	void makeChannelText(std::string &str, double &fontScale, cv::Scalar_<int> &lineColor,
+		const bool &linkRequest, const bool &inverseLinkRequest);
 
-	std::vector<int> currentMarkerIndices;
-	std::vector<int> previousMarkerIndices;	
+	cv::Mat mask;
+	cv::Rect rect;
+	int index;
+	int direction;
+	
+	int biggestDropletIndex;
+	int measuringMarkerIndex;
+	int neckDropletIndex;
 };
 
 struct UevaDroplet
 {
 	UevaDroplet();
 
-	static std::ofstream fileStream;
-
 	cv::Mat mask;
 	int kinkIndex;
 	int neckIndex;
-	
-	int accomodatingChannelIndex;
+	float neckDistance;
+
+	static std::ofstream fileStream;
 };
 
 struct UevaMarker
 {
 	UevaMarker();
 
-	static cv::Size_<int> imageSize;
-	static int sortGridSize;
-
-	int type;
-	double value;
+	int identity;
 	cv::Point_<int> centroid;
 	cv::Rect_<int> rect;
 	
-	int accomodatingChannelIndex;
+	static int counter;
 };
 
 Q_DECLARE_METATYPE(UevaSettings)
