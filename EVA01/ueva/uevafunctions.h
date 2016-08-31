@@ -41,6 +41,6 @@ namespace Ueva
 
 	double screen2ctrl(const cv::Point_<int> &point, const int &direction, const double &multiplier);
 
-	double neck2ctrl(const double &neckPix, const double &umPerPix, double desire, double threshold, double gain);
+	double neck2ctrl(const float &neckPix, const double &umPerPix, double desire, double thresh, double lowGain, double highGain);
 }
 #endif

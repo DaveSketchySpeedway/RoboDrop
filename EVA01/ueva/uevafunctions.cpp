@@ -379,11 +379,23 @@ double Ueva::screen2ctrl(const cv::Point_<int> &point, const int &direction, con
 	return value;
 }
 
-double Ueva::neck2ctrl(const double &neckPix, const double &umPerPix, double desire, double threshold, double gain)
+double Ueva::neck2ctrl(const float &neckPix, const double &umPerPix, double desire, double thresh, double lowGain, double highGain)
 {
+	double neckMicron = (double)neckPix * umPerPix;
 
+	double neckNonLinear = 0.0;
+	double neckSignal = 0.0;
+	if ((neckMicron - desire) > thresh)
+	{
+		neckNonLinear = neckMicron - (desire + thresh);
+		neckSignal = neckNonLinear * highGain;
+	}
+	else if ((desire - neckMicron) > thresh)
+	{
+		neckNonLinear = neckMicron - (desire - thresh);
+		neckSignal = neckNonLinear * lowGain;
+	}
 
-
-
-	return 0.0;
+	qDebug() << "non linear: " << neckNonLinear << " signal: " << neckSignal;
+	return neckSignal;
 }

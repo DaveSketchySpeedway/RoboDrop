@@ -472,12 +472,12 @@ void S2EngineThread::run()
 							{
 								if (Ueva::isMarkerInChannel(newMarkers[stillExistMarkerIndex], channels[i], 0, 0))
 								{
-									// droplet in channel 
+									// marker in channel 
 									channels[i].measuringMarkerIndex = stillExistMarkerIndex;
 								}
 								else
 								{
-									// droplet escaped channel
+									// marker escaped channel
 									channels[i].measuringMarkerIndex = -1;
 									Ueva::deleteFromCombination(activatedChannelIndices, i);
 									alwaysTrue = Ueva::isCombinationPossible(activatedChannelIndices, ctrls);
@@ -486,7 +486,7 @@ void S2EngineThread::run()
 							}
 							else
 							{
-								// droplet disappeared from image
+								// marker disappeared from image
 								channels[i].measuringMarkerIndex = -1;
 								Ueva::deleteFromCombination(activatedChannelIndices, i);
 								alwaysTrue = Ueva::isCombinationPossible(activatedChannelIndices, ctrls);
@@ -498,8 +498,8 @@ void S2EngineThread::run()
 						{
 							if (channels[i].biggestDropletIndex != -1 && settings.useNeckRequests[i])
 							{
-								if (droplets[channels[i].biggestDropletIndex].kinkIndex != 1 &&
-									droplets[channels[i].biggestDropletIndex].neckIndex != 1)
+								if (droplets[channels[i].biggestDropletIndex].kinkIndex != -1 &&
+									droplets[channels[i].biggestDropletIndex].neckIndex != -1)
 								{
 									// neck still exist 
 									channels[i].neckDropletIndex = channels[i].biggestDropletIndex;
@@ -536,7 +536,7 @@ void S2EngineThread::run()
 					mousePressCurrent.x = settings.leftPressMovement.x2();
 					mousePressCurrent.y = settings.leftPressMovement.y2();
 					mousePressDisplacement = mousePressCurrent - mousePressPrevious;
-
+					
 					// user add or remove marker
 					for (int i = 0; i < newMarkers.size(); i++)
 					{
@@ -593,11 +593,11 @@ void S2EngineThread::run()
 							}
 						}
 					}
-										
+
 					// auto catch and use neck
 					for (int i = 0; i < channels.size(); i++)
 					{
-						// marker takes priority if both marker and neck are available
+						// auto catch (high priority)
 						if (settings.autoCatchRequests[i] &&
 							channels[i].measuringMarkerIndex == -1 &&
 							channels[i].neckDropletIndex == -1)
@@ -620,29 +620,35 @@ void S2EngineThread::run()
 								}
 							}
 						}
+						// use neck (low priority)
 						if (settings.useNeckRequests[i] &&
 							channels[i].measuringMarkerIndex == -1 &&
 							channels[i].neckDropletIndex == -1)
 						{
-							if (droplets[channels[i].biggestDropletIndex].kinkIndex != -1 &&
-								droplets[channels[i].biggestDropletIndex].neckIndex != -1)
+							if (channels[i].biggestDropletIndex != -1)
 							{
-								desiredChannelIndices = activatedChannelIndices;
-								desiredChannelIndices.push_back(i);
-								if (Ueva::isCombinationPossible(desiredChannelIndices, ctrls))
+								if (droplets[channels[i].biggestDropletIndex].kinkIndex != -1 &&
+									droplets[channels[i].biggestDropletIndex].neckIndex != -1)
 								{
-									// activate channel with neck
-									activatedChannelIndices = desiredChannelIndices;
-									channels[i].neckDropletIndex = channels[i].biggestDropletIndex;
-									needSelecting = true;
+									desiredChannelIndices = activatedChannelIndices;
+									desiredChannelIndices.push_back(i);
+									if (Ueva::isCombinationPossible(desiredChannelIndices, ctrls))
+									{
+										// activate channel with neck
+										activatedChannelIndices = desiredChannelIndices;
+										channels[i].neckDropletIndex = channels[i].biggestDropletIndex;
+										needSelecting = true;
+									}
 								}
 							}
-
 						}
 					}
 
 					// debug
 					//std::cerr << std::endl;
+					//std::cerr << settings.ctrlNeckDesire << " "
+					//	<< settings.ctrlNeckThreshold << " "
+					//	<< settings.ctrlNeckGain << std::endl;
 					//std::cerr << "dx: " << mousePressDisplacement.x << std::endl;
 					//std::cerr << "dy: " << mousePressDisplacement.y << std::endl;
 					//for (int i = 0; i < channels.size(); i++)
@@ -751,16 +757,19 @@ void S2EngineThread::run()
 						directRequestIndex = -1;
 						for (int i = 0; i < activatedChannelIndices.size(); i++)
 						{
-							rect = newMarkers[channels[activatedChannelIndices[i]].measuringMarkerIndex].rect;
-							if (mousePressPrevious.inside(rect) && mousePressCurrent.inside(rect))
+							if (channels[activatedChannelIndices[i]].measuringMarkerIndex != -1)
 							{
-								directRequestIndex = i;
-								dr.at<double>(i) = Ueva::screen2ctrl(mousePressDisplacement,
-									channels[activatedChannelIndices[i]].direction, micronPerPixel);
-								break;
+								rect = newMarkers[channels[activatedChannelIndices[i]].measuringMarkerIndex].rect;
+								if (mousePressPrevious.inside(rect) && mousePressCurrent.inside(rect))
+								{
+									directRequestIndex = i;
+									dr.at<double>(i) = Ueva::screen2ctrl(mousePressDisplacement,
+										channels[activatedChannelIndices[i]].direction, micronPerPixel);
+									break;
+								}
 							}
 						}
-
+						
 						// link requests
 						for (int i = 0; i < activatedChannelIndices.size(); i++)
 						{
@@ -799,13 +808,21 @@ void S2EngineThread::run()
 							if (channels[activatedChannelIndices[i]].measuringMarkerIndex == -1 &&
 								channels[activatedChannelIndices[i]].neckDropletIndex != -1)
 							{
-								if (settings.neckDirectionRequests[activatedChannelIndices[i]])
+								if (directRequestIndex != i && directRequestIndex != -1)
 								{
-									y.at<double>(i) = y_raw.at<double>(i) -dr.at<double>(directRequestIndex);
+									if (settings.neckDirectionRequests[activatedChannelIndices[i]])
+									{
+										y.at<double>(i) = y_raw.at<double>(i) + dr.at<double>(directRequestIndex);
+									}
+									else
+									{
+										y.at<double>(i) = y_raw.at<double>(i) - dr.at<double>(directRequestIndex);
+									}
 								}
 								else
 								{
-									y.at<double>(i) = y_raw.at<double>(i) +dr.at<double>(directRequestIndex);
+									double value = y_raw.at<double>(i); // get around weird behavior of cv::Mat::at
+									y.at<double>(i) = value; 
 								}
 							}
 						}
@@ -822,17 +839,19 @@ void S2EngineThread::run()
 							if (channels[activatedChannelIndices[i]].measuringMarkerIndex == -1 &&
 								channels[activatedChannelIndices[i]].neckDropletIndex != -1)
 							{
-								y.at<double>(i) += Ueva::neck2ctrl(
+								double value = y.at<double>(i); // get around weird behavior of cv::Mat::at
+								y.at<double>(i) = value + Ueva::neck2ctrl(
 									droplets[channels[activatedChannelIndices[i]].neckDropletIndex].neckDistance,
 									micronPerPixel,
 									settings.ctrlNeckDesire,
 									settings.ctrlNeckThreshold,
-									settings.ctrlNeckGain);
+									settings.ctrlNeckLowerGain,
+									settings.ctrlNeckHigherGain); // assume +ve always into junction for interface
 							}
 						}
 						// output = (raw and modified) - offset
 						y -= y_off;	
-						
+
 						// kalman filter
 						pp = ctrl.Ad * pe * ctrl.Ad.t() + ctrl.Wd * rw * ctrl.Wd.t();
 						cv::Mat mat = ctrl.Cd * pp * ctrl.Cd.t() + rv;

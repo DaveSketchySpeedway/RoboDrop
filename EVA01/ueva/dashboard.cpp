@@ -78,7 +78,9 @@ Dashboard::Dashboard(QWidget *parent)
 		parent, SLOT(ctrlSettings()));
 	connect(neckThresholdSBox, SIGNAL(valueChanged(double)),
 		parent, SLOT(ctrlSettings()));
-	connect(neckGainSBox, SIGNAL(valueChanged(double)),
+	connect(neckLowerGainSBox, SIGNAL(valueChanged(double)),
+		parent, SLOT(ctrlSettings()));
+	connect(neckHigherGainSBox, SIGNAL(valueChanged(double)),
 		parent, SLOT(ctrlSettings()));
 
 	connect(this, SIGNAL(sendAutoCatchRequests(QVector<bool>)),

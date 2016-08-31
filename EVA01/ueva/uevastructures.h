@@ -82,7 +82,8 @@ struct UevaSettings
 	double ctrlDisturbanceCorr;
 	double ctrlNeckDesire;
 	double ctrlNeckThreshold;
-	double ctrlNeckGain;
+	double ctrlNeckLowerGain;
+	double ctrlNeckHigherGain;
 };
 
 struct UevaData

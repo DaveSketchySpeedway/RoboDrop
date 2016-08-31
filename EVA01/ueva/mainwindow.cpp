@@ -250,7 +250,8 @@ void MainWindow::ctrlSettings()
 	double disturbanceCorr = dashboard->disturbanceCorrSlider->value() / 1000.0;
 	double neckDesire = dashboard->neckDesireSBox->value();
 	double neckThreshold = dashboard->neckThresholdSBox->value();
-	double neckGain = dashboard->neckDesireSBox->value();
+	double neckLowerGain = dashboard->neckLowerGainSBox->value();
+	double neckHigherGain = dashboard->neckHigherGainSBox->value();
 
 	settings.ctrlMarkerSize = markerSize;
 	settings.ctrlAutoHorzExcl = autoHorzExcl;
@@ -260,7 +261,8 @@ void MainWindow::ctrlSettings()
 	settings.ctrlDisturbanceCorr = disturbanceCorr;
 	settings.ctrlNeckDesire = neckDesire;
 	settings.ctrlNeckThreshold = neckThreshold;
-	settings.ctrlNeckGain = neckGain;
+	settings.ctrlNeckLowerGain = neckLowerGain;
+	settings.ctrlNeckHigherGain = neckHigherGain;
 	
 	dashboard->markerSizeLabel->setText(QString::number(markerSize));
 	dashboard->autoHorzExclLabel->setText(QString::number(autoHorzExcl));

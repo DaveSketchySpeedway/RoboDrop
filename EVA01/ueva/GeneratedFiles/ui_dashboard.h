@@ -104,8 +104,10 @@ public:
     QLabel *label_10;
     QDoubleSpinBox *neckDesireSBox;
     QLabel *label_8;
-    QDoubleSpinBox *neckGainSBox;
     QLabel *label_23;
+    QDoubleSpinBox *neckLowerGainSBox;
+    QLabel *label_24;
+    QDoubleSpinBox *neckHigherGainSBox;
     QHBoxLayout *neckDirectionLayout;
     QLabel *label_22;
 
@@ -113,7 +115,7 @@ public:
     {
         if (Dashboard->objectName().isEmpty())
             Dashboard->setObjectName(QStringLiteral("Dashboard"));
-        Dashboard->resize(600, 800);
+        Dashboard->resize(600, 900);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(1);
         sizePolicy.setVerticalStretch(1);
@@ -220,12 +222,12 @@ public:
 
         pumpLayout->addLayout(verticalLayout_2);
 
-        horizontalSpacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        pumpLayout->addItem(horizontalSpacer);
-
 
         gridLayout_2->addLayout(pumpLayout, 0, 0, 1, 1);
+
+        horizontalSpacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_2->addItem(horizontalSpacer, 0, 1, 1, 1);
 
 
         verticalLayout_3->addWidget(groupBox);
@@ -265,7 +267,7 @@ public:
         threshSlider->setMinimum(1);
         threshSlider->setMaximum(100);
         threshSlider->setPageStep(1);
-        threshSlider->setValue(20);
+        threshSlider->setValue(25);
         threshSlider->setOrientation(Qt::Horizontal);
 
         gridLayout->addWidget(threshSlider, 1, 1, 1, 1);
@@ -548,7 +550,7 @@ public:
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
         neckThresholdSBox = new QDoubleSpinBox(groupBox_4);
         neckThresholdSBox->setObjectName(QStringLiteral("neckThresholdSBox"));
-        neckThresholdSBox->setValue(5);
+        neckThresholdSBox->setValue(2);
 
         gridLayout_4->addWidget(neckThresholdSBox, 0, 3, 1, 1);
 
@@ -559,7 +561,7 @@ public:
 
         neckDesireSBox = new QDoubleSpinBox(groupBox_4);
         neckDesireSBox->setObjectName(QStringLiteral("neckDesireSBox"));
-        neckDesireSBox->setValue(50);
+        neckDesireSBox->setValue(60);
 
         gridLayout_4->addWidget(neckDesireSBox, 0, 1, 1, 1);
 
@@ -568,16 +570,27 @@ public:
 
         gridLayout_4->addWidget(label_8, 0, 0, 1, 1);
 
-        neckGainSBox = new QDoubleSpinBox(groupBox_4);
-        neckGainSBox->setObjectName(QStringLiteral("neckGainSBox"));
-        neckGainSBox->setValue(2);
-
-        gridLayout_4->addWidget(neckGainSBox, 0, 5, 1, 1);
-
         label_23 = new QLabel(groupBox_4);
         label_23->setObjectName(QStringLiteral("label_23"));
 
-        gridLayout_4->addWidget(label_23, 0, 4, 1, 1);
+        gridLayout_4->addWidget(label_23, 1, 0, 1, 1);
+
+        neckLowerGainSBox = new QDoubleSpinBox(groupBox_4);
+        neckLowerGainSBox->setObjectName(QStringLiteral("neckLowerGainSBox"));
+        neckLowerGainSBox->setValue(3);
+
+        gridLayout_4->addWidget(neckLowerGainSBox, 1, 1, 1, 1);
+
+        label_24 = new QLabel(groupBox_4);
+        label_24->setObjectName(QStringLiteral("label_24"));
+
+        gridLayout_4->addWidget(label_24, 1, 2, 1, 1);
+
+        neckHigherGainSBox = new QDoubleSpinBox(groupBox_4);
+        neckHigherGainSBox->setObjectName(QStringLiteral("neckHigherGainSBox"));
+        neckHigherGainSBox->setValue(1);
+
+        gridLayout_4->addWidget(neckHigherGainSBox, 1, 3, 1, 1);
 
 
         verticalLayout_4->addLayout(gridLayout_4);
@@ -650,8 +663,9 @@ public:
         autoVertExclLabel->setText(QApplication::translate("Dashboard", "TextLabel", 0));
         label_10->setText(QApplication::translate("Dashboard", "Neck Threshold (um):", 0));
         label_8->setText(QApplication::translate("Dashboard", "Neck Desire (um):", 0));
-        label_23->setText(QApplication::translate("Dashboard", "Neck Gain:", 0));
-        label_22->setText(QApplication::translate("Dashboard", "Neck Direction (>>/<<):", 0));
+        label_23->setText(QApplication::translate("Dashboard", "Neck Lower Gain:", 0));
+        label_24->setText(QApplication::translate("Dashboard", "Neck Higher Gain:", 0));
+        label_22->setText(QApplication::translate("Dashboard", "Neck Direction (check == >>|<<):", 0));
     } // retranslateUi
 
 };
