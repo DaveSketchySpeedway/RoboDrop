@@ -34,7 +34,7 @@ clc
 clear 
 
 TS = 0.1;
-viscosity_tweak = 1.8;
+viscosity_tweak = 1.2;
 density_tweak = 1;
 stiffness_tweak = 1;
 
@@ -42,14 +42,13 @@ load('pump_fit_tf_avg_freq.mat')
 % load('pump_fit_tf_avg_time_step.mat')
 
 % MANUAL_SETUP = true; 
-% MODEL = 'model_i3_c3_f2_valid_tweak';
-
 MANUAL_SETUP = false;
+
 % MODEL = 'model_i3_c3_f2_valid'; 
-MODEL = 'model_i3_c3_f2_short';
+% MODEL = 'model_i3_c3_f2_short';
 % MODEL = 'model_i3_c3_f2_50';
 % MODEL = 'model_i4_c4_f3_50';
-% MODEL = 'model_i4_c5_f3_50a';
+MODEL = 'model_i4_c5_f3_50a';
 % MODEL = 'model_i4_c5_f3_50b';
 % MODEL = 'model_i4_c8_f3_50';
 % MODEL = 'model_i5_c6_f4_50';
@@ -66,44 +65,40 @@ if (~MANUAL_SETUP)
     load([MODEL '.mat']);
 end
 %% INITIALIZE FLUID PROPERTIES
-if (MANUAL_SETUP)
-    % dynamic viscosity Ns/m2 or kg/m/s
-    % density kg/m3
-    % adiabatic bulk modulus Pa
+% dynamic viscosity Ns/m2 or kg/m/s
+% density kg/m3
+% adiabatic bulk modulus Pa
 
-    % water
-    fluid(1).name = 'water';
-    fluid(1).viscosity_kg_ms = 0.001 * viscosity_tweak;
-    fluid(1).density_kg_m3 = 1000 * density_tweak;
-    fluid(1).bulk_modulus_pa = 2.2e9 * stiffness_tweak;
+% water
+fluid(1).name = 'water';
+fluid(1).viscosity_kg_ms = 0.001 * viscosity_tweak;
+fluid(1).density_kg_m3 = 1000 * density_tweak;
+fluid(1).bulk_modulus_pa = 2.2e9 * stiffness_tweak;
 
-    % silicon oil 50cSt
-    fluid(2).name = 'oil_50cSt';
-    fluid(2).viscosity_kg_ms = 0.04815 * viscosity_tweak;
-    fluid(2).density_kg_m3 = 963 * density_tweak;
-    fluid(2).bulk_modulus_pa = 1.23e9 * stiffness_tweak;
-end
+% silicon oil 50cSt
+fluid(2).name = 'oil_50cSt';
+fluid(2).viscosity_kg_ms = 0.04815 * viscosity_tweak;
+fluid(2).density_kg_m3 = 963 * density_tweak;
+fluid(2).bulk_modulus_pa = 1.23e9 * stiffness_tweak;
 
 %% INITIALIZE CONTAINER PROPERTIES
-if (MANUAL_SETUP)
-    % young modulus Pa
-    % wall cross section area mm2
+% young modulus Pa
+% wall cross section area mm2
 
-    % big tubing
-    container(1).name = 'PFA_1514';
-    container(1).young_modulus_pa = 480e6 * stiffness_tweak;
-    container(1).substrate_xarea_mm2 = 1.52;
+% big tubing
+container(1).name = 'PFA_1514';
+container(1).young_modulus_pa = 480e6 * stiffness_tweak;
+container(1).substrate_xarea_mm2 = 1.52;
 
-    % small tubing
-    container(2).name = 'PFA_1902';
-    container(2).young_modulus_pa = 480e6 * stiffness_tweak;
-    container(2).substrate_xarea_mm2 = 1.93;
+% small tubing
+container(2).name = 'PFA_1902';
+container(2).young_modulus_pa = 480e6 * stiffness_tweak;
+container(2).substrate_xarea_mm2 = 1.93;
 
-    % chip
-    container(3).name = 'PDMS';
-    container(3).young_modulus_pa = 2e6 * stiffness_tweak;
-    container(3).substrate_xarea_mm2 = 100;
-end
+% chip
+container(3).name = 'PDMS';
+container(3).young_modulus_pa = 2e6 * stiffness_tweak;
+container(3).substrate_xarea_mm2 = 100;
 
 %% INITIALIZE DIMENSIONS
 if (MANUAL_SETUP)
@@ -151,7 +146,6 @@ if (MANUAL_SETUP)
 end
 
 %% CALCULATE ELEMENT PROPERTIES
-if (MANUAL_SETUP)
 for i = 1:length(dimension)
     % calculation in SI units
     element(i).name = dimension(i).name;
@@ -189,7 +183,6 @@ for i = 1:length(dimension)
 end
 clear i
 
-end
 %% ASSIGN PARAMETER, EXTRACT SS
 
 
@@ -363,7 +356,7 @@ clear np mp pp nc mc pc ap bp cp dp
 
 model.name = MODEL;
 save(MODEL,'fluid','container','dimension','element','model');
-clear fluid container dimension element MODEL TS 
-clear density_tweak stiffness_tweak viscosity_tweak
+% clear fluid container dimension element MODEL TS 
+% clear density_tweak stiffness_tweak viscosity_tweak
 
 

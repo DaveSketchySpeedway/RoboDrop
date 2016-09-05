@@ -7,7 +7,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.99"
+    ComputedModelVersion    "1.100"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -30,7 +30,7 @@ Model {
       $ObjectID		      2
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [1376.0, 126.0, 640.0, 912.0]
+      Location		      [938.0, 121.0, 640.0, 912.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		3
@@ -69,9 +69,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "yh3wong"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Fri Aug 26 18:44:33 2016"
-  RTWModifiedTimeStamp	  385976854
-  ModelVersionFormat	  "1.%<AutoIncrement:99>"
+  LastModifiedDate	  "Mon Sep 05 14:29:00 2016"
+  RTWModifiedTimeStamp	  394986540
+  ModelVersionFormat	  "1.%<AutoIncrement:100>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -879,7 +879,7 @@ Model {
   }
   System {
     Name		    "model_i3_c3_f2_valid"
-    Location		    [1376, 126, 2016, 1038]
+    Location		    [938, 121, 1578, 1033]
     Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -992,7 +992,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.00256"
+	  Resistance		  "0.004096"
 	  Inductance		  "2e-07"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1195,7 +1195,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.073958"
+	  Resistance		  "0.11833"
 	  Inductance		  "1.1556e-07"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1398,7 +1398,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.043142"
+	  Resistance		  "0.069028"
 	  Inductance		  "6.741e-08"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1979,7 +1979,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.0024304"
+	  Resistance		  "0.0038886"
 	  Inductance		  "4.9e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -2119,7 +2119,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.013003"
+	  Resistance		  "0.020804"
 	  Inductance		  "4.7187e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -2260,7 +2260,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.013003"
+	  Resistance		  "0.020804"
 	  Inductance		  "4.7187e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
