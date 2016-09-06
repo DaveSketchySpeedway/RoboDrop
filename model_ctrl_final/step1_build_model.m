@@ -34,7 +34,7 @@ clc
 clear 
 
 TS = 0.1;
-viscosity_tweak = 1.8;
+viscosity_tweak = 2.1;
 density_tweak = 1;
 stiffness_tweak = 1;
 
@@ -46,10 +46,11 @@ MANUAL_SETUP = false;
 
 % MODEL = 'model_i3_c3_f2_valid'; 
 % MODEL = 'model_i3_c3_f2_short';
+MODEL = 'model_i3_c3_f2_100';
 % MODEL = 'model_i3_c3_f2_50';
 % MODEL = 'model_i4_c4_f3_50';
 % MODEL = 'model_i4_c5_f3_50a';
-MODEL = 'model_i4_c5_f3_eric';
+% MODEL = 'model_i4_c5_f3_eric';
 % MODEL = 'model_i4_c5_f3_50b';
 % MODEL = 'model_i4_c8_f3_50';
 % MODEL = 'model_i5_c6_f4_50';

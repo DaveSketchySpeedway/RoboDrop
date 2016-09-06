@@ -1,5 +1,5 @@
 Model {
-  Name			  "model_i3_c3_f2_short"
+  Name			  "model_i3_c3_f2_100"
   Version		  8.5
   MdlSubVersion		  0
   SavedCharacterEncoding  "windows-1252"
@@ -7,7 +7,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.158"
+    ComputedModelVersion    "1.162"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -69,9 +69,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "yh3wong"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Tue Sep 06 15:15:46 2016"
-  RTWModifiedTimeStamp	  394217136
-  ModelVersionFormat	  "1.%<AutoIncrement:158>"
+  LastModifiedDate	  "Tue Sep 06 16:28:54 2016"
+  RTWModifiedTimeStamp	  395080134
+  ModelVersionFormat	  "1.%<AutoIncrement:162>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -878,7 +878,7 @@ Model {
     }
   }
   System {
-    Name		    "model_i3_c3_f2_short"
+    Name		    "model_i3_c3_f2_100"
     Location		    [1376, 126, 2016, 1038]
     Open		    on
     ModelBrowserVisibility  off
@@ -992,7 +992,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.0016128"
+	  Resistance		  "0.0010584"
 	  Inductance		  "7e-08"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1021,7 +1021,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.00032693"
+	  Capacitance		  "0.00033568"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
@@ -1195,7 +1195,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.077656"
+	  Resistance		  "0.050962"
 	  Inductance		  "6.741e-08"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1224,7 +1224,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.00057786"
+	  Capacitance		  "0.00058661"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
@@ -1398,7 +1398,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.13313"
+	  Resistance		  "0.087363"
 	  Inductance		  "1.1556e-07"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1427,7 +1427,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.00099061"
+	  Capacitance		  "0.0010056"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
@@ -1979,7 +1979,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.0043747"
+	  Resistance		  "0.0051039"
 	  Inductance		  "4.9e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -2119,7 +2119,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.023405"
+	  Resistance		  "0.027306"
 	  Inductance		  "4.7187e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -2260,7 +2260,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.023405"
+	  Resistance		  "0.027306"
 	  Inductance		  "4.7187e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
