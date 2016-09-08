@@ -1,5 +1,5 @@
 Model {
-  Name			  "model_i3_c3_f2_100"
+  Name			  "model_i4_c6_f3_eric"
   Version		  8.5
   MdlSubVersion		  0
   SavedCharacterEncoding  "windows-1252"
@@ -7,7 +7,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.167"
+    ComputedModelVersion    "1.114"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -30,7 +30,7 @@ Model {
       $ObjectID		      2
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [1376.0, 126.0, 640.0, 912.0]
+      Location		      [0.0, 0.0, 960.0, 1052.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		3
@@ -54,14 +54,14 @@ Model {
 	IsActive		[1]
 	ViewObjType		"SimulinkTopLevel"
 	LoadSaveID		"0"
-	Extents			[596.0, 752.0]
-	ZoomFactor		[0.8]
-	Offset			[25.761442536527511, -31.949999999999932]
+	Extents			[916.0, 892.0]
+	ZoomFactor		[1.25]
+	Offset			[412.69032553008435, 238.54746479049817]
       }
     }
   }
-  PhysicalModelingChecksum "2787897838"
-  PhysicalModelingParameterChecksum "3683595807"
+  PhysicalModelingChecksum "1403990698"
+  PhysicalModelingParameterChecksum "3381106778"
   PhysicalModelingProducts "Power_System_Blocks"
   Created		  "Wed Oct 28 16:04:22 2015"
   Creator		  "yh3wong"
@@ -69,9 +69,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "yh3wong"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Wed Sep 07 10:33:28 2016"
-  RTWModifiedTimeStamp	  395145208
-  ModelVersionFormat	  "1.%<AutoIncrement:167>"
+  LastModifiedDate	  "Wed Sep 07 11:28:22 2016"
+  RTWModifiedTimeStamp	  395148501
+  ModelVersionFormat	  "1.%<AutoIncrement:114>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -114,12 +114,12 @@ Model {
     $PropName		    "DataLoggingOverride"
     $ObjectID		    6
     $ClassName		    "Simulink.SimulationData.ModelLoggingInfo"
-    model_		    "model_i3_c3_f2"
+    model_		    "model_i4_c5_f3_50"
     overrideMode_	    [0.0]
     Array {
       Type		      "Cell"
       Dimension		      1
-      Cell		      "model_i3_c3_f2"
+      Cell		      "model_i4_c5_f3_50"
       PropName		      "logAsSpecifiedByModels_"
     }
     Array {
@@ -878,8 +878,8 @@ Model {
     }
   }
   System {
-    Name		    "model_i3_c3_f2_100"
-    Location		    [1376, 126, 2016, 1038]
+    Name		    "model_i4_c6_f3_eric"
+    Location		    [0, 0, 960, 1052]
     Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -891,16 +891,17 @@ Model {
     TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
     TiledPageScale	    1
     ShowPageBoundaries	    off
-    ZoomFactor		    "80"
+    ZoomFactor		    "125"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "304"
+    SIDHighWatermark	    "360"
     Block {
       BlockType		      SubSystem
       Name		      "ch1_water"
       SID		      "128"
       Ports		      [0, 0, 0, 0, 0, 1, 1]
-      Position		      [545, 234, 650, 266]
+      Position		      [534, 610, 566, 715]
       ZOrder		      48
+      BlockRotation	      270
       RequestExecContextInheritance off
       System {
 	Name			"ch1_water"
@@ -992,8 +993,8 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.00126"
-	  Inductance		  "7e-08"
+	  Resistance		  "0.00192"
+	  Inductance		  "1e-07"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
 	  Capacitance		  "1e-6"
@@ -1021,7 +1022,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.00033568"
+	  Capacitance		  "0.00046705"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
@@ -1099,14 +1100,15 @@ Model {
     }
     Block {
       BlockType		      SubSystem
-      Name		      "ch2_oil"
+      Name		      "ch2_water"
       SID		      "289"
       Ports		      [0, 0, 0, 0, 0, 1, 1]
-      Position		      [535, 389, 640, 421]
+      Position		      [1004, 610, 1036, 715]
       ZOrder		      73
+      BlockRotation	      270
       RequestExecContextInheritance off
       System {
-	Name			"ch2_oil"
+	Name			"ch2_water"
 	Location		[145, 123, 1085, 851]
 	Open			off
 	ModelBrowserVisibility	off
@@ -1195,8 +1197,8 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.060669"
-	  Inductance		  "6.741e-08"
+	  Resistance		  "0.00192"
+	  Inductance		  "1e-07"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
 	  Capacitance		  "1e-6"
@@ -1224,7 +1226,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.00058661"
+	  Capacitance		  "0.00046705"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
@@ -1305,7 +1307,7 @@ Model {
       Name		      "ch3_oil"
       SID		      "297"
       Ports		      [0, 0, 0, 0, 0, 1, 1]
-      Position		      [535, 544, 640, 576]
+      Position		      [375, 479, 480, 511]
       ZOrder		      74
       RequestExecContextInheritance off
       System {
@@ -1398,8 +1400,8 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.104"
-	  Inductance		  "1.1556e-07"
+	  Resistance		  "0.064714"
+	  Inductance		  "6.741e-08"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
 	  Capacitance		  "1e-6"
@@ -1427,7 +1429,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.0010056"
+	  Capacitance		  "0.00057786"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
@@ -1505,10 +1507,623 @@ Model {
     }
     Block {
       BlockType		      SubSystem
+      Name		      "ch4_oil"
+      SID		      "305"
+      Ports		      [0, 0, 0, 0, 0, 1, 1]
+      Position		      [1100, 479, 1205, 511]
+      ZOrder		      77
+      BlockMirror	      on
+      NamePlacement	      "alternate"
+      RequestExecContextInheritance off
+      System {
+	Name			"ch4_oil"
+	Location		[145, 123, 1085, 851]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"usletter"
+	PaperUnits		"inches"
+	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"100"
+	Block {
+	  BlockType		  Reference
+	  Name			  "Ground"
+	  SID			  "306"
+	  Ports			  [0, 0, 0, 0, 0, 1]
+	  Position		  [476, 400, 504, 430]
+	  ZOrder		  36
+	  BlockRotation		  270
+	  BlockMirror		  on
+	  ShowName		  off
+	  LibraryVersion	  "1.2564"
+	  SourceBlock		  "powerlib/Elements/Ground"
+	  SourceType		  "Ground"
+	  LConnTagsString	  "a"
+	}
+	Block {
+	  BlockType		  Scope
+	  Name			  "Scope"
+	  SID			  "307"
+	  Ports			  [1]
+	  Position		  [675, 89, 705, 121]
+	  ZOrder		  35
+	  Floating		  off
+	  Location		  [946, 79, 1270, 318]
+	  Open			  off
+	  NumInputPorts		  "1"
+	  ZoomMode		  "xonly"
+	  List {
+	    ListType		    AxesTitles
+	    axes1		    "%<SignalLabel>"
+	  }
+	  List {
+	    ListType		    ScopeGraphics
+	    FigureColor		    "[0.501960784313725 0.501960784313725 0.501960784313725]"
+	    AxesColor		    "[0 0 0]"
+	    AxesTickColor	    "[1 1 1]"
+	    LineColors		    "[1 1 0;1 0 1;0 1 1;1 0 0;0 1 0;0 0 1]"
+	    LineStyles		    "-|-|-|-|-|-"
+	    LineWidths		    "[0.5 0.5 0.5 0.5 0.5 0.5]"
+	    MarkerStyles	    "none|none|none|none|none|none"
+	  }
+	  ShowLegends		  on
+	  YMin			  "0"
+	  YMax			  "3e-11"
+	  LimitDataPoints	  off
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "current"
+	  SID			  "308"
+	  Ports			  [0, 1, 0, 0, 0, 1, 1]
+	  Position		  [570, 213, 595, 237]
+	  ZOrder		  31
+	  LibraryVersion	  "1.2564"
+	  UserDataPersistent	  on
+	  SourceBlock		  "powerlib/Measurements/Current Measurement"
+	  SourceType		  "Current Measurement"
+	  ContentPreviewEnabled	  off
+	  PhasorSimulation	  off
+	  OutputType		  "Complex"
+	  PSBequivalent		  "0"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "fluid_a"
+	  SID			  "309"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [335, 208, 420, 242]
+	  ZOrder		  1
+	  LibraryVersion	  "1.2564"
+	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
+	  SourceType		  "Series RLC Branch"
+	  LConnTagsString	  "__new0"
+	  RConnTagsString	  "__new0"
+	  BranchType		  "RL"
+	  Resistance		  "0.064714"
+	  Inductance		  "6.741e-08"
+	  SetiL0		  off
+	  InitialCurrent	  "0"
+	  Capacitance		  "1e-6"
+	  Setx0			  off
+	  InitialVoltage	  "0"
+	  Measurements		  "None"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "fluid_c"
+	  SID			  "310"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [473, 280, 507, 365]
+	  ZOrder		  37
+	  BlockRotation		  270
+	  BlockMirror		  on
+	  NamePlacement		  "alternate"
+	  LibraryVersion	  "1.2564"
+	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
+	  SourceType		  "Series RLC Branch"
+	  LConnTagsString	  "__new0"
+	  RConnTagsString	  "__new0"
+	  BranchType		  "C"
+	  Resistance		  "1"
+	  Inductance		  "1e-3"
+	  SetiL0		  off
+	  InitialCurrent	  "0"
+	  Capacitance		  "0.00057786"
+	  Setx0			  off
+	  InitialVoltage	  "0"
+	  Measurements		  "None"
+	}
+	Block {
+	  BlockType		  PMIOPort
+	  Name			  "out"
+	  SID			  "311"
+	  Position		  [780, 223, 810, 237]
+	  ZOrder		  33
+	  BlockMirror		  on
+	  Port			  "1"
+	  Side			  "Right"
+	}
+	Block {
+	  BlockType		  PMIOPort
+	  Name			  "in\n"
+	  SID			  "312"
+	  Position		  [145, 218, 175, 232]
+	  ZOrder		  34
+	  Port			  "2"
+	  Side			  "Left"
+	}
+	Line {
+	  ZOrder		  1
+	  SrcBlock		  "current"
+	  SrcPort		  1
+	  Points		  [9, 0; 0, -115]
+	  DstBlock		  "Scope"
+	  DstPort		  1
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  2
+	  SrcBlock		  "fluid_c"
+	  SrcPort		  RConn1
+	  DstBlock		  "Ground"
+	  DstPort		  LConn1
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  3
+	  SrcBlock		  "current"
+	  SrcPort		  LConn1
+	  Points		  [-65, 0]
+	  Branch {
+	    ConnectType		    "DEST_DEST"
+	    SrcBlock		    "fluid_c"
+	    SrcPort		    LConn1
+	    Points		    [0, -40]
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "fluid_a"
+	    DstPort		    RConn1
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  6
+	  SrcBlock		  "fluid_a"
+	  SrcPort		  LConn1
+	  DstBlock		  "in\n"
+	  DstPort		  RConn1
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  7
+	  SrcBlock		  "current"
+	  SrcPort		  RConn1
+	  DstBlock		  "out"
+	  DstPort		  RConn1
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "ch5_oil"
+      SID		      "345"
+      Ports		      [0, 0, 0, 0, 0, 1, 1]
+      Position		      [635, 479, 740, 511]
+      ZOrder		      81
+      BlockMirror	      on
+      NamePlacement	      "alternate"
+      RequestExecContextInheritance off
+      System {
+	Name			"ch5_oil"
+	Location		[-8, 0, 1288, 1000]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"usletter"
+	PaperUnits		"inches"
+	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"100"
+	Block {
+	  BlockType		  Reference
+	  Name			  "Ground"
+	  SID			  "346"
+	  Ports			  [0, 0, 0, 0, 0, 1]
+	  Position		  [476, 400, 504, 430]
+	  ZOrder		  36
+	  BlockRotation		  270
+	  BlockMirror		  on
+	  ShowName		  off
+	  LibraryVersion	  "1.2564"
+	  SourceBlock		  "powerlib/Elements/Ground"
+	  SourceType		  "Ground"
+	  LConnTagsString	  "a"
+	}
+	Block {
+	  BlockType		  Scope
+	  Name			  "Scope"
+	  SID			  "347"
+	  Ports			  [1]
+	  Position		  [675, 89, 705, 121]
+	  ZOrder		  35
+	  Floating		  off
+	  Location		  [946, 79, 1270, 318]
+	  Open			  off
+	  NumInputPorts		  "1"
+	  ZoomMode		  "xonly"
+	  List {
+	    ListType		    AxesTitles
+	    axes1		    "%<SignalLabel>"
+	  }
+	  List {
+	    ListType		    ScopeGraphics
+	    FigureColor		    "[0.501960784313725 0.501960784313725 0.501960784313725]"
+	    AxesColor		    "[0 0 0]"
+	    AxesTickColor	    "[1 1 1]"
+	    LineColors		    "[1 1 0;1 0 1;0 1 1;1 0 0;0 1 0;0 0 1]"
+	    LineStyles		    "-|-|-|-|-|-"
+	    LineWidths		    "[0.5 0.5 0.5 0.5 0.5 0.5]"
+	    MarkerStyles	    "none|none|none|none|none|none"
+	  }
+	  ShowLegends		  on
+	  YMin			  "0"
+	  YMax			  "3e-11"
+	  LimitDataPoints	  off
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "current"
+	  SID			  "348"
+	  Ports			  [0, 1, 0, 0, 0, 1, 1]
+	  Position		  [570, 213, 595, 237]
+	  ZOrder		  31
+	  LibraryVersion	  "1.2564"
+	  UserDataPersistent	  on
+	  SourceBlock		  "powerlib/Measurements/Current Measurement"
+	  SourceType		  "Current Measurement"
+	  ContentPreviewEnabled	  off
+	  PhasorSimulation	  off
+	  OutputType		  "Complex"
+	  PSBequivalent		  "0"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "fluid_a"
+	  SID			  "349"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [335, 208, 420, 242]
+	  ZOrder		  1
+	  LibraryVersion	  "1.2564"
+	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
+	  SourceType		  "Series RLC Branch"
+	  LConnTagsString	  "__new0"
+	  RConnTagsString	  "__new0"
+	  BranchType		  "RL"
+	  Resistance		  "0.011556"
+	  Inductance		  "1.2038e-08"
+	  SetiL0		  off
+	  InitialCurrent	  "0"
+	  Capacitance		  "1e-6"
+	  Setx0			  off
+	  InitialVoltage	  "0"
+	  Measurements		  "None"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "fluid_c"
+	  SID			  "350"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [473, 280, 507, 365]
+	  ZOrder		  37
+	  BlockRotation		  270
+	  BlockMirror		  on
+	  NamePlacement		  "alternate"
+	  LibraryVersion	  "1.2564"
+	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
+	  SourceType		  "Series RLC Branch"
+	  LConnTagsString	  "__new0"
+	  RConnTagsString	  "__new0"
+	  BranchType		  "C"
+	  Resistance		  "1"
+	  Inductance		  "1e-3"
+	  SetiL0		  off
+	  InitialCurrent	  "0"
+	  Capacitance		  "0.00010319"
+	  Setx0			  off
+	  InitialVoltage	  "0"
+	  Measurements		  "None"
+	}
+	Block {
+	  BlockType		  PMIOPort
+	  Name			  "out"
+	  SID			  "351"
+	  Position		  [780, 223, 810, 237]
+	  ZOrder		  33
+	  BlockMirror		  on
+	  Port			  "1"
+	  Side			  "Right"
+	}
+	Block {
+	  BlockType		  PMIOPort
+	  Name			  "in\n"
+	  SID			  "352"
+	  Position		  [145, 218, 175, 232]
+	  ZOrder		  34
+	  Port			  "2"
+	  Side			  "Left"
+	}
+	Line {
+	  ZOrder		  1
+	  SrcBlock		  "current"
+	  SrcPort		  1
+	  Points		  [9, 0; 0, -115]
+	  DstBlock		  "Scope"
+	  DstPort		  1
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  2
+	  SrcBlock		  "fluid_c"
+	  SrcPort		  RConn1
+	  DstBlock		  "Ground"
+	  DstPort		  LConn1
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  3
+	  SrcBlock		  "current"
+	  SrcPort		  LConn1
+	  Points		  [-65, 0]
+	  Branch {
+	    ConnectType		    "DEST_DEST"
+	    SrcBlock		    "fluid_c"
+	    SrcPort		    LConn1
+	    Points		    [0, -40]
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "fluid_a"
+	    DstPort		    RConn1
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  6
+	  SrcBlock		  "fluid_a"
+	  SrcPort		  LConn1
+	  DstBlock		  "in\n"
+	  DstPort		  RConn1
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  7
+	  SrcBlock		  "current"
+	  SrcPort		  RConn1
+	  DstBlock		  "out"
+	  DstPort		  RConn1
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "ch6_oil"
+      SID		      "353"
+      Ports		      [0, 0, 0, 0, 0, 1, 1]
+      Position		      [825, 479, 930, 511]
+      ZOrder		      82
+      RequestExecContextInheritance off
+      System {
+	Name			"ch6_oil"
+	Location		[-8, 0, 1288, 1000]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"usletter"
+	PaperUnits		"inches"
+	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"100"
+	Block {
+	  BlockType		  Reference
+	  Name			  "Ground"
+	  SID			  "354"
+	  Ports			  [0, 0, 0, 0, 0, 1]
+	  Position		  [476, 400, 504, 430]
+	  ZOrder		  36
+	  BlockRotation		  270
+	  BlockMirror		  on
+	  ShowName		  off
+	  LibraryVersion	  "1.2564"
+	  SourceBlock		  "powerlib/Elements/Ground"
+	  SourceType		  "Ground"
+	  LConnTagsString	  "a"
+	}
+	Block {
+	  BlockType		  Scope
+	  Name			  "Scope"
+	  SID			  "355"
+	  Ports			  [1]
+	  Position		  [675, 89, 705, 121]
+	  ZOrder		  35
+	  Floating		  off
+	  Location		  [946, 79, 1270, 318]
+	  Open			  off
+	  NumInputPorts		  "1"
+	  ZoomMode		  "xonly"
+	  List {
+	    ListType		    AxesTitles
+	    axes1		    "%<SignalLabel>"
+	  }
+	  List {
+	    ListType		    ScopeGraphics
+	    FigureColor		    "[0.501960784313725 0.501960784313725 0.501960784313725]"
+	    AxesColor		    "[0 0 0]"
+	    AxesTickColor	    "[1 1 1]"
+	    LineColors		    "[1 1 0;1 0 1;0 1 1;1 0 0;0 1 0;0 0 1]"
+	    LineStyles		    "-|-|-|-|-|-"
+	    LineWidths		    "[0.5 0.5 0.5 0.5 0.5 0.5]"
+	    MarkerStyles	    "none|none|none|none|none|none"
+	  }
+	  ShowLegends		  on
+	  YMin			  "0"
+	  YMax			  "3e-11"
+	  LimitDataPoints	  off
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "current"
+	  SID			  "356"
+	  Ports			  [0, 1, 0, 0, 0, 1, 1]
+	  Position		  [570, 213, 595, 237]
+	  ZOrder		  31
+	  LibraryVersion	  "1.2564"
+	  UserDataPersistent	  on
+	  SourceBlock		  "powerlib/Measurements/Current Measurement"
+	  SourceType		  "Current Measurement"
+	  ContentPreviewEnabled	  off
+	  PhasorSimulation	  off
+	  OutputType		  "Complex"
+	  PSBequivalent		  "0"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "fluid_a"
+	  SID			  "357"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [335, 208, 420, 242]
+	  ZOrder		  1
+	  LibraryVersion	  "1.2564"
+	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
+	  SourceType		  "Series RLC Branch"
+	  LConnTagsString	  "__new0"
+	  RConnTagsString	  "__new0"
+	  BranchType		  "RL"
+	  Resistance		  "0.011556"
+	  Inductance		  "1.2038e-08"
+	  SetiL0		  off
+	  InitialCurrent	  "0"
+	  Capacitance		  "1e-6"
+	  Setx0			  off
+	  InitialVoltage	  "0"
+	  Measurements		  "None"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "fluid_c"
+	  SID			  "358"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [473, 280, 507, 365]
+	  ZOrder		  37
+	  BlockRotation		  270
+	  BlockMirror		  on
+	  NamePlacement		  "alternate"
+	  LibraryVersion	  "1.2564"
+	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
+	  SourceType		  "Series RLC Branch"
+	  LConnTagsString	  "__new0"
+	  RConnTagsString	  "__new0"
+	  BranchType		  "C"
+	  Resistance		  "1"
+	  Inductance		  "1e-3"
+	  SetiL0		  off
+	  InitialCurrent	  "0"
+	  Capacitance		  "0.00010319"
+	  Setx0			  off
+	  InitialVoltage	  "0"
+	  Measurements		  "None"
+	}
+	Block {
+	  BlockType		  PMIOPort
+	  Name			  "out"
+	  SID			  "359"
+	  Position		  [780, 223, 810, 237]
+	  ZOrder		  33
+	  BlockMirror		  on
+	  Port			  "1"
+	  Side			  "Right"
+	}
+	Block {
+	  BlockType		  PMIOPort
+	  Name			  "in\n"
+	  SID			  "360"
+	  Position		  [145, 218, 175, 232]
+	  ZOrder		  34
+	  Port			  "2"
+	  Side			  "Left"
+	}
+	Line {
+	  ZOrder		  1
+	  SrcBlock		  "current"
+	  SrcPort		  1
+	  Points		  [9, 0; 0, -115]
+	  DstBlock		  "Scope"
+	  DstPort		  1
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  2
+	  SrcBlock		  "fluid_c"
+	  SrcPort		  RConn1
+	  DstBlock		  "Ground"
+	  DstPort		  LConn1
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  3
+	  SrcBlock		  "current"
+	  SrcPort		  LConn1
+	  Points		  [-65, 0]
+	  Branch {
+	    ConnectType		    "DEST_DEST"
+	    SrcBlock		    "fluid_c"
+	    SrcPort		    LConn1
+	    Points		    [0, -40]
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "fluid_a"
+	    DstPort		    RConn1
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  6
+	  SrcBlock		  "fluid_a"
+	  SrcPort		  LConn1
+	  DstBlock		  "in\n"
+	  DstPort		  RConn1
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  7
+	  SrcBlock		  "current"
+	  SrcPort		  RConn1
+	  DstBlock		  "out"
+	  DstPort		  RConn1
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
       Name		      "inlet1"
       SID		      "38"
       Ports		      [0, 1, 0, 0, 0, 0, 1]
-      Position		      [80, 199, 135, 266]
+      Position		      [415, 919, 470, 986]
       ZOrder		      34
       RequestExecContextInheritance off
       System {
@@ -1630,7 +2245,7 @@ Model {
       Name		      "inlet2"
       SID		      "232"
       Ports		      [0, 1, 0, 0, 0, 0, 1]
-      Position		      [80, 354, 135, 421]
+      Position		      [900, 919, 955, 986]
       ZOrder		      63
       RequestExecContextInheritance off
       System {
@@ -1752,7 +2367,7 @@ Model {
       Name		      "inlet3"
       SID		      "248"
       Ports		      [0, 1, 0, 0, 0, 0, 1]
-      Position		      [80, 509, 135, 576]
+      Position		      [20, 444, 75, 511]
       ZOrder		      66
       RequestExecContextInheritance off
       System {
@@ -1870,11 +2485,135 @@ Model {
       }
     }
     Block {
+      BlockType		      SubSystem
+      Name		      "inlet4"
+      SID		      "313"
+      Ports		      [0, 1, 0, 0, 0, 0, 1]
+      Position		      [1480, 444, 1535, 511]
+      ZOrder		      75
+      BlockMirror	      on
+      NamePlacement	      "alternate"
+      RequestExecContextInheritance off
+      System {
+	Name			"inlet4"
+	Location		[-4, 56, 936, 869]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"usletter"
+	PaperUnits		"inches"
+	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"125"
+	Block {
+	  BlockType		  Reference
+	  Name			  "Ground"
+	  SID			  "314"
+	  Ports			  [0, 0, 0, 0, 0, 1]
+	  Position		  [136, 190, 164, 220]
+	  ZOrder		  5
+	  BlockRotation		  270
+	  BlockMirror		  on
+	  ShowName		  off
+	  LibraryVersion	  "1.2564"
+	  SourceBlock		  "powerlib/Elements/Ground"
+	  SourceType		  "Ground"
+	  LConnTagsString	  "a"
+	}
+	Block {
+	  BlockType		  Step
+	  Name			  "Step"
+	  SID			  "315"
+	  Position		  [10, 145, 40, 175]
+	  ZOrder		  35
+	  Time			  "0.3"
+	  After			  "10000"
+	  SampleTime		  "0"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "voltage_source"
+	  SID			  "316"
+	  Ports			  [1, 0, 0, 0, 0, 1, 1]
+	  Position		  [125, 65, 160, 110]
+	  ZOrder		  3
+	  BlockRotation		  270
+	  LibraryVersion	  "1.2564"
+	  SourceBlock		  "powerlib/Electrical\nSources/Controlled Voltage Source"
+	  SourceType		  "Controlled Voltage Source"
+	  ContentPreviewEnabled	  off
+	  Initialize		  on
+	  Source_Type		  "DC"
+	  Amplitude		  "0"
+	  Phase			  "0"
+	  Frequency		  "0"
+	  Measurements		  "None"
+	}
+	Block {
+	  BlockType		  PMIOPort
+	  Name			  "out"
+	  SID			  "317"
+	  Position		  [130, 20, 160, 35]
+	  ZOrder		  34
+	  BlockRotation		  270
+	  BlockMirror		  on
+	  Port			  "1"
+	  Side			  "Right"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "record"
+	  SID			  "318"
+	  Position		  [130, 278, 160, 292]
+	  ZOrder		  37
+	  IconDisplay		  "Port number"
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  1
+	  SrcBlock		  "Ground"
+	  SrcPort		  LConn1
+	  DstBlock		  "voltage_source"
+	  DstPort		  LConn1
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  2
+	  SrcBlock		  "voltage_source"
+	  SrcPort		  RConn1
+	  DstBlock		  "out"
+	  DstPort		  RConn1
+	}
+	Line {
+	  ZOrder		  3
+	  SrcBlock		  "Step"
+	  SrcPort		  1
+	  Points		  [39, 0]
+	  Branch {
+	    ZOrder		    4
+	    Points		    [0, 125]
+	    DstBlock		    "record"
+	    DstPort		    1
+	  }
+	  Branch {
+	    ZOrder		    5
+	    Points		    [51, 0]
+	    DstBlock		    "voltage_source"
+	    DstPort		    1
+	  }
+	}
+      }
+    }
+    Block {
       BlockType		      Reference
       Name		      "powergui"
       SID		      "11"
       Ports		      []
-      Position		      [80, 30, 146, 69]
+      Position		      [365, 30, 431, 69]
       ZOrder		      11
       Priority		      "1"
       LibraryVersion	      "1.2564"
@@ -1933,8 +2672,9 @@ Model {
       Name		      "tube1_water"
       SID		      "75"
       Ports		      [0, 0, 0, 0, 0, 1, 1]
-      Position		      [325, 234, 430, 266]
+      Position		      [534, 765, 566, 870]
       ZOrder		      40
+      BlockRotation	      270
       RequestExecContextInheritance off
       System {
 	Name			"tube1_water"
@@ -1979,7 +2719,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.006076"
+	  Resistance		  "0.0036456"
 	  Inductance		  "4.9e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -2070,14 +2810,15 @@ Model {
     }
     Block {
       BlockType		      SubSystem
-      Name		      "tube2_oil"
+      Name		      "tube2_water"
       SID		      "277"
       Ports		      [0, 0, 0, 0, 0, 1, 1]
-      Position		      [325, 389, 430, 421]
+      Position		      [1004, 765, 1036, 870]
       ZOrder		      71
+      BlockRotation	      270
       RequestExecContextInheritance off
       System {
-	Name			"tube2_oil"
+	Name			"tube2_water"
 	Location		[145, 123, 1085, 851]
 	Open			off
 	ModelBrowserVisibility	off
@@ -2119,8 +2860,8 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.032507"
-	  Inductance		  "4.7187e-06"
+	  Resistance		  "0.0029016"
+	  Inductance		  "3.9e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
 	  Capacitance		  "1e-6"
@@ -2148,7 +2889,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.063959"
+	  Capacitance		  "0.020436"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
@@ -2214,7 +2955,7 @@ Model {
       Name		      "tube3_oil"
       SID		      "283"
       Ports		      [0, 0, 0, 0, 0, 1, 1]
-      Position		      [320, 544, 425, 576]
+      Position		      [185, 479, 290, 511]
       ZOrder		      72
       RequestExecContextInheritance off
       System {
@@ -2260,7 +3001,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.032507"
+	  Resistance		  "0.019504"
 	  Inductance		  "4.7187e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -2350,11 +3091,155 @@ Model {
 	}
       }
     }
+    Block {
+      BlockType		      SubSystem
+      Name		      "tube4_oil"
+      SID		      "319"
+      Ports		      [0, 0, 0, 0, 0, 1, 1]
+      Position		      [1255, 479, 1360, 511]
+      ZOrder		      76
+      BlockMirror	      on
+      NamePlacement	      "alternate"
+      RequestExecContextInheritance off
+      System {
+	Name			"tube4_oil"
+	Location		[145, 123, 1085, 851]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"usletter"
+	PaperUnits		"inches"
+	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"80"
+	Block {
+	  BlockType		  Reference
+	  Name			  "Ground"
+	  SID			  "320"
+	  Ports			  [0, 0, 0, 0, 0, 1]
+	  Position		  [571, 440, 599, 470]
+	  ZOrder		  36
+	  BlockRotation		  270
+	  BlockMirror		  on
+	  ShowName		  off
+	  LibraryVersion	  "1.2564"
+	  SourceBlock		  "powerlib/Elements/Ground"
+	  SourceType		  "Ground"
+	  LConnTagsString	  "a"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "fluid_a"
+	  SID			  "321"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [395, 208, 480, 242]
+	  ZOrder		  1
+	  LibraryVersion	  "1.2564"
+	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
+	  SourceType		  "Series RLC Branch"
+	  LConnTagsString	  "__new0"
+	  RConnTagsString	  "__new0"
+	  BranchType		  "RL"
+	  Resistance		  "0.019504"
+	  Inductance		  "4.7187e-06"
+	  SetiL0		  off
+	  InitialCurrent	  "0"
+	  Capacitance		  "1e-6"
+	  Setx0			  off
+	  InitialVoltage	  "0"
+	  Measurements		  "None"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "fluid_c"
+	  SID			  "322"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [568, 305, 602, 390]
+	  ZOrder		  35
+	  BlockRotation		  270
+	  BlockMirror		  on
+	  NamePlacement		  "alternate"
+	  LibraryVersion	  "1.2564"
+	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
+	  SourceType		  "Series RLC Branch"
+	  LConnTagsString	  "__new0"
+	  RConnTagsString	  "__new0"
+	  BranchType		  "C"
+	  Resistance		  "1"
+	  Inductance		  "1e-3"
+	  SetiL0		  off
+	  InitialCurrent	  "0"
+	  Capacitance		  "0.063959"
+	  Setx0			  off
+	  InitialVoltage	  "0"
+	  Measurements		  "None"
+	}
+	Block {
+	  BlockType		  PMIOPort
+	  Name			  "out"
+	  SID			  "323"
+	  Position		  [780, 218, 810, 232]
+	  ZOrder		  33
+	  BlockMirror		  on
+	  Port			  "1"
+	  Side			  "Right"
+	}
+	Block {
+	  BlockType		  PMIOPort
+	  Name			  "in\n"
+	  SID			  "324"
+	  Position		  [145, 218, 175, 232]
+	  ZOrder		  34
+	  Port			  "2"
+	  Side			  "Left"
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  1
+	  SrcBlock		  "in\n"
+	  SrcPort		  RConn1
+	  DstBlock		  "fluid_a"
+	  DstPort		  LConn1
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  2
+	  Points		  [585, 225; 0, 65]
+	  DstBlock		  "fluid_c"
+	  DstPort		  LConn1
+	  Branch {
+	    ConnectType		    "SRC_DEST"
+	    SrcBlock		    "fluid_a"
+	    SrcPort		    RConn1
+	    Points		    [90, 0]
+	  }
+	  Branch {
+	    ConnectType		    "SRC_DEST"
+	    SrcBlock		    "out"
+	    SrcPort		    RConn1
+	    Points		    [-180, 0]
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  5
+	  SrcBlock		  "Ground"
+	  SrcPort		  LConn1
+	  DstBlock		  "fluid_c"
+	  DstPort		  RConn1
+	}
+      }
+    }
     Line {
       LineType		      "Connection"
       ZOrder		      50
       SrcBlock		      "inlet1"
       SrcPort		      RConn1
+      Points		      [65, 0]
       DstBlock		      "tube1_water"
       DstPort		      LConn1
     }
@@ -2369,8 +3254,9 @@ Model {
     Line {
       LineType		      "Connection"
       ZOrder		      69
-      SrcBlock		      "tube2_oil"
+      SrcBlock		      "tube2_water"
       SrcPort		      LConn1
+      Points		      [0, 85]
       DstBlock		      "inlet2"
       DstPort		      RConn1
     }
@@ -2392,28 +3278,70 @@ Model {
     }
     Line {
       LineType		      "Connection"
-      ZOrder		      58
+      ZOrder		      74
+      SrcBlock		      "tube2_water"
+      SrcPort		      RConn1
+      DstBlock		      "ch2_water"
+      DstPort		      LConn1
+    }
+    Line {
+      LineType		      "Connection"
+      ZOrder		      81
+      SrcBlock		      "tube4_oil"
+      SrcPort		      LConn1
+      DstBlock		      "inlet4"
+      DstPort		      RConn1
+    }
+    Line {
+      LineType		      "Connection"
+      ZOrder		      82
+      SrcBlock		      "ch4_oil"
+      SrcPort		      LConn1
+      DstBlock		      "tube4_oil"
+      DstPort		      RConn1
+    }
+    Line {
+      LineType		      "Connection"
+      ZOrder		      87
       SrcBlock		      "ch1_water"
       SrcPort		      RConn1
-      Points		      [0, 155]
+      Points		      [0, -100]
       Branch {
 	ConnectType		"DEST_DEST"
-	SrcBlock		"ch3_oil"
+	SrcBlock		"ch5_oil"
 	SrcPort			RConn1
-	Points			[10, 0; 0, -155]
+	Points			[-70, 0]
       }
       Branch {
 	ConnectType		"DEST_SRC"
-	DstBlock		"ch2_oil"
+	DstBlock		"ch3_oil"
 	DstPort			RConn1
       }
     }
     Line {
       LineType		      "Connection"
-      ZOrder		      74
-      SrcBlock		      "tube2_oil"
+      ZOrder		      90
+      SrcBlock		      "ch2_water"
       SrcPort		      RConn1
-      DstBlock		      "ch2_oil"
+      Points		      [0, -100]
+      Branch {
+	ConnectType		"DEST_SRC"
+	DstBlock		"ch4_oil"
+	DstPort			RConn1
+      }
+      Branch {
+	ConnectType		"DEST_DEST"
+	SrcBlock		"ch6_oil"
+	SrcPort			RConn1
+	Points			[75, 0]
+      }
+    }
+    Line {
+      LineType		      "Connection"
+      ZOrder		      97
+      SrcBlock		      "ch6_oil"
+      SrcPort		      LConn1
+      DstBlock		      "ch5_oil"
       DstPort		      LConn1
     }
   }
