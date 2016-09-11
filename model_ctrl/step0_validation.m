@@ -257,26 +257,30 @@ for i = 1:size(vali.r,1)
     plot(vali.t, vali.y(i,:), 'b.')
     plot(vali.t, vali.yo(i,:), 'c.')
     if (i==1)
-        title('r(red) vs y(blue) vs yo(cyan)')
+%         title('r(red) vs y(blue) vs yo(cyan)')
+        title('Displacement')
     end
     if (i==size(vali.r,1))
         xlabel('time [s]')
     end
     ylabel('position [um]')
     grid minor
+    legend('reference','simulation','experiment');
     
     subplot(size(vali.r,1),3,(i-1)*3+2)
     plot(vali.t, vali.v(i,:), 'r')
     hold on
     plot(vali.t, vali.vo(i,:), 'm.')
     if (i == 1)
-        title('v(red) vs vo(dots)')
+%         title('v(red) vs vo(dots)')
+        title('Velocity')
     end
     if (i == size(vali.r,1))
         xlabel('time [s]')
     end
     ylabel('velocity [um/s]')
     grid minor
+    legend('experiment', 'simulation');
     
     if i <= size(vali.ud)
         subplot(size(vali.r,1),3,3*i)  

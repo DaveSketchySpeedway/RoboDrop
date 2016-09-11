@@ -213,13 +213,15 @@ for c = 1:size(simu.y,2)
 %         i = i + 1;
     end    
     if (c == 1)
-        title('R(red) Yp(cyan) Xe(green)')
+%         title('R(red) Yp(cyan) Xe(green)')
+        title('Displacement')
     end
     if (c == size(simu.y,2))
         xlabel('time [s]')
     end
     ylabel('position [um]')
     grid minor
+    legend('measurement','reference','states','prediction')
         
     subplot(size(simu.y,2),3,(c-1)*3+2)
     plot(simu.ty, simu.y(:,c), 'b')
@@ -230,13 +232,15 @@ for c = 1:size(simu.y,2)
         i = i + 1;
     end    
     if (c == 1)
-        title('R(red) Z(magenta)')
+%         title('R(red) Z(magenta)')
+        title('Integral Feedback')
     end
     if (c == size(simu.y,2))
         xlabel('time [s]')
     end
     ylabel('position integral [um s]')
     grid minor
+    legend('measurement','reference','integral states');
     
     subplot(size(simu.y,2),3,c*3)
     if (c <= size(simu.u,2))
@@ -249,13 +253,15 @@ for c = 1:size(simu.y,2)
         end
     end 
     if (c == 1)
-        title('D(red) De(green) Dc(cyan)')
+%         title('D(red) De(green) Dc(cyan)')
+    title('Disturbance Correction')
     end
     if (c == size(simu.y,2))
         xlabel('time [s]')
     end
     ylabel('pressure [mbar]')
     grid minor
+    legend('disturbance','estimate','correction')
 end
 all_axes = findobj(gcf, 'type', 'axes');
 linkaxes(all_axes, 'x');
