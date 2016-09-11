@@ -1,22 +1,21 @@
 /*
 Copyright 2016 David Wong
 
-This file is part of uEVA. https://github.com/DaveSketchySpeedway/uEVA
+This file is part of RoboDrop from the uEVA project. https://github.com/DaveSketchySpeedway/uEVA
 
-uEVA is free software : you can redistribute it and / or modify
+RoboDrop is free software : you can redistribute it and / or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 any later version.
 
-uEVA is distributed in the hope that it will be useful,
+RoboDrop is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with uEva. If not, see <http://www.gnu.org/licenses/>
+along with RoboDrop. If not, see <http://www.gnu.org/licenses/>
 */
-
 #ifndef S2ENGINETHREAD_H
 #define S2ENGINETHREAD_H
 
@@ -51,20 +50,23 @@ public:
 	void setData(const UevaData &d);
 	void wake();
 
-	//// SINGLE TIME 
+	//// SINGLE TIME FUNCTION
 	void setCalib(double micronLength);
 	void setBkgd();
 	void separateChannels(int &numChan);
 	void sortChannels(std::map<std::string, std::vector<int> > &channelInfo);
 	void loadCtrl(std::string fileName,
 		int *numState, int *numIn, int *numOut, int *numCtrl, double *ctrlTs);
+	void initImgproc();
+	void finalizeImgproc();
 	void initCtrl();
+	void finalizeCtrl(QVector<qreal> &inletRegurgitate);
 
 signals:
 	void engineSignal(const UevaData &d);
 
 protected:
-	//// CONTINUOUS 
+	//// CONTINUOUS FUNCTION
 	void run();
 
 private:
@@ -74,56 +76,78 @@ private:
 	UevaSettings settings;
 	UevaData data;
 
-	//// PERSISTENT VARIABLES
-	std::vector<UevaCtrl> ctrls;
-	std::vector<int> activatedChannels;
+	//// MULTI CYCLE VARIABLES
 	double micronPerPixel;
 	cv::Mat bkgd;
+	std::vector<UevaCtrl> ctrls;
 	cv::Mat dropletMask;
 	cv::Mat markerMask;
 	cv::Mat allChannels;
 	std::vector<std::vector<cv::Point_<int>>> channelContours;
 	std::vector<UevaChannel> channels;
-	QVector<qreal> estimates;
-	QVector<qreal> raws;
-	QVector<qreal> measures;
-	QVector<qreal> references;
-	QVector<qreal> states;
-	QVector<qreal> integralStates;
-	QVector<qreal> commands;
-	QVector<qreal> measureOffsets;
-	std::vector<double> grounds;
-
-	//// NON PERSISTANT VARIABLES
-	bool isFirstTime;
 	bool needSelecting;
 	bool needReleasing;
-	bool needSwapping;
-	bool needResetting;
-	std::vector<int> desiredChannels;
-	cv::Mat allDroplets;
-	cv::Mat allMarkers;
+
+	//// DOUBLE CYCLE VARIABLES
+	std::vector<UevaMarker> oldMarkers;
+	std::vector<UevaMarker> newMarkers;
+	std::vector<int> activatedChannelIndices;
+
+	QVector<qreal> ground;
+	QVector<qreal> correction;
+	cv::Mat posteriorErrorCov;
+	cv::Mat modelNoiseCov;
+	cv::Mat disturbanceNoiseCov;
+	cv::Mat processNoiseCov;
+	cv::Mat sensorNoiseCov;
+	QVector<qreal> reference;
+	QVector<qreal> output;
+	QVector<qreal> outputLuenburger;
+	QVector<qreal> outputRaw;
+	QVector<qreal> outputOffset;
+	QVector<qreal> outputKalman;
+	QVector<qreal> stateKalman;
+	QVector<qreal> disturbance;
+	QVector<qreal> stateLuenburger;
+	QVector<qreal> stateIntegral;
+	QVector<qreal> command;
+
+	//// SINGLE CYCLE VARIABLES
+	cv::Mat allDroplets; 
 	std::vector<std::vector< cv::Point_<int> >> dropletContours;
+	cv::Mat allMarkers;
 	std::vector<std::vector< cv::Point_<int> >> markerContours;
+	
+	std::vector<int> desiredChannelIndices;
 	std::vector<UevaDroplet> droplets;
-	std::vector<UevaMarker> markers;
-	cv::Mat x; 
-	cv::Mat z;
-	cv::Mat u;
-	cv::Mat r_new;
-	cv::Mat y_raw;
-	cv::Mat y_new;
-	cv::Mat y_est;
-	cv::Mat x_new;
-	cv::Mat z_new;
-	cv::Mat u_new;
+
 	cv::Point_<int> mousePressLeft;
 	cv::Point_<int> mousePressRight;
 	cv::Point_<int> mousePressPrevious;
 	cv::Point_<int> mousePressCurrent;
 	cv::Point_<int> mousePressDisplacement;
 
-	//// CONVENIENT PARAMETERS
+	int directRequestIndex;
+
+	cv::Mat k;
+	cv::Mat pp;
+	cv::Mat pe;
+	cv::Mat rw;
+	cv::Mat rv;
+	cv::Mat r;
+	cv::Mat dr;
+	cv::Mat y;
+	cv::Mat yl;
+	cv::Mat y_raw;
+	cv::Mat y_off;
+	cv::Mat yk;
+	cv::Mat xp;
+	cv::Mat xe;
+	cv::Mat xl;
+	cv::Mat z;
+	cv::Mat u;
+
+	//// CONVENIENCE VARIABLES
 	enum EngineConstants
 	{
 		LOW_VALUE = 0,
@@ -132,7 +156,7 @@ private:
 	};
 	cv::Mat structuringElement;
 	cv::Point_<int> seed;
-	int alwaysTrue;
+	int floodFillReturn;
 	cv::Scalar_<int> lineColor;
 	int lineThickness;
 	int lineType;
@@ -140,11 +164,10 @@ private:
 	cv::Point_<int> anchor;
 	cv::Moments mom;
 	cv::Rect rect;
-	int directedChannel;
-	double dr;
+	std::string str;
+	bool alwaysTrue;
 
 	private slots:
-
 };
 
 

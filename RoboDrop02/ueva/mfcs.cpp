@@ -1,20 +1,20 @@
 /*
 Copyright 2016 David Wong
 
-This file is part of uEVA. https://github.com/DaveSketchySpeedway/uEVA
+This file is part of RoboDrop from the uEVA project. https://github.com/DaveSketchySpeedway/uEVA
 
-uEVA is free software : you can redistribute it and / or modify
+RoboDrop is free software : you can redistribute it and / or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 any later version.
 
-uEVA is distributed in the hope that it will be useful,
+RoboDrop is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with uEva. If not, see <http://www.gnu.org/licenses/>
+along with RoboDrop. If not, see <http://www.gnu.org/licenses/>
 */
 
 #include "mfcs.h"
@@ -116,9 +116,12 @@ Mfcs::Mfcs(unsigned short sn, int ez)
 		// set gains
 		if (set_alpha_ptr)
 		{
-			unsigned char c = set_alpha_ptr(
-				mfcs_handle, (unsigned char)0, (unsigned char)5);
-			std::cerr << "mfcs set gain return " << (int)c << std::endl;
+			for (int i = 1; i <= 10; i++)
+			{
+				unsigned char c = set_alpha_ptr(
+					mfcs_handle, (unsigned char)i, (unsigned char)5);
+				std::cerr << "mfcs set gain return " << (int)c << std::endl;
+			}
 		}
 		else
 		{
@@ -137,8 +140,11 @@ Mfcs::~Mfcs()
 	// set zero
 	if (set_auto_ptr)
 	{
-		unsigned char c = set_auto_ptr(mfcs_handle, (unsigned char)0, (float)0);
-		std::cerr << "mfcs all channel zeroed, return " << (int)c << std::endl;
+		for (int i = 1; i <= 10; i++)
+		{
+			unsigned char c = set_auto_ptr(mfcs_handle, (unsigned char)i, (float)0);
+			std::cerr << "mfcs command zero, return " << (int)c << std::endl;
+		}
 	}
 	else
 	{

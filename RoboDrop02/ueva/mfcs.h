@@ -1,20 +1,20 @@
 /*
 Copyright 2016 David Wong
 
-This file is part of uEVA. https://github.com/DaveSketchySpeedway/uEVA
+This file is part of RoboDrop from the uEVA project. https://github.com/DaveSketchySpeedway/uEVA
 
-uEVA is free software : you can redistribute it and / or modify
+RoboDrop is free software : you can redistribute it and / or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 any later version.
 
-uEVA is distributed in the hope that it will be useful,
+RoboDrop is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with uEva. If not, see <http://www.gnu.org/licenses/>
+along with RoboDrop. If not, see <http://www.gnu.org/licenses/>
 */
 
 #ifndef MFCS_H
@@ -27,13 +27,13 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 class Mfcs
 {
 public:
-	Mfcs(unsigned short sn = 0, int ez = 0);
+	Mfcs(unsigned short sn = 0, int ez = 0); 
 	~Mfcs();
-	void purge_on();
-	void purge_off();
 
-	void write(unsigned char* s); // not used in operation
-	void read(unsigned char* s); // not used in operation
+	void purge_on(); // deprecated
+	void purge_off(); // deprecated
+	void write(unsigned char* s); // deprecated
+	void read(unsigned char* s); // deprecated
 
 	void measure(int channel, float* pressure, float* pump_time);
 	void command(int channel, float pressure);

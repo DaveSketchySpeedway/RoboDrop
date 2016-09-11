@@ -1,14 +1,16 @@
-microfluidics Enhanced Vision-based Automation
+Robodrop
+Project uEVA (microfluidics Enhanced Vision-based Automation)
 Copyright 2016 David Wong
 https://github.com/DaveSketchySpeedway/uEva
 
 
+RoboDrop00 
+	experimental, coded in MATLAb, not included
+RoboDrop01
+	pre-prototype version, lots of problems
+RoboDrop02
+	prototype version
 
-EVA00
-	pre-prototype version
-EVA01 
-	replace grid sort with object tracking
-	replace observer with kalman filter
 
 
 

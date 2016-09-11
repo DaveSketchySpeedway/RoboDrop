@@ -1,20 +1,20 @@
 /*
 Copyright 2016 David Wong
 
-This file is part of uEVA. https://github.com/DaveSketchySpeedway/uEVA
+This file is part of RoboDrop from the uEVA project. https://github.com/DaveSketchySpeedway/uEVA
 
-uEVA is free software : you can redistribute it and / or modify
+RoboDrop is free software : you can redistribute it and / or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or 
+the Free Software Foundation, either version 3 of the License, or
 any later version.
 
-uEVA is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of 
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+RoboDrop is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with uEva. If not, see <http://www.gnu.org/licenses/>
+along with RoboDrop. If not, see <http://www.gnu.org/licenses/>
 */
 
 #include "mainwindow.h"
@@ -180,54 +180,40 @@ void MainWindow::imgprocOnOff()
 	{
 		dashboard->imgprocButton->setText(tr("Off"));
 		settings.flag |= UevaSettings::IMGPROC_ON;
-		// initialize settings
+		// initialize
 		imgprocSettings();
 		ctrlSettings();
+		engineThread->initImgproc();
 	}
 	else
 	{
 		dashboard->imgprocButton->setText(tr("On"));
 		settings.flag ^= UevaSettings::IMGPROC_ON;
+		// finalize
+		engineThread->finalizeImgproc();
 	}
 }
 
 void MainWindow::imgprocSettings()
 {
 	int threshold = dashboard->threshSlider->value();
-	int erodeSize = dashboard->erodeSizeSlider->value() * 2 + 3;
+	int erodeSize = dashboard->erodeSizeSlider->value() * 2 + 1;
 	int contourSize = dashboard->contourSizeSlider->value();
-	int sortGridSize = dashboard->sortGridSizeSlider->value();
-	int sortOrder = dashboard->sortOrderSlider->value();
+	int trackTooFar = dashboard->trackTooFarSlider->value();
 	int convexSize = dashboard->convexSizeSlider->value();
 	int persistence = dashboard->persistenceSlider->value();
 
 	settings.imgprogThreshold = threshold;
 	settings.imgprogErodeSize = erodeSize;
 	settings.imgprogContourSize = contourSize;
-	settings.imgprogSortGridSize = sortGridSize;
-	settings.imgprogSortOrder = sortOrder;
+	settings.imgprogTrackTooFar = trackTooFar;
 	settings.imgprocConvexSize = convexSize;
 	settings.imgprocPersistence = persistence;
-
-	QString sortOrderString;
-	switch (sortOrder)
-	{
-	case 0:
-	{
-		sortOrderString = QString("Sort Row First");
-		break;
-	}
-	case 1:
-	{
-		sortOrderString = QString("Sort Column First");
-	}
-	}
 
 	dashboard->threshLabel->setText(QString::number(threshold));
 	dashboard->erodeSizeLabel->setText(QString::number(erodeSize));
 	dashboard->contourSizeLabel->setText(QString::number(contourSize));
-	dashboard->sorGridSizeLabel->setText(QString::number(sortGridSize));
-	dashboard->sortOrderLabel->setText(sortOrderString);
+	dashboard->trackTooFarLabel->setText(QString::number(trackTooFar));
 	dashboard->convexSizeLabel->setText(QString::number(convexSize));
 	dashboard->persistenceLabel->setText(QString::number(persistence));
 }
@@ -238,34 +224,67 @@ void MainWindow::ctrlOnOff()
 	{
 		dashboard->ctrlButton->setText(tr("Off"));
 		settings.flag |= UevaSettings::CTRL_ON;
-		// initialize settings
+		// initialize
 		imgprocSettings();
 		ctrlSettings();
-		// initialize ctrl
 		engineThread->initCtrl();
 	}
 	else
 	{
 		dashboard->ctrlButton->setText(tr("On"));
 		settings.flag ^= UevaSettings::CTRL_ON;
+		// finalize
+		QVector<qreal> inletRegurgitates;
+		engineThread->finalizeCtrl(inletRegurgitates);
+		dashboard->regurgitateInlets(inletRegurgitates);
 	}
 }
 
 void MainWindow::ctrlSettings()
 {
 	int markerSize = dashboard->markerSizeSlider->value();
-	int autoMargin = dashboard->autoMarginSlider->value();
+	int autoHorzExcl = dashboard->autoHorzExclSlider->value();
+	int autoVertExcl = dashboard->autoVertExclSlider->value();
+	double modelCov = std::pow(10.0, dashboard->modelCovSlider->value() / 10.0);
+	double disturbanceCov = std::pow(10.0, dashboard->disturbanceCovSlider->value() / 10.0);
+	double disturbanceCorr = dashboard->disturbanceCorrSlider->value() / 1000.0;
+	double neckDesire = dashboard->neckDesireSBox->value();
+	double neckThreshold = dashboard->neckThresholdSBox->value();
+	double neckLowerGain = dashboard->neckLowerGainSBox->value();
+	double neckHigherGain = dashboard->neckHigherGainSBox->value();
 
 	settings.ctrlMarkerSize = markerSize;
-	settings.ctrlAutoMargin = autoMargin;
-
+	settings.ctrlAutoHorzExcl = autoHorzExcl;
+	settings.ctrlAutoVertExcl = autoVertExcl;
+	settings.ctrlModelCov = modelCov;
+	settings.ctrlDisturbanceCov = disturbanceCov;
+	settings.ctrlDisturbanceCorr = disturbanceCorr;
+	settings.ctrlNeckDesire = neckDesire;
+	settings.ctrlNeckThreshold = neckThreshold;
+	settings.ctrlNeckLowerGain = neckLowerGain;
+	settings.ctrlNeckHigherGain = neckHigherGain;
+	
 	dashboard->markerSizeLabel->setText(QString::number(markerSize));
-	dashboard->autoMarginLabel->setText(QString::number(autoMargin));
+	dashboard->autoHorzExclLabel->setText(QString::number(autoHorzExcl));
+	dashboard->autoVertExclLabel->setText(QString::number(autoVertExcl));
+	dashboard->modelCovLabel->setText(QString::number(modelCov));
+	dashboard->disturbanceCovLabel->setText(QString::number(disturbanceCov));
+	dashboard->disturbanceCorrLabel->setText(QString::number(disturbanceCorr));
 }
 
 void MainWindow::receiveAutoCatchRequests(const QVector<bool> &values)
 {
 	settings.autoCatchRequests = values;
+}
+
+void MainWindow::receiveUseNeckRequests(const QVector<bool> &values)
+{
+	settings.useNeckRequests = values;
+}
+
+void MainWindow::receiveNeckDirectionRequests(const QVector<bool> &values)
+{
+	settings.neckDirectionRequests = values;
 }
 
 //// COMMUNICATE WITH SETUP
@@ -439,10 +458,9 @@ void MainWindow::maskOnOff()
 
 void MainWindow::maskSetup()
 {
-	// * 2 + 3 because they have to be odd and > 1
-	int block = setup->blockSlider->value() * 2 + 3;
 	int threshold = (127 - setup->thresholdSlider->value());
-	int openSize = setup->openSizeSlider->value() * 2 + 3;
+	int block = setup->blockSlider->value() * 2 + 1;
+	int openSize = setup->openSizeSlider->value() * 2 + 1;
 
 	settings.maskBlockSize = block;
 	settings.maskThreshold = threshold;
@@ -475,7 +493,7 @@ void MainWindow::channelOnOff()
 
 void MainWindow::channelSetup()
 {
-	int erodeSize = setup->erodeSizeSlider->value() * 2 + 3;
+	int erodeSize = setup->erodeSizeSlider->value() * 2 + 1;
 	int cutThickness = setup->cutThicknessSlider->value();
 
 	settings.channelErodeSize = erodeSize;
@@ -491,7 +509,7 @@ void MainWindow::sepSortOnOff()
 	{
 		setup->sepSortButton->setText(tr("Sort Channels"));
 		// create channel objects
-		int numChan;
+		int numChan = 0;
 		engineThread->separateChannels(numChan);
 		// create channel info widgets
 		setup->createChannelInfoWidgets(numChan);
@@ -504,8 +522,10 @@ void MainWindow::sepSortOnOff()
 		setup->deleteChannelInfoWidgets(channelInfo);
 		// sort channel objects
 		engineThread->sortChannels(channelInfo);
-		// reset auto catch checkboxes
-		dashboard->resetAutoCatchBox(channelInfo["newIndices"].size());
+		// reset checkboxes
+		dashboard->resetAutoCatchCBoxes(channelInfo["newIndices"].size());
+		dashboard->resetUseNeckCBoxes(channelInfo["newIndices"].size());
+		dashboard->resetNeckDirectionCBoxes(channelInfo["newIndices"].size());
 	}
 }
 
@@ -631,12 +651,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[0] = !settings.linkChannels[0];
-				settings.inverseLinkChannels[0] = settings.linkChannels[0];
+				settings.linkRequests[0] = !settings.linkRequests[0];
+				settings.inverseLinkRequests[0] = settings.linkRequests[0];
 			}
 			else
 			{
-				settings.linkChannels[0] = !settings.linkChannels[0];
+				settings.linkRequests[0] = !settings.linkRequests[0];
 			}
 			break;
 		}
@@ -644,12 +664,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[1] = !settings.linkChannels[1];
-				settings.inverseLinkChannels[1] = settings.linkChannels[1];
+				settings.linkRequests[1] = !settings.linkRequests[1];
+				settings.inverseLinkRequests[1] = settings.linkRequests[1];
 			}
 			else
 			{
-				settings.linkChannels[1] = !settings.linkChannels[1];
+				settings.linkRequests[1] = !settings.linkRequests[1];
 			}
 			break;
 		}
@@ -657,12 +677,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[2] = !settings.linkChannels[2];
-				settings.inverseLinkChannels[2] = settings.linkChannels[2];
+				settings.linkRequests[2] = !settings.linkRequests[2];
+				settings.inverseLinkRequests[2] = settings.linkRequests[2];
 			}
 			else
 			{
-				settings.linkChannels[2] = !settings.linkChannels[2];
+				settings.linkRequests[2] = !settings.linkRequests[2];
 			}
 			break;
 		}
@@ -670,12 +690,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[3] = !settings.linkChannels[3];
-				settings.inverseLinkChannels[3] = settings.linkChannels[3];
+				settings.linkRequests[3] = !settings.linkRequests[3];
+				settings.inverseLinkRequests[3] = settings.linkRequests[3];
 			}
 			else
 			{
-				settings.linkChannels[3] = !settings.linkChannels[3];
+				settings.linkRequests[3] = !settings.linkRequests[3];
 			}
 			break;
 		}
@@ -683,12 +703,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[4] = !settings.linkChannels[4];
-				settings.inverseLinkChannels[4] = settings.linkChannels[4];
+				settings.linkRequests[4] = !settings.linkRequests[4];
+				settings.inverseLinkRequests[4] = settings.linkRequests[4];
 			}
 			else
 			{
-				settings.linkChannels[4] = !settings.linkChannels[4];
+				settings.linkRequests[4] = !settings.linkRequests[4];
 			}
 			break;
 		}
@@ -696,12 +716,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[5] = !settings.linkChannels[5];
-				settings.inverseLinkChannels[5] = settings.linkChannels[5];
+				settings.linkRequests[5] = !settings.linkRequests[5];
+				settings.inverseLinkRequests[5] = settings.linkRequests[5];
 			}
 			else
 			{
-				settings.linkChannels[5] = !settings.linkChannels[5];
+				settings.linkRequests[5] = !settings.linkRequests[5];
 			}
 			break;
 		}
@@ -709,12 +729,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[6] = !settings.linkChannels[6];
-				settings.inverseLinkChannels[6] = settings.linkChannels[6];
+				settings.linkRequests[6] = !settings.linkRequests[6];
+				settings.inverseLinkRequests[6] = settings.linkRequests[6];
 			}
 			else
 			{
-				settings.linkChannels[6] = !settings.linkChannels[6];
+				settings.linkRequests[6] = !settings.linkRequests[6];
 			}
 			break;
 		}
@@ -722,12 +742,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[7] = !settings.linkChannels[7];
-				settings.inverseLinkChannels[7] = settings.linkChannels[7];
+				settings.linkRequests[7] = !settings.linkRequests[7];
+				settings.inverseLinkRequests[7] = settings.linkRequests[7];
 			}
 			else
 			{
-				settings.linkChannels[7] = !settings.linkChannels[7];
+				settings.linkRequests[7] = !settings.linkRequests[7];
 			}
 			break;
 		}
@@ -735,12 +755,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[8] = !settings.linkChannels[8];
-				settings.inverseLinkChannels[8] = settings.linkChannels[8];
+				settings.linkRequests[8] = !settings.linkRequests[8];
+				settings.inverseLinkRequests[8] = settings.linkRequests[8];
 			}
 			else
 			{
-				settings.linkChannels[8] = !settings.linkChannels[8];
+				settings.linkRequests[8] = !settings.linkRequests[8];
 			}
 			break;
 		}
@@ -748,12 +768,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		{
 			if (event->modifiers() == Qt::ControlModifier)
 			{
-				settings.linkChannels[9] = !settings.linkChannels[9];
-				settings.inverseLinkChannels[9] = settings.linkChannels[9];
+				settings.linkRequests[9] = !settings.linkRequests[9];
+				settings.inverseLinkRequests[9] = settings.linkRequests[9];
 			}
 			else
 			{
-				settings.linkChannels[9] = !settings.linkChannels[9];
+				settings.linkRequests[9] = !settings.linkRequests[9];
 			}
 			break;
 		}
@@ -1220,8 +1240,6 @@ void MainWindow::engineSlot(const UevaData &data)
 	display->setImage(fileRgb888); 
 	display->update();
 	
-	//// UPDATE DASHBOARD
-
 	//// PUMP THREAD FPS
 	now = QTime::currentTime();
 	pumpFps = 1000.0 / pumpLastTime.msecsTo(now);

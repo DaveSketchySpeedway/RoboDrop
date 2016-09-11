@@ -1,20 +1,20 @@
 /*
 Copyright 2016 David Wong
 
-This file is part of uEVA. https://github.com/DaveSketchySpeedway/uEVA
+This file is part of RoboDrop from the uEVA project. https://github.com/DaveSketchySpeedway/uEVA
 
-uEVA is free software : you can redistribute it and / or modify
+RoboDrop is free software : you can redistribute it and / or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 any later version.
 
-uEVA is distributed in the hope that it will be useful,
+RoboDrop is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with uEva. If not, see <http://www.gnu.org/licenses/>
+along with RoboDrop. If not, see <http://www.gnu.org/licenses/>
 */
 
 
@@ -41,6 +41,7 @@ along with uEva. If not, see <http://www.gnu.org/licenses/>
 #include <QPainter >
 #include <algorithm>
 #include <fstream>
+#include <cmath>
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -78,6 +79,8 @@ public:
 	void ctrlOnOff();
 	void ctrlSettings();
 	void receiveAutoCatchRequests(const QVector<bool> &values);
+	void receiveUseNeckRequests(const QVector<bool> &values);
+	void receiveNeckDirectionRequests(const QVector<bool> &values);
 
 	//// COMMUNICATE WITH SETUP
 	void connectCamera();

@@ -1,34 +1,38 @@
 /*
 Copyright 2016 David Wong
 
-This file is part of uEVA. https://github.com/DaveSketchySpeedway/uEVA
+This file is part of RoboDrop from the uEVA project. https://github.com/DaveSketchySpeedway/uEVA
 
-uEVA is free software : you can redistribute it and / or modify
+RoboDrop is free software : you can redistribute it and / or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 any later version.
 
-uEVA is distributed in the hope that it will be useful,
+RoboDrop is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with uEva. If not, see <http://www.gnu.org/licenses/>
+along with RoboDrop. If not, see <http://www.gnu.org/licenses/>
 */
 
 #include "uevastructures.h"
+
+
 
 //// SETTINGS
 UevaSettings::UevaSettings()
 {
 	flag = 0;
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 10; i++) // limited by 0-9 on keyboard
 	{
-		linkChannels.push_back(false);
-		inverseLinkChannels.push_back(false);
+		linkRequests.push_back(false);
+		inverseLinkRequests.push_back(false);
 	}
 }
+
+
 
 //// DATA
 UevaData::UevaData()
@@ -40,23 +44,34 @@ UevaData::UevaData()
 	map["inletWrite"] = inletWrite;
 	map["inletRead"] = inletRead;
 	map["inletTime"] = inletTime;
+
 	//// CTRL
-	QVector<qreal> raws;
-	QVector<qreal> measures;
-	QVector<qreal> estimates;
-	QVector<qreal> references;
-	QVector<qreal> states;
-	QVector<qreal> integralStates;
-	QVector<qreal> commands;
-	QVector<qreal> measureOffsets;
-	QVector<qreal> referenceOffsets;
-	map["ctrlRaw"] = raws;
-	map["ctrlMeasure"] = measures;
-	map["ctrlEstimate"] = estimates;
-	map["ctrlReference"] = references;
-	map["ctrlState"] = states;
-	map["ctrlIntegraState"] = integralStates;
-	map["ctrlCommand"] = commands;
+	QVector<qreal> ground;
+	QVector<qreal> correction;
+	QVector<qreal> reference;
+	QVector<qreal> output;
+	QVector<qreal> outputLuenburger;
+	QVector<qreal> outputRaw;
+	QVector<qreal> outputOffset;
+	QVector<qreal> outputKalman;
+	QVector<qreal> stateKalman;
+	QVector<qreal> disturbance;
+	QVector<qreal> stateLuenburger;
+	QVector<qreal> stateIntegral;
+	QVector<qreal> command;
+	map["ctrlGround"] = ground;
+	map["ctrlCorrection"] = correction;
+	map["ctrlReference"] = reference;
+	map["ctrlOutput"] = output;
+	map["ctrlOutputLuenburger"] = outputLuenburger;
+	map["ctrlOutputRaw"] = outputRaw;
+	map["ctrlOutputOffset"] = outputOffset;
+	map["ctrlOutputKalman"] = outputKalman;
+	map["ctrlStateKalman"] = stateKalman;
+	map["ctrlDisturbance"] = disturbance;
+	map["ctrlStateLuenburger"] = stateLuenburger;
+	map["ctrlStateIntegral"] = stateIntegral;
+	map["ctrlcommand"] = command;
 }
 
 std::ofstream UevaData::fileStream;
@@ -101,21 +116,13 @@ void UevaData::writeToFile() const
 	fileStream << std::endl;
 }
 
+
+
 //// BUFFER
 UevaBuffer::UevaBuffer()
 {
 	index = 0;
 	size = 100; // 10 seconds of data
-
-	//// PUMP
-	QVector<QVector<qreal>> inletWrite;
-	QVector<QVector<qreal>> inletRead;
-	QVector<QVector<qreal>> inletTime;
-	map["inletWrite"] = inletWrite;
-	map["inletRead"] = inletRead;
-	map["inletTime"] = inletTime;
-
-	//// xxx
 }
 
 void UevaBuffer::write(const UevaData &data)
@@ -177,6 +184,8 @@ void UevaBuffer::write(const UevaData &data)
 	}
 }
 
+
+
 //// CTRL
 UevaCtrl::UevaCtrl()
 {
@@ -189,27 +198,89 @@ int UevaCtrl::numPlantInput = 0;
 int UevaCtrl::numPlantOutput = 0;
 double UevaCtrl::samplePeriod = 0;
 
+
+
 //// CHANNEL
 UevaChannel::UevaChannel()
 {
 	direction = 0;
-	selectedMarkerIndex = -1;
-
+	biggestDropletIndex = -1;
+	measuringMarkerIndex = -1;
+	neckDropletIndex = -1;
 }
+
+void UevaChannel::makeChannelText(std::string &str, double &fontScale, cv::Scalar_<int> &lineColor,
+	const bool &linkRequest, const bool &inverseLinkRequest)
+{
+	std::string dir;
+	switch (direction)
+	{
+	case 0:
+	{
+		if (inverseLinkRequest)
+			dir = "(v)";
+		else
+			dir = "^";
+		break;
+	}
+	case 1:
+	{
+		if (inverseLinkRequest)
+			dir = "(^)";
+		else
+			dir = "v";
+		break;
+	}
+	case 2:
+	{
+		if (inverseLinkRequest)
+			dir = "(>)";
+		else
+			dir = "<";
+		break;
+	}
+	case 3:
+	{
+		if (inverseLinkRequest)
+			dir = "(<)";
+		else
+			dir = ">";
+		break;
+	}
+	}
+	if (linkRequest)
+	{
+		fontScale = 1;
+		lineColor = cv::Scalar(0, 0, 255); // red
+	}
+	else
+	{
+		fontScale = 0.8;
+		lineColor = cv::Scalar(0, 255, 0); // green
+	}
+	std::ostringstream oss;
+	oss << "CH" << index << " " << dir;
+	str = oss.str();
+
+	return;
+}
+
 
 //// DROPLET
 UevaDroplet::UevaDroplet()
 {
-	accomodatingChannelIndex = -1;
+	kinkIndex = -1;
+	neckIndex = -1;
 }
 
 std::ofstream UevaDroplet::fileStream;
 
+
+
 //// MARKER
 UevaMarker::UevaMarker()
 {
-	accomodatingChannelIndex = -1;
+	identity = -1;
 }
 
-cv::Size_<int> UevaMarker::imageSize = cv::Size_<int>(0, 0);
-int UevaMarker::sortGridSize = 0;
+int UevaMarker::counter = 0;
