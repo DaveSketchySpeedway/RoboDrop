@@ -28,7 +28,7 @@ MainWindow::MainWindow()
 	buffer = UevaBuffer();
 
 	//// INITIALIZE GUI
-	setWindowIcon(QIcon("icon/eva_icon.png"));
+	setWindowIcon(QIcon("icon/robodrop_icon.png"));
 	setAttribute(Qt::WA_QuitOnClose);
 	setMinimumSize(800, 800);
 
@@ -1128,7 +1128,7 @@ void MainWindow::about()
 {
 	QMessageBox::about(this,
 		tr("About"),
-		tr("<h2> uEVA-01</h2>"
+		tr("<h2>RoboDrop</h2>"
 		"<p>Microfluidics Enhanced Vison-based Automation"
 		" https://github.com/DaveSketchySpeedway/uEVA"
 		"<p>Copyright &copy; 2016 David Wong"

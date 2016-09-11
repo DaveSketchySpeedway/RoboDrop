@@ -264,5 +264,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="eva_icon.ico" />
+    <Image Include="robodrop_icon.ico" />
   </ItemGroup>
 </Project>
