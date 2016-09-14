@@ -1,7 +1,9 @@
-Robodrop
 Project uEVA (microfluidics Enhanced Vision-based Automation)
-Copyright 2016 David Wong
 https://github.com/DaveSketchySpeedway/uEva
+Copyright 2016 David Wong
+
+RoboDrop: https://www.youtube.com/watch?v=VtfMz4Gftpk
+
 
 
 RoboDrop00 
@@ -9,10 +11,7 @@ RoboDrop00
 RoboDrop01
 	pre-prototype version, lots of problems
 RoboDrop02
-	prototype version
-
-
-
+	Successful prototype
 
 
 
