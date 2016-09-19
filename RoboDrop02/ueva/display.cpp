@@ -32,6 +32,7 @@ Display::Display(QWidget *parent)
 	lineEndPosition = QPoint(0, 0);
 	leftPressPosition = QPoint(0, 0);
 	rightPressPosition = QPoint(0, 0);
+	scaleValue = 1.0;
 
 	connect(this, SIGNAL(sendMouseLine(QLine)),
 		parent, SLOT(receiveMouseLine(QLine)));
@@ -48,7 +49,8 @@ Display::~Display()
 //// REGULAR CALLS
 void Display::setImage(const QImage &i)
 {
-	image = i;
+	if(!(i.isNull())) image = i.scaled(i.size()*scaleValue, Qt::KeepAspectRatio, Qt::FastTransformation);
+	// image = i;
 }
 
 QPoint Display::getMousePosition()
@@ -70,7 +72,7 @@ QPoint Display::getRightPress()
 	return rpp;
 }
 
-QLine Display::getLeftPressMovement()
+QLine Display::getLeftPressMovement() // tricky
 {
 	QLine movement = QLine(0, 0, 0, 0);
 	if (leftPressed && lastLeftPressed)
@@ -81,6 +83,19 @@ QLine Display::getLeftPressMovement()
 	lastLeftPressed = leftPressed;
 	return movement;
 }
+
+void Display::scaleDown()
+{
+	double inc = 0.25;
+	if (scaleValue > inc) scaleValue -= inc;
+}
+
+void Display::scaleUp()
+{
+	double inc = 0.25;
+	if (scaleValue <= (1-inc)) scaleValue += inc;
+}
+
 
 //// EVENTS
 

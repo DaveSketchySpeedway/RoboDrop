@@ -536,7 +536,7 @@ void S2EngineThread::run()
 					mousePressCurrent.x = settings.leftPressMovement.x2();
 					mousePressCurrent.y = settings.leftPressMovement.y2();
 					mousePressDisplacement = mousePressCurrent - mousePressPrevious;
-					
+
 					// user add or remove marker
 					for (int i = 0; i < newMarkers.size(); i++)
 					{

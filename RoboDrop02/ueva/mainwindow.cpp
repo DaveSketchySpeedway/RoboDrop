@@ -577,6 +577,10 @@ void MainWindow::receiveMouseLine(QLine line)
 		settings.mouseLines.clear();
 		settings.mouseLines.push_back(line);
 	}
+	
+	// std::cerr << "asdf " << std::endl; // Equivalent to qDebug() << "asdf";
+	qDebug() << "P1: " << line.p1() << endl;
+	qDebug() << "P2: " << line.p2() << endl;
 }
 
 //// REIMPLEMENTATION
@@ -895,6 +899,21 @@ void MainWindow::createActions()
 	connect(neckAction, SIGNAL(triggered()),
 		this, SLOT(showAndHideNeck()));
 
+	scaleDownAction = new QAction(tr("reduce image"), this);
+	scaleDownAction->setStatusTip(tr("Reduces the scale of the image"));
+	scaleDownAction->setShortcut(tr("CTRL+-"));
+	scaleDownAction->setShortcutContext(Qt::ApplicationShortcut);
+	connect(scaleDownAction, SIGNAL(triggered()),
+		this, SLOT(scaleDownImage()));
+
+	scaleUpAction = new QAction(tr("increase image"), this);
+	scaleUpAction->setStatusTip(tr("Increases the scale of the image"));
+	scaleUpAction->setShortcut(tr("CTRL++"));
+	scaleUpAction->setShortcutContext(Qt::ApplicationShortcut);
+	connect(scaleUpAction, SIGNAL(triggered()),
+		this, SLOT(scaleUpImage()));
+
+
 	//useRefAction = new QAction(tr("use as Reference"), this);
 	//useRefAction->setStatusTip(tr("Use this marker as reference"));
 
@@ -941,6 +960,8 @@ void MainWindow::createToolBars()
 	visibilityToolBar->addAction(markerAction);
 	visibilityToolBar->addAction(channelAction);
 	visibilityToolBar->addAction(neckAction);
+	visibilityToolBar->addAction(scaleDownAction);
+	visibilityToolBar->addAction(scaleUpAction);
 	visibilityToolBar->addSeparator();
 }
 
@@ -1213,6 +1234,16 @@ void MainWindow::showAndHideMarker()
 		settings.flag |= UevaSettings::DRAW_MARKER;
 	else
 		settings.flag ^= UevaSettings::DRAW_MARKER;
+}
+
+void MainWindow::scaleDownImage()
+{
+	display->scaleDown();
+}
+
+void MainWindow::scaleUpImage()
+{
+	display->scaleUp();
 }
 
 //// THREAD FUNCTIONS
