@@ -27,6 +27,8 @@ MainWindow::MainWindow()
 	dataId = qRegisterMetaType<UevaData>();
 	buffer = UevaBuffer();
 
+	// Delete me
+
 	//// INITIALIZE GUI
 	setWindowIcon(QIcon("icon/robodrop_icon.png"));
 	setAttribute(Qt::WA_QuitOnClose);
