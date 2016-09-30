@@ -200,8 +200,8 @@ private:
 	QAction *markerAction;
 	QAction *useRefAction;
 	QAction *dropRefAction;
-
-
+	QAction *scaleDownAction;
+	QAction *scaleUpAction;
 
 	private slots:
 
@@ -219,12 +219,12 @@ private:
 	void showAndHideDroplet();
 	void showAndHideNeck();
 	void showAndHideMarker();
+	void scaleDownImage();
+	void scaleUpImage();
 
 	//// TRIGGERED BY THREADS
 	void engineSlot(const UevaData &data);
 	void pumpSlot(const UevaData &data);
-
-
 };
 
 #endif //MAINWINDOW_H

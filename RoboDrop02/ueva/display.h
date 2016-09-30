@@ -53,12 +53,12 @@ private:
 
 	bool leftPressed;
 	bool lastLeftPressed;
-	QPoint mousePosition;
+	QPoint mousePosition; // must current mouse pos regardless of click
 	QPoint lastMousePosition;
-	QPoint lineStartPosition;
-	QPoint lineEndPosition;
-	QPoint leftPressPosition;
-	QPoint rightPressPosition;
+	QPoint lineStartPosition; // last left press pos if still pressed
+	QPoint lineEndPosition; // left press release pos
+	QPoint leftPressPosition; // last left press pos
+	QPoint rightPressPosition; // last right press pos
 
 	private slots:
 

@@ -25,6 +25,7 @@ along with RoboDrop. If not, see <http://www.gnu.org/licenses/>
 UevaSettings::UevaSettings()
 {
 	flag = 0;
+	displayScale = 1.0;
 	for (int i = 0; i < 10; i++) // limited by 0-9 on keyboard
 	{
 		linkRequests.push_back(false);

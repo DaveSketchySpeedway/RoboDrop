@@ -893,11 +893,19 @@ void MainWindow::createActions()
 	connect(neckAction, SIGNAL(triggered()),
 		this, SLOT(showAndHideNeck()));
 
-	//useRefAction = new QAction(tr("use as Reference"), this);
-	//useRefAction->setStatusTip(tr("Use this marker as reference"));
+	scaleDownAction = new QAction(tr("reduce image"), this);
+	scaleDownAction->setStatusTip(tr("Reduces the scale of the image"));
+	scaleDownAction->setShortcut(tr("CTRL+-"));
+	scaleDownAction->setShortcutContext(Qt::ApplicationShortcut);
+	connect(scaleDownAction, SIGNAL(triggered()),
+		this, SLOT(scaleDownImage()));
 
-	//dropRefAction = new QAction(tr("drop Reference"), this);
-	//dropRefAction->setStatusTip(tr("Drop this reference"));
+	scaleUpAction = new QAction(tr("increase image"), this);
+	scaleUpAction->setStatusTip(tr("Increases the scale of the image"));
+	scaleUpAction->setShortcut(tr("CTRL++"));
+	scaleUpAction->setShortcutContext(Qt::ApplicationShortcut);
+	connect(scaleUpAction, SIGNAL(triggered()),
+		this, SLOT(scaleUpImage()));
 }
 
 void MainWindow::createMenus()
@@ -915,11 +923,14 @@ void MainWindow::createMenus()
 	viewMenu->addAction(dashboardAction);
 	viewMenu->addAction(plotterAction);
 	viewMenu->addSeparator();
+
 	visibilitySubMenu = viewMenu->addMenu(tr("&Visibility"));
 	visibilitySubMenu->addAction(channelAction);
 	visibilitySubMenu->addAction(dropletAction);
 	visibilitySubMenu->addAction(markerAction);
 	visibilitySubMenu->addAction(neckAction);
+	visibilitySubMenu->addAction(scaleDownAction);
+	visibilitySubMenu->addAction(scaleUpAction);
 
 	helpMenu = menuBar()->addMenu(tr("&Help"));
 	helpMenu->addAction(aboutAction);
@@ -939,6 +950,8 @@ void MainWindow::createToolBars()
 	visibilityToolBar->addAction(markerAction);
 	visibilityToolBar->addAction(channelAction);
 	visibilityToolBar->addAction(neckAction);
+	visibilityToolBar->addAction(scaleDownAction);
+	visibilityToolBar->addAction(scaleUpAction);
 	visibilityToolBar->addSeparator();
 }
 
@@ -1211,6 +1224,18 @@ void MainWindow::showAndHideMarker()
 		settings.flag |= UevaSettings::DRAW_MARKER;
 	else
 		settings.flag ^= UevaSettings::DRAW_MARKER;
+}
+
+void MainWindow::scaleDownImage()
+{
+	double inc = 0.1;
+	if ((settings.scaleValue-inc) > inc) settings.scaleValue -= inc;
+}
+
+void MainWindow::scaleUpImage()
+{
+	double inc = 0.1;
+	if (settings.scaleValue < 1.0) settings.scaleValue += inc;
 }
 
 //// THREAD FUNCTIONS
