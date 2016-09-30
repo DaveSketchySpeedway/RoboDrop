@@ -47,6 +47,7 @@ struct UevaSettings
 		RECORD_DRAWN = 4096,
 	};
 	int flag;
+	double displayScale;
 
 	QVector<QVector<int>> inletInfo;
 	QVector<qreal> inletRequests;
@@ -84,8 +85,6 @@ struct UevaSettings
 	double ctrlNeckThreshold;
 	double ctrlNeckLowerGain;
 	double ctrlNeckHigherGain;
-
-	double scaleValue;
 };
 
 struct UevaData

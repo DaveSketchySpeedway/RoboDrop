@@ -203,9 +203,6 @@ private:
 	QAction *scaleDownAction;
 	QAction *scaleUpAction;
 
-
-
-
 	private slots:
 
 	//// TRIGGERED BY ACTIONS AND SHORTCUTS
@@ -228,8 +225,6 @@ private:
 	//// TRIGGERED BY THREADS
 	void engineSlot(const UevaData &data);
 	void pumpSlot(const UevaData &data);
-
-
 };
 
 #endif //MAINWINDOW_H

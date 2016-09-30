@@ -27,8 +27,6 @@ MainWindow::MainWindow()
 	dataId = qRegisterMetaType<UevaData>();
 	buffer = UevaBuffer();
 
-	// Delete me
-
 	//// INITIALIZE GUI
 	setWindowIcon(QIcon("icon/robodrop_icon.png"));
 	setAttribute(Qt::WA_QuitOnClose);
@@ -908,13 +906,6 @@ void MainWindow::createActions()
 	scaleUpAction->setShortcutContext(Qt::ApplicationShortcut);
 	connect(scaleUpAction, SIGNAL(triggered()),
 		this, SLOT(scaleUpImage()));
-
-
-	//useRefAction = new QAction(tr("use as Reference"), this);
-	//useRefAction->setStatusTip(tr("Use this marker as reference"));
-
-	//dropRefAction = new QAction(tr("drop Reference"), this);
-	//dropRefAction->setStatusTip(tr("Drop this reference"));
 }
 
 void MainWindow::createMenus()
@@ -932,6 +923,7 @@ void MainWindow::createMenus()
 	viewMenu->addAction(dashboardAction);
 	viewMenu->addAction(plotterAction);
 	viewMenu->addSeparator();
+
 	visibilitySubMenu = viewMenu->addMenu(tr("&Visibility"));
 	visibilitySubMenu->addAction(channelAction);
 	visibilitySubMenu->addAction(dropletAction);
@@ -1243,7 +1235,7 @@ void MainWindow::scaleDownImage()
 void MainWindow::scaleUpImage()
 {
 	double inc = 0.1;
-	if (settings.scaleValue <= (1.0 - inc)) settings.scaleValue += inc;
+	if (settings.scaleValue < 1.0) settings.scaleValue += inc;
 }
 
 //// THREAD FUNCTIONS
