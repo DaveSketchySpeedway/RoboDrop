@@ -6,7 +6,7 @@ uEVA: https://github.com/DaveSketchySpeedway/uEva
 email: yh3wong@uwaterloo.ca
 
 RoboDrop00 
-	experimental, coded in MATLAb, not included
+	experimental, coded in MATLAB, not included
 RoboDrop01
 	pre-prototype version, lots of problems
 RoboDrop02
