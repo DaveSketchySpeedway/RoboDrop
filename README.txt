@@ -1,10 +1,9 @@
 Project uEVA (microfluidics Enhanced Vision-based Automation)
-https://github.com/DaveSketchySpeedway/uEva
 Copyright 2016 David Wong
 
 RoboDrop: https://www.youtube.com/watch?v=VtfMz4Gftpk
-
-
+uEVA: https://github.com/DaveSketchySpeedway/uEva
+email: yh3wong@uwaterloo.ca
 
 RoboDrop00 
 	experimental, coded in MATLAb, not included
@@ -23,16 +22,16 @@ Platform:
 	executable is tested on a i7-4790 Windows 7 Professional machine
 
 Pump:
-	uEVA works with Fluigent MFCS or MFCS-ez pump.
+	RoboDrop works with Fluigent MFCS or MFCS-ez pump.
 	To use other pumps, write your own pump class to replace mfcs.h and mfcs.cpp
 
 Camera:
-	uEVA works with Andor Zyla camera. AndorSDK3.0 must be purchased separately
+	RoboDrop works with Andor Zyla camera. AndorSDK3.0 must be purchased separately
 	To use other cameras, write your own camera class to replace zyla.h and zyla.cpp
 
 Controller:
-	Design controller that fits your network using Matlab script provided (step0 - step4)
-	export into .yaml (step5)
+	Design controller that fits your network using Matlab script provided (step1 - step4)
+	export into .yaml (step3)
 	import using uEVA setup window
 
 Deployment:
@@ -54,8 +53,3 @@ Deployment:
 		Qt5Widgets.dll
 		\platforms\qwindows.dll
 
-		
-
-
-Contact author for more info
-email: yh3wong@uwaterloo.ca
