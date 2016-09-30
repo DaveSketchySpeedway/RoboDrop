@@ -72,7 +72,7 @@ void S2EngineThread::setCalib(double micronLength)
 		QLine mouseLine = settings.mouseLines[0];
 		double pixelLength = std::sqrt(
 			std::pow((double)mouseLine.dx(), 2.0) + std::pow((double)mouseLine.dy(), 2.0));
-		micronPerPixel = micronLength / pixelLength;
+		micronPerPixel = micronLength *settings.scaleValue / pixelLength;
 		qDebug() << "micronPerPixel = " << micronPerPixel << endl;
 	}
 
@@ -284,8 +284,6 @@ void S2EngineThread::finalizeCtrl(QVector<qreal> &inletRegurgitates)
 	mutex.unlock();
 }
 
-
-
 //// CONTINUOUS
 void S2EngineThread::run()
 {
@@ -311,13 +309,14 @@ void S2EngineThread::run()
 					settings.maskBlockSize,
 					settings.maskThreshold);
 				// flood base on user seed point
-				if ((settings.mouseLines[0].x1() >= 0) &&
-					(settings.mouseLines[0].x1() < dropletMask.cols) &&
-					(settings.mouseLines[0].y1() >= 0) &&
-					(settings.mouseLines[0].y1() < dropletMask.rows))
+				double scale = settings.scaleValue;
+				if ((settings.mouseLines[0].x1()/scale >= 0) &&
+					(settings.mouseLines[0].x1()/scale < dropletMask.cols) &&
+					(settings.mouseLines[0].y1()/scale >= 0) &&
+					(settings.mouseLines[0].y1()/scale < dropletMask.rows))
 				{
-					seed.x = settings.mouseLines[0].x1();
-					seed.y = settings.mouseLines[0].y1();
+					seed.x = settings.mouseLines[0].x1()/scale;
+					seed.y = settings.mouseLines[0].y1()/scale;
 				}
 				floodFillReturn = cv::floodFill(dropletMask, seed, MID_VALUE);
 				// eliminate noise and wall by manual morphological opening (second most time consuming)
@@ -330,6 +329,7 @@ void S2EngineThread::run()
 				// draw
 				cv::cvtColor(dropletMask, data.drawnBgr, CV_GRAY2BGR);
 				cv::cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
+				cv::resize(data.drawnRgb, data.drawnRgb, cv::Size(), settings.scaleValue, settings.scaleValue, 1);
 			}
 
 			//// CHANNEL CUTTING
@@ -345,11 +345,11 @@ void S2EngineThread::run()
 				for (int i = 1; i < settings.mouseLines.size(); i++)
 				{
 					cv::Point_<int> pt1 = cv::Point_<int>(
-						settings.mouseLines[i].x1(),
-						settings.mouseLines[i].y1());
+						settings.mouseLines[i].x1()/settings.scaleValue,
+						settings.mouseLines[i].y1() / settings.scaleValue);
 					cv::Point_<int> pt2 = cv::Point_<int>(
-						settings.mouseLines[i].x2(),
-						settings.mouseLines[i].y2());
+						settings.mouseLines[i].x2() / settings.scaleValue,
+						settings.mouseLines[i].y2() / settings.scaleValue);
 					cv::line(allChannels, pt1, pt2, cv::Scalar(0), settings.channelCutThickness);
 				}
 				// draw
@@ -357,6 +357,7 @@ void S2EngineThread::run()
 				cv::add(dropletMask, allChannels, drawn);
 				cv::cvtColor(drawn, data.drawnBgr, CV_GRAY2BGR);
 				cv::cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
+				cv::resize(data.drawnRgb, data.drawnRgb, cv::Size(), settings.scaleValue, settings.scaleValue, 1);
 			}
 			else
 			{	
@@ -527,14 +528,15 @@ void S2EngineThread::run()
 					oldMarkers = newMarkers;
 
 					// user inputs
-					mousePressLeft.x = settings.leftPressPosition.x();
-					mousePressLeft.y = settings.leftPressPosition.y();
-					mousePressRight.x = settings.rightPressPosition.x();
-					mousePressRight.y = settings.rightPressPosition.y();
-					mousePressPrevious.x = settings.leftPressMovement.x1();
-					mousePressPrevious.y = settings.leftPressMovement.y1();
-					mousePressCurrent.x = settings.leftPressMovement.x2();
-					mousePressCurrent.y = settings.leftPressMovement.y2();
+					double scaling = settings.scaleValue;
+					mousePressLeft.x = settings.leftPressPosition.x()/scaling;
+					mousePressLeft.y = settings.leftPressPosition.y() / scaling;
+					mousePressRight.x = settings.rightPressPosition.x() / scaling; 
+					mousePressRight.y = settings.rightPressPosition.y() / scaling;
+					mousePressPrevious.x = settings.leftPressMovement.x1() / scaling;
+					mousePressPrevious.y = settings.leftPressMovement.y1() / scaling;
+					mousePressCurrent.x = settings.leftPressMovement.x2() / scaling;
+					mousePressCurrent.y = settings.leftPressMovement.y2() / scaling;
 					mousePressDisplacement = mousePressCurrent - mousePressPrevious;
 
 					// user add or remove marker
@@ -1008,7 +1010,9 @@ void S2EngineThread::run()
 								lineColor, lineThickness, lineType);
 						}
 					}
+					
 					cv::cvtColor(data.drawnBgr, data.drawnRgb, CV_BGR2RGB);
+					cv::resize(data.drawnRgb, data.drawnRgb, cv::Size(), settings.scaleValue, settings.scaleValue, 1);
 				}
 			}
 

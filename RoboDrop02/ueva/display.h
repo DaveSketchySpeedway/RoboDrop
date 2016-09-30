@@ -38,8 +38,6 @@ public:
 	QPoint getLeftPress(); // return point if there is left click since last get
 	QPoint getRightPress(); // return point if there is right click since last get
 	QLine getLeftPressMovement(); // return line start at last get
-	void scaleDown(); // Decreases scale
-	void scaleUp(); // Increases scale
 
 signals:
 	void sendMouseLine(QLine line); // send line start at button press
@@ -61,8 +59,6 @@ private:
 	QPoint lineEndPosition; // left press release pos
 	QPoint leftPressPosition; // last left press pos
 	QPoint rightPressPosition; // last right press pos
-
-	double scaleValue;
 
 	private slots:
 

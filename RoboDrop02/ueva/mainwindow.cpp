@@ -577,10 +577,6 @@ void MainWindow::receiveMouseLine(QLine line)
 		settings.mouseLines.clear();
 		settings.mouseLines.push_back(line);
 	}
-	
-	// std::cerr << "asdf " << std::endl; // Equivalent to qDebug() << "asdf";
-	qDebug() << "P1: " << line.p1() << endl;
-	qDebug() << "P2: " << line.p2() << endl;
 }
 
 //// REIMPLEMENTATION
@@ -941,6 +937,8 @@ void MainWindow::createMenus()
 	visibilitySubMenu->addAction(dropletAction);
 	visibilitySubMenu->addAction(markerAction);
 	visibilitySubMenu->addAction(neckAction);
+	visibilitySubMenu->addAction(scaleDownAction);
+	visibilitySubMenu->addAction(scaleUpAction);
 
 	helpMenu = menuBar()->addMenu(tr("&Help"));
 	helpMenu->addAction(aboutAction);
@@ -1238,12 +1236,14 @@ void MainWindow::showAndHideMarker()
 
 void MainWindow::scaleDownImage()
 {
-	display->scaleDown();
+	double inc = 0.1;
+	if ((settings.scaleValue-inc) > inc) settings.scaleValue -= inc;
 }
 
 void MainWindow::scaleUpImage()
 {
-	display->scaleUp();
+	double inc = 0.1;
+	if (settings.scaleValue <= (1.0 - inc)) settings.scaleValue += inc;
 }
 
 //// THREAD FUNCTIONS

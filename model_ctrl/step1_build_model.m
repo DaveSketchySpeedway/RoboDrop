@@ -46,10 +46,11 @@ MANUAL_SETUP = false;
 
 % MODEL = 'model_i3_c3_f2_valid'; 
 % MODEL = 'model_i3_c3_f2_short';
-MODEL = 'model_i3_c3_f2_100';
+% MODEL = 'model_i3_c3_f2_100';
 % MODEL = 'model_i3_c3_f2_50';
 % MODEL = 'model_i4_c4_f3_50';
 % MODEL = 'model_i4_c5_f3_50a';
+MODEL = 'model_i4_c6_f3_50a';
 % MODEL = 'model_i4_c5_f3_eric';
 % MODEL = 'model_i4_c6_f3_eric';
 % MODEL = 'model_i4_c5_f3_50b';

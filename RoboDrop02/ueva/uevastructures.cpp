@@ -30,6 +30,7 @@ UevaSettings::UevaSettings()
 		linkRequests.push_back(false);
 		inverseLinkRequests.push_back(false);
 	}
+	scaleValue = 1.0;
 }
 
 
