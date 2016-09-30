@@ -32,7 +32,7 @@ Camera:
 Controller:
 	Design controller that fits your network using Matlab script provided (step1 - step4)
 	export into .yaml (step3)
-	import using uEVA setup window
+	import in RoboDrop Setup window
 
 Deployment:
 	Following libraries are required to run the executable:
