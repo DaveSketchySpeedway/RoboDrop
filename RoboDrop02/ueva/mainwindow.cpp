@@ -1229,13 +1229,13 @@ void MainWindow::showAndHideMarker()
 void MainWindow::scaleDownImage()
 {
 	double inc = 0.1;
-	if ((settings.scaleValue-inc) > inc) settings.scaleValue -= inc;
+	if ((settings.displayScale-inc) > inc) settings.displayScale -= inc;
 }
 
 void MainWindow::scaleUpImage()
 {
 	double inc = 0.1;
-	if (settings.scaleValue < 1.0) settings.scaleValue += inc;
+	if (settings.displayScale < 1.0) settings.displayScale += inc;
 }
 
 //// THREAD FUNCTIONS
