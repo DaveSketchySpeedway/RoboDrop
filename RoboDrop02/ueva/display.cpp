@@ -70,7 +70,7 @@ QPoint Display::getRightPress()
 	return rpp;
 }
 
-QLine Display::getLeftPressMovement() // tricky
+QLine Display::getLeftPressMovement()
 {
 	QLine movement = QLine(0, 0, 0, 0);
 	if (leftPressed && lastLeftPressed)
@@ -81,7 +81,6 @@ QLine Display::getLeftPressMovement() // tricky
 	lastLeftPressed = leftPressed;
 	return movement;
 }
-
 
 //// EVENTS
 
