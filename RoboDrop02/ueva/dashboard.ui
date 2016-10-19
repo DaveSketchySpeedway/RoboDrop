@@ -662,6 +662,12 @@
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="3">
          <widget class="QDoubleSpinBox" name="neckThresholdSBox">
+          <property name="decimals">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <double>1000.000000000000000</double>
+          </property>
           <property name="value">
            <double>0.000000000000000</double>
           </property>
@@ -676,6 +682,12 @@
         </item>
         <item row="0" column="1">
          <widget class="QDoubleSpinBox" name="neckDesireSBox">
+          <property name="decimals">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <double>1000.000000000000000</double>
+          </property>
           <property name="value">
            <double>80.000000000000000</double>
           </property>
@@ -697,8 +709,11 @@
         </item>
         <item row="1" column="1">
          <widget class="QDoubleSpinBox" name="neckLowerGainSBox">
+          <property name="decimals">
+           <number>1</number>
+          </property>
           <property name="singleStep">
-           <double>0.010000000000000</double>
+           <double>0.100000000000000</double>
           </property>
           <property name="value">
            <double>2.000000000000000</double>
@@ -714,8 +729,11 @@
         </item>
         <item row="1" column="3">
          <widget class="QDoubleSpinBox" name="neckHigherGainSBox">
+          <property name="maximum">
+           <double>100.000000000000000</double>
+          </property>
           <property name="singleStep">
-           <double>0.010000000000000</double>
+           <double>0.100000000000000</double>
           </property>
           <property name="value">
            <double>1.000000000000000</double>

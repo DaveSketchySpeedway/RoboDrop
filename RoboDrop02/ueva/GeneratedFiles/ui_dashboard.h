@@ -553,6 +553,8 @@ public:
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
         neckThresholdSBox = new QDoubleSpinBox(groupBox_4);
         neckThresholdSBox->setObjectName(QStringLiteral("neckThresholdSBox"));
+        neckThresholdSBox->setDecimals(1);
+        neckThresholdSBox->setMaximum(1000);
         neckThresholdSBox->setValue(0);
 
         gridLayout_4->addWidget(neckThresholdSBox, 0, 3, 1, 1);
@@ -564,6 +566,8 @@ public:
 
         neckDesireSBox = new QDoubleSpinBox(groupBox_4);
         neckDesireSBox->setObjectName(QStringLiteral("neckDesireSBox"));
+        neckDesireSBox->setDecimals(1);
+        neckDesireSBox->setMaximum(1000);
         neckDesireSBox->setValue(80);
 
         gridLayout_4->addWidget(neckDesireSBox, 0, 1, 1, 1);
@@ -580,7 +584,8 @@ public:
 
         neckLowerGainSBox = new QDoubleSpinBox(groupBox_4);
         neckLowerGainSBox->setObjectName(QStringLiteral("neckLowerGainSBox"));
-        neckLowerGainSBox->setSingleStep(0.01);
+        neckLowerGainSBox->setDecimals(1);
+        neckLowerGainSBox->setSingleStep(0.1);
         neckLowerGainSBox->setValue(2);
 
         gridLayout_4->addWidget(neckLowerGainSBox, 1, 1, 1, 1);
@@ -592,7 +597,8 @@ public:
 
         neckHigherGainSBox = new QDoubleSpinBox(groupBox_4);
         neckHigherGainSBox->setObjectName(QStringLiteral("neckHigherGainSBox"));
-        neckHigherGainSBox->setSingleStep(0.01);
+        neckHigherGainSBox->setMaximum(100);
+        neckHigherGainSBox->setSingleStep(0.1);
         neckHigherGainSBox->setValue(1);
 
         gridLayout_4->addWidget(neckHigherGainSBox, 1, 3, 1, 1);
