@@ -41,31 +41,24 @@ stiffness_tweak = 1;
 load('pump_fit_tf_avg_freq.mat')
 % load('pump_fit_tf_avg_time_step.mat')
 
-% MANUAL_SETUP = true; 
-MANUAL_SETUP = false;
+% MODEL_FROM_SCRATCH = true; 
+MODEL_FROM_SCRATCH = false;
 
 % MODEL = 'model_i3_c3_f2_valid'; 
-% MODEL = 'model_i3_c3_f2_short';
-% MODEL = 'model_i3_c3_f2_100';
 % MODEL = 'model_i3_c3_f2_50';
-% MODEL = 'model_i4_c4_f3_50';
-% MODEL = 'model_i4_c5_f3_50a';
-MODEL = 'model_i4_c6_f3_50a';
-% MODEL = 'model_i4_c5_f3_eric';
-% MODEL = 'model_i4_c6_f3_eric';
-% MODEL = 'model_i4_c5_f3_50b';
-% MODEL = 'model_i4_c8_f3_50';
-% MODEL = 'model_i5_c6_f4_50';
-% MODEL = 'model_i5_c7_f4_50a';
-% MODEL = 'model_i5_c7_f4_50b';
-% MODEL = 'model_i5_c7_f4_100a';
-% MODEL = 'model_i5_c7_f4_100b';
+% MODEL = 'model_i3_c3_f2_50s';
+% MODEL = 'model_i3_c3_f2_50l';
+% MODEL = 'model_i3_c3_f2_100s';
+% MODEL = 'model_i3_c3_f2_100l';
+MODEL = 'model_i4_c5_f3_50a';
+% MODEL = 'model_i4_c5_f3_ea';
 
 
 
 
 
-if (~MANUAL_SETUP)
+
+if (~MODEL_FROM_SCRATCH)
     load([MODEL '.mat']);
 end
 %% INITIALIZE FLUID PROPERTIES
@@ -105,7 +98,7 @@ container(3).young_modulus_pa = 2e6 * stiffness_tweak;
 container(3).substrate_xarea_mm2 = 100;
 
 %% INITIALIZE DIMENSIONS
-if (MANUAL_SETUP)
+if (MODEL_FROM_SCRATCH)
     % length, radius in mm
     % height, width in um
 

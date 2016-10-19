@@ -1,13 +1,13 @@
 Model {
   Name			  "model_i4_c5_f3_50a"
-  Version		  8.5
+  Version		  8.4
   MdlSubVersion		  0
   SavedCharacterEncoding  "windows-1252"
   GraphicalInterface {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.107"
+    ComputedModelVersion    "1.109"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -54,14 +54,14 @@ Model {
 	IsActive		[1]
 	ViewObjType		"SimulinkTopLevel"
 	LoadSaveID		"0"
-	Extents			[916.0, 892.0]
-	ZoomFactor		[0.6]
-	Offset			[-157.81180615691289, 87.631863967329764]
+	Extents			[910.0, 878.0]
+	ZoomFactor		[1.0]
+	Offset			[252.60486050975351, 319.63186396732954]
       }
     }
   }
-  PhysicalModelingChecksum "1664288496"
-  PhysicalModelingParameterChecksum "1237486061"
+  PhysicalModelingChecksum "1403990698"
+  PhysicalModelingParameterChecksum "3381106778"
   PhysicalModelingProducts "Power_System_Blocks"
   Created		  "Wed Oct 28 16:04:22 2015"
   Creator		  "yh3wong"
@@ -69,9 +69,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "yh3wong"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Mon Sep 05 14:57:21 2016"
-  RTWModifiedTimeStamp	  394987956
-  ModelVersionFormat	  "1.%<AutoIncrement:107>"
+  LastModifiedDate	  "Wed Oct 19 19:13:41 2016"
+  RTWModifiedTimeStamp	  398805213
+  ModelVersionFormat	  "1.%<AutoIncrement:109>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -171,6 +171,7 @@ Model {
   ExtModeSkipDownloadWhenConnect off
   ExtModeLogAll		  on
   ExtModeAutoUpdateStatusClock on
+  BufferReuse		  on
   ShowModelReferenceBlockVersion off
   ShowModelReferenceBlockIO off
   Array {
@@ -178,13 +179,13 @@ Model {
     Dimension		    1
     Simulink.ConfigSet {
       $ObjectID		      7
-      Version		      "1.15.0"
+      Version		      "1.14.3"
       Array {
 	Type			"Handle"
 	Dimension		9
 	Simulink.SolverCC {
 	  $ObjectID		  8
-	  Version		  "1.15.0"
+	  Version		  "1.14.3"
 	  StartTime		  "0.0"
 	  StopTime		  "1"
 	  AbsTol		  "auto"
@@ -219,7 +220,7 @@ Model {
 	}
 	Simulink.DataIOCC {
 	  $ObjectID		  9
-	  Version		  "1.15.0"
+	  Version		  "1.14.3"
 	  Decimation		  "1"
 	  ExternalInput		  "[t, u]"
 	  FinalStateName	  "xFinal"
@@ -252,7 +253,7 @@ Model {
 	}
 	Simulink.OptimizationCC {
 	  $ObjectID		  10
-	  Version		  "1.15.0"
+	  Version		  "1.14.3"
 	  Array {
 	    Type		    "Cell"
 	    Dimension		    8
@@ -270,7 +271,7 @@ Model {
 	  BooleanDataType	  on
 	  ConditionallyExecuteInputs on
 	  InlineParams		  off
-	  UseDivisionForNetSlopeComputation "off"
+	  UseDivisionForNetSlopeComputation "Off"
 	  UseFloatMulNetSlope	  off
 	  DefaultUnderspecifiedDataType	"double"
 	  UseSpecifiedMinMax	  off
@@ -287,13 +288,15 @@ Model {
 	  EnableMemcpy		  on
 	  MemcpyThreshold	  64
 	  PassReuseOutputArgsAs	  "Structure reference"
-	  PassReuseOutputArgsThreshold 12
 	  ExpressionDepthLimit	  128
+	  FoldNonRolledExpr	  on
 	  LocalBlockOutputs	  on
 	  RollThreshold		  5
+	  SystemCodeInlineAuto	  off
 	  StateBitsets		  off
 	  DataBitsets		  off
 	  ActiveStateOutputEnumStorageType "Native Integer"
+	  UseTempVars		  off
 	  ZeroExternalMemoryAtStartup on
 	  ZeroInternalMemoryAtStartup on
 	  InitFltsAndDblsToZero	  off
@@ -304,12 +307,13 @@ Model {
 	  LifeSpan		  "inf"
 	  MaxStackSize		  "Inherit from target"
 	  BufferReusableBoundary  on
-	  SimCompilerOptimization "off"
+	  SimCompilerOptimization "Off"
 	  AccelVerboseBuild	  off
+	  ParallelExecutionInRapidAccelerator on
 	}
 	Simulink.DebuggingCC {
 	  $ObjectID		  11
-	  Version		  "1.15.0"
+	  Version		  "1.14.3"
 	  RTPrefix		  "error"
 	  ConsistencyChecking	  "none"
 	  ArrayBoundsChecking	  "none"
@@ -369,10 +373,12 @@ Model {
 	  BusObjectLabelMismatch  "warning"
 	  RootOutportRequireBusObject "warning"
 	  AssertControl		  "UseLocalSettings"
+	  EnableOverflowDetection off
 	  ModelReferenceIOMsg	  "none"
 	  ModelReferenceMultiInstanceNormalModeStructChecksumCheck "error"
 	  ModelReferenceVersionMismatchMessage "none"
 	  ModelReferenceIOMismatchMessage "none"
+	  ModelReferenceCSMismatchMessage "none"
 	  UnknownTsInhSupMsg	  "warning"
 	  ModelReferenceDataLoggingMessage "warning"
 	  ModelReferenceSymbolNameMessage "warning"
@@ -384,6 +390,7 @@ Model {
 	  StrictBusMsg		  "ErrorLevel1"
 	  BusNameAdapt		  "WarnAndRepair"
 	  NonBusSignalsTreatedAsBus "none"
+	  LoggingUnavailableSignals "error"
 	  BlockIODiagnostic	  "none"
 	  SFUnusedDataAndEventsDiag "warning"
 	  SFUnexpectedBacktrackingDiag "warning"
@@ -393,12 +400,11 @@ Model {
 	  SFUnconditionalTransitionShadowingDiag "warning"
 	  SFUndirectedBroadcastEventsDiag "warning"
 	  SFTransitionActionBeforeConditionDiag	"warning"
-	  SFOutputUsedAsStateInMooreChartDiag "error"
 	  IntegerSaturationMsg	  "warning"
 	}
 	Simulink.HardwareCC {
 	  $ObjectID		  12
-	  Version		  "1.15.0"
+	  Version		  "1.14.3"
 	  ProdBitPerChar	  8
 	  ProdBitPerShort	  16
 	  ProdBitPerInt		  32
@@ -430,6 +436,7 @@ Model {
 	  TargetIntDivRoundTo	  "Undefined"
 	  TargetEndianess	  "Unspecified"
 	  TargetWordSize	  32
+	  TargetTypeEmulationWarnSuppressLevel 0
 	  TargetPreprocMaxBitsSint 32
 	  TargetPreprocMaxBitsUint 32
 	  TargetHWDeviceType	  "Specified"
@@ -438,7 +445,7 @@ Model {
 	}
 	Simulink.ModelReferenceCC {
 	  $ObjectID		  13
-	  Version		  "1.15.0"
+	  Version		  "1.14.3"
 	  UpdateModelReferenceTargets "IfOutOfDateOrStructuralChange"
 	  CheckModelReferenceTargetMessage "error"
 	  EnableParallelModelReferenceBuilds off
@@ -453,10 +460,13 @@ Model {
 	}
 	Simulink.SFSimCC {
 	  $ObjectID		  14
-	  Version		  "1.15.0"
+	  Version		  "1.14.3"
+	  SFSimEnableDebug	  on
 	  SFSimOverflowDetection  on
 	  SFSimEcho		  on
+	  SimBlas		  on
 	  SimCtrlC		  on
+	  SimExtrinsic		  on
 	  SimIntegrity		  on
 	  SimUseLocalCustomCode	  off
 	  SimParseCustomCode	  on
@@ -466,7 +476,7 @@ Model {
 	Simulink.RTWCC {
 	  $BackupClass		  "Simulink.RTWCC"
 	  $ObjectID		  15
-	  Version		  "1.15.0"
+	  Version		  "1.14.3"
 	  Array {
 	    Type		    "Cell"
 	    Dimension		    15
@@ -505,6 +515,11 @@ Model {
 	  TLCDebug		  off
 	  TLCCoverage		  off
 	  TLCAssert		  off
+	  ProcessScriptMode	  "Default"
+	  ConfigurationMode	  "Optimized"
+	  ProcessScript		  ""
+	  ConfigurationScript	  ""
+	  ConfigAtBuild		  off
 	  RTWUseLocalCustomCode	  off
 	  RTWUseSimCustomCode	  off
 	  CustomSourceCode	  ""
@@ -527,25 +542,28 @@ Model {
 	  SILDebugging		  off
 	  TargetLang		  "C"
 	  IncludeBusHierarchyInRTWFileBlockHierarchyMap	off
+	  IncludeERTFirstTime	  off
 	  GenerateTraceInfo	  off
 	  GenerateTraceReport	  off
 	  GenerateTraceReportSl	  off
 	  GenerateTraceReportSf	  off
 	  GenerateTraceReportEml  off
+	  GenerateCodeInfo	  off
 	  GenerateWebview	  off
 	  GenerateCodeMetricsReport off
 	  GenerateCodeReplacementReport	off
-	  GenerateMissedCodeReplacementReport off
-	  RTWCompilerOptimization "off"
+	  RTWCompilerOptimization "Off"
 	  RTWCustomCompilerOptimizations ""
 	  CheckMdlBeforeBuild	  "Off"
+	  CustomRebuildMode	  "OnUpdate"
+	  DataInitializer	  ""
 	  SharedConstantsCachingThreshold 1024
 	  Array {
 	    Type		    "Handle"
 	    Dimension		    2
 	    Simulink.CodeAppCC {
 	      $ObjectID		      16
-	      Version		      "1.15.0"
+	      Version		      "1.14.3"
 	      Array {
 		Type			"Cell"
 		Dimension		24
@@ -617,7 +635,7 @@ Model {
 	    Simulink.GRTTargetCC {
 	      $BackupClass	      "Simulink.TargetCC"
 	      $ObjectID		      17
-	      Version		      "1.15.0"
+	      Version		      "1.14.3"
 	      Array {
 		Type			"Cell"
 		Dimension		13
@@ -647,7 +665,6 @@ Model {
 	      ERTMultiwordLength      256
 	      MultiwordLength	      2048
 	      GenerateFullHeader      on
-	      InferredTypesCompatibility off
 	      GenerateSampleERTMain   off
 	      GenerateTestInterfaces  off
 	      ModelReferenceCompliant on
@@ -673,6 +690,7 @@ Model {
 	      SupportContinuousTime   on
 	      SupportNonInlinedSFcns  on
 	      SupportVariableSizeSignals off
+	      EnableShiftOperators    on
 	      ParenthesesLevel	      "Nominal"
 	      CastingMode	      "Nominal"
 	      MATLABClassNameForMDSCustomization "Simulink.SoftwareTarget.GRTCustomization"
@@ -821,7 +839,6 @@ Model {
       TickLabels	      "OneTimeTick"
       ZoomMode		      "on"
       Grid		      "on"
-      ShowLegends	      off
       TimeRange		      "auto"
       YMin		      "-5"
       YMax		      "5"
@@ -833,7 +850,6 @@ Model {
       Decimation	      "1"
       SampleInput	      off
       SampleTime	      "-1"
-      ScrollMode	      off
     }
     Block {
       BlockType		      Step
@@ -874,7 +890,6 @@ Model {
       Variant		      off
       GeneratePreprocessorConditionals off
       ContentPreviewEnabled   off
-      IsWebBlock	      off
     }
   }
   System {
@@ -891,9 +906,9 @@ Model {
     TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
     TiledPageScale	    1
     ShowPageBoundaries	    off
-    ZoomFactor		    "60"
+    ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "352"
+    SIDHighWatermark	    "360"
     Block {
       BlockType		      SubSystem
       Name		      "ch1_water"
@@ -928,7 +943,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  ShowName		  off
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Ground"
 	  SourceType		  "Ground"
 	  LConnTagsString	  "a"
@@ -963,6 +978,7 @@ Model {
 	  YMin			  "0"
 	  YMax			  "3e-11"
 	  LimitDataPoints	  off
+	  ScrollMode		  off
 	}
 	Block {
 	  BlockType		  Reference
@@ -971,7 +987,7 @@ Model {
 	  Ports			  [0, 1, 0, 0, 0, 1, 1]
 	  Position		  [560, 213, 585, 237]
 	  ZOrder		  31
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  UserDataPersistent	  on
 	  SourceBlock		  "powerlib/Measurements/Current Measurement"
 	  SourceType		  "Current Measurement"
@@ -987,13 +1003,13 @@ Model {
 	  Ports			  [0, 0, 0, 0, 0, 1, 1]
 	  Position		  [405, 208, 490, 242]
 	  ZOrder		  1
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.0018432"
+	  Resistance		  "0.0027648"
 	  Inductance		  "1.2e-07"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1012,7 +1028,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  NamePlacement		  "alternate"
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
@@ -1103,7 +1119,7 @@ Model {
       Name		      "ch2_water"
       SID		      "289"
       Ports		      [0, 0, 0, 0, 0, 1, 1]
-      Position		      [789, 610, 821, 715]
+      Position		      [1014, 610, 1046, 715]
       ZOrder		      73
       BlockRotation	      270
       RequestExecContextInheritance off
@@ -1132,7 +1148,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  ShowName		  off
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Ground"
 	  SourceType		  "Ground"
 	  LConnTagsString	  "a"
@@ -1167,6 +1183,7 @@ Model {
 	  YMin			  "0"
 	  YMax			  "3e-11"
 	  LimitDataPoints	  off
+	  ScrollMode		  off
 	}
 	Block {
 	  BlockType		  Reference
@@ -1175,7 +1192,7 @@ Model {
 	  Ports			  [0, 1, 0, 0, 0, 1, 1]
 	  Position		  [565, 213, 590, 237]
 	  ZOrder		  31
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  UserDataPersistent	  on
 	  SourceBlock		  "powerlib/Measurements/Current Measurement"
 	  SourceType		  "Current Measurement"
@@ -1191,13 +1208,13 @@ Model {
 	  Ports			  [0, 0, 0, 0, 0, 1, 1]
 	  Position		  [260, 208, 345, 242]
 	  ZOrder		  1
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.0018432"
+	  Resistance		  "0.0027648"
 	  Inductance		  "1.2e-07"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1216,7 +1233,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  NamePlacement		  "alternate"
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
@@ -1335,7 +1352,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  ShowName		  off
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Ground"
 	  SourceType		  "Ground"
 	  LConnTagsString	  "a"
@@ -1370,6 +1387,7 @@ Model {
 	  YMin			  "0"
 	  YMax			  "3e-11"
 	  LimitDataPoints	  off
+	  ScrollMode		  off
 	}
 	Block {
 	  BlockType		  Reference
@@ -1378,7 +1396,7 @@ Model {
 	  Ports			  [0, 1, 0, 0, 0, 1, 1]
 	  Position		  [570, 213, 595, 237]
 	  ZOrder		  31
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  UserDataPersistent	  on
 	  SourceBlock		  "powerlib/Measurements/Current Measurement"
 	  SourceType		  "Current Measurement"
@@ -1394,13 +1412,13 @@ Model {
 	  Ports			  [0, 0, 0, 0, 0, 1, 1]
 	  Position		  [335, 208, 420, 242]
 	  ZOrder		  1
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.051771"
+	  Resistance		  "0.077656"
 	  Inductance		  "6.741e-08"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1419,7 +1437,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  NamePlacement		  "alternate"
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
@@ -1510,7 +1528,7 @@ Model {
       Name		      "ch4_oil"
       SID		      "305"
       Ports		      [0, 0, 0, 0, 0, 1, 1]
-      Position		      [885, 479, 990, 511]
+      Position		      [1110, 479, 1215, 511]
       ZOrder		      77
       BlockMirror	      on
       NamePlacement	      "alternate"
@@ -1540,7 +1558,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  ShowName		  off
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Ground"
 	  SourceType		  "Ground"
 	  LConnTagsString	  "a"
@@ -1575,6 +1593,7 @@ Model {
 	  YMin			  "0"
 	  YMax			  "3e-11"
 	  LimitDataPoints	  off
+	  ScrollMode		  off
 	}
 	Block {
 	  BlockType		  Reference
@@ -1583,7 +1602,7 @@ Model {
 	  Ports			  [0, 1, 0, 0, 0, 1, 1]
 	  Position		  [570, 213, 595, 237]
 	  ZOrder		  31
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  UserDataPersistent	  on
 	  SourceBlock		  "powerlib/Measurements/Current Measurement"
 	  SourceType		  "Current Measurement"
@@ -1599,13 +1618,13 @@ Model {
 	  Ports			  [0, 0, 0, 0, 0, 1, 1]
 	  Position		  [335, 208, 420, 242]
 	  ZOrder		  1
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.051771"
+	  Resistance		  "0.077656"
 	  Inductance		  "6.741e-08"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1624,7 +1643,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  NamePlacement		  "alternate"
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
@@ -1713,13 +1732,219 @@ Model {
     Block {
       BlockType		      SubSystem
       Name		      "ch5_oil"
-      SID		      "345"
+      SID		      "353"
       Ports		      [0, 0, 0, 0, 0, 1, 1]
-      Position		      [635, 479, 740, 511]
-      ZOrder		      81
+      Position		      [665, 479, 770, 511]
+      ZOrder		      82
+      BlockMirror	      on
+      NamePlacement	      "alternate"
       RequestExecContextInheritance off
       System {
 	Name			"ch5_oil"
+	Location		[-8, 0, 1288, 1000]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"usletter"
+	PaperUnits		"inches"
+	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"100"
+	Block {
+	  BlockType		  Reference
+	  Name			  "Ground"
+	  SID			  "354"
+	  Ports			  [0, 0, 0, 0, 0, 1]
+	  Position		  [476, 400, 504, 430]
+	  ZOrder		  36
+	  BlockRotation		  270
+	  BlockMirror		  on
+	  ShowName		  off
+	  LibraryVersion	  "1.2446"
+	  SourceBlock		  "powerlib/Elements/Ground"
+	  SourceType		  "Ground"
+	  LConnTagsString	  "a"
+	}
+	Block {
+	  BlockType		  Scope
+	  Name			  "Scope"
+	  SID			  "355"
+	  Ports			  [1]
+	  Position		  [675, 89, 705, 121]
+	  ZOrder		  35
+	  Floating		  off
+	  Location		  [946, 79, 1270, 318]
+	  Open			  off
+	  NumInputPorts		  "1"
+	  ZoomMode		  "xonly"
+	  List {
+	    ListType		    AxesTitles
+	    axes1		    "%<SignalLabel>"
+	  }
+	  List {
+	    ListType		    ScopeGraphics
+	    FigureColor		    "[0.501960784313725 0.501960784313725 0.501960784313725]"
+	    AxesColor		    "[0 0 0]"
+	    AxesTickColor	    "[1 1 1]"
+	    LineColors		    "[1 1 0;1 0 1;0 1 1;1 0 0;0 1 0;0 0 1]"
+	    LineStyles		    "-|-|-|-|-|-"
+	    LineWidths		    "[0.5 0.5 0.5 0.5 0.5 0.5]"
+	    MarkerStyles	    "none|none|none|none|none|none"
+	  }
+	  ShowLegends		  on
+	  YMin			  "0"
+	  YMax			  "3e-11"
+	  LimitDataPoints	  off
+	  ScrollMode		  off
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "current"
+	  SID			  "356"
+	  Ports			  [0, 1, 0, 0, 0, 1, 1]
+	  Position		  [570, 213, 595, 237]
+	  ZOrder		  31
+	  LibraryVersion	  "1.2446"
+	  UserDataPersistent	  on
+	  SourceBlock		  "powerlib/Measurements/Current Measurement"
+	  SourceType		  "Current Measurement"
+	  ContentPreviewEnabled	  off
+	  PhasorSimulation	  off
+	  OutputType		  "Complex"
+	  PSBequivalent		  "0"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "fluid_a"
+	  SID			  "357"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [335, 208, 420, 242]
+	  ZOrder		  1
+	  LibraryVersion	  "1.2446"
+	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
+	  SourceType		  "Series RLC Branch"
+	  LConnTagsString	  "__new0"
+	  RConnTagsString	  "__new0"
+	  BranchType		  "RL"
+	  Resistance		  "0.0083203"
+	  Inductance		  "7.2225e-09"
+	  SetiL0		  off
+	  InitialCurrent	  "0"
+	  Capacitance		  "1e-6"
+	  Setx0			  off
+	  InitialVoltage	  "0"
+	  Measurements		  "None"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "fluid_c"
+	  SID			  "358"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [473, 280, 507, 365]
+	  ZOrder		  37
+	  BlockRotation		  270
+	  BlockMirror		  on
+	  NamePlacement		  "alternate"
+	  LibraryVersion	  "1.2446"
+	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
+	  SourceType		  "Series RLC Branch"
+	  LConnTagsString	  "__new0"
+	  RConnTagsString	  "__new0"
+	  BranchType		  "C"
+	  Resistance		  "1"
+	  Inductance		  "1e-3"
+	  SetiL0		  off
+	  InitialCurrent	  "0"
+	  Capacitance		  "6.1913e-05"
+	  Setx0			  off
+	  InitialVoltage	  "0"
+	  Measurements		  "None"
+	}
+	Block {
+	  BlockType		  PMIOPort
+	  Name			  "out"
+	  SID			  "359"
+	  Position		  [780, 223, 810, 237]
+	  ZOrder		  33
+	  BlockMirror		  on
+	  Port			  "1"
+	  Side			  "Right"
+	}
+	Block {
+	  BlockType		  PMIOPort
+	  Name			  "in\n"
+	  SID			  "360"
+	  Position		  [145, 218, 175, 232]
+	  ZOrder		  34
+	  Port			  "2"
+	  Side			  "Left"
+	}
+	Line {
+	  ZOrder		  1
+	  SrcBlock		  "current"
+	  SrcPort		  1
+	  Points		  [9, 0; 0, -115]
+	  DstBlock		  "Scope"
+	  DstPort		  1
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  2
+	  SrcBlock		  "fluid_c"
+	  SrcPort		  RConn1
+	  DstBlock		  "Ground"
+	  DstPort		  LConn1
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  3
+	  SrcBlock		  "current"
+	  SrcPort		  LConn1
+	  Points		  [-65, 0]
+	  Branch {
+	    ConnectType		    "DEST_DEST"
+	    SrcBlock		    "fluid_c"
+	    SrcPort		    LConn1
+	    Points		    [0, -40]
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "fluid_a"
+	    DstPort		    RConn1
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  6
+	  SrcBlock		  "fluid_a"
+	  SrcPort		  LConn1
+	  DstBlock		  "in\n"
+	  DstPort		  RConn1
+	}
+	Line {
+	  LineType		  "Connection"
+	  ZOrder		  7
+	  SrcBlock		  "current"
+	  SrcPort		  RConn1
+	  DstBlock		  "out"
+	  DstPort		  RConn1
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "ch6_oil"
+      SID		      "345"
+      Ports		      [0, 0, 0, 0, 0, 1, 1]
+      Position		      [860, 479, 965, 511]
+      ZOrder		      81
+      RequestExecContextInheritance off
+      System {
+	Name			"ch6_oil"
 	Location		[-8, 0, 1288, 1000]
 	Open			off
 	ModelBrowserVisibility	off
@@ -1743,7 +1968,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  ShowName		  off
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Ground"
 	  SourceType		  "Ground"
 	  LConnTagsString	  "a"
@@ -1778,6 +2003,7 @@ Model {
 	  YMin			  "0"
 	  YMax			  "3e-11"
 	  LimitDataPoints	  off
+	  ScrollMode		  off
 	}
 	Block {
 	  BlockType		  Reference
@@ -1786,7 +2012,7 @@ Model {
 	  Ports			  [0, 1, 0, 0, 0, 1, 1]
 	  Position		  [570, 213, 595, 237]
 	  ZOrder		  31
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  UserDataPersistent	  on
 	  SourceBlock		  "powerlib/Measurements/Current Measurement"
 	  SourceType		  "Current Measurement"
@@ -1802,14 +2028,14 @@ Model {
 	  Ports			  [0, 0, 0, 0, 0, 1, 1]
 	  Position		  [335, 208, 420, 242]
 	  ZOrder		  1
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.011094"
-	  Inductance		  "1.4445e-08"
+	  Resistance		  "0.0083203"
+	  Inductance		  "7.2225e-09"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
 	  Capacitance		  "1e-6"
@@ -1827,7 +2053,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  NamePlacement		  "alternate"
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
@@ -1837,7 +2063,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.00012383"
+	  Capacitance		  "6.1913e-05"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
@@ -1946,7 +2172,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  ShowName		  off
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Ground"
 	  SourceType		  "Ground"
 	  LConnTagsString	  "a"
@@ -1969,7 +2195,7 @@ Model {
 	  Position		  [125, 65, 160, 110]
 	  ZOrder		  3
 	  BlockRotation		  270
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Electrical\nSources/Controlled Voltage Source"
 	  SourceType		  "Controlled Voltage Source"
 	  ContentPreviewEnabled	  off
@@ -2040,7 +2266,7 @@ Model {
       Name		      "inlet2"
       SID		      "232"
       Ports		      [0, 1, 0, 0, 0, 0, 1]
-      Position		      [685, 919, 740, 986]
+      Position		      [910, 919, 965, 986]
       ZOrder		      63
       RequestExecContextInheritance off
       System {
@@ -2068,7 +2294,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  ShowName		  off
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Ground"
 	  SourceType		  "Ground"
 	  LConnTagsString	  "a"
@@ -2091,7 +2317,7 @@ Model {
 	  Position		  [125, 65, 160, 110]
 	  ZOrder		  3
 	  BlockRotation		  270
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Electrical\nSources/Controlled Voltage Source"
 	  SourceType		  "Controlled Voltage Source"
 	  ContentPreviewEnabled	  off
@@ -2190,7 +2416,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  ShowName		  off
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Ground"
 	  SourceType		  "Ground"
 	  LConnTagsString	  "a"
@@ -2213,7 +2439,7 @@ Model {
 	  Position		  [125, 65, 160, 110]
 	  ZOrder		  3
 	  BlockRotation		  270
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Electrical\nSources/Controlled Voltage Source"
 	  SourceType		  "Controlled Voltage Source"
 	  ContentPreviewEnabled	  off
@@ -2284,7 +2510,7 @@ Model {
       Name		      "inlet4"
       SID		      "313"
       Ports		      [0, 1, 0, 0, 0, 0, 1]
-      Position		      [1265, 444, 1320, 511]
+      Position		      [1490, 444, 1545, 511]
       ZOrder		      75
       BlockMirror	      on
       NamePlacement	      "alternate"
@@ -2314,7 +2540,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  ShowName		  off
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Ground"
 	  SourceType		  "Ground"
 	  LConnTagsString	  "a"
@@ -2337,7 +2563,7 @@ Model {
 	  Position		  [125, 65, 160, 110]
 	  ZOrder		  3
 	  BlockRotation		  270
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Electrical\nSources/Controlled Voltage Source"
 	  SourceType		  "Controlled Voltage Source"
 	  ContentPreviewEnabled	  off
@@ -2408,10 +2634,10 @@ Model {
       Name		      "powergui"
       SID		      "11"
       Ports		      []
-      Position		      [150, 30, 216, 69]
+      Position		      [375, 30, 441, 69]
       ZOrder		      11
       Priority		      "1"
-      LibraryVersion	      "1.2564"
+      LibraryVersion	      "1.2446"
       UserDataPersistent      on
       UserData		      "DataTag0"
       SourceBlock	      "powerlib/powergui"
@@ -2430,18 +2656,17 @@ Model {
       Interpol		      off
       methode		      off
       Ts		      "100"
-      FunctionMessages	      off
-      echomessages	      off
-      HookPort		      off
-      EnableUseOfTLC	      off
-      x0status		      "blocks"
       frequencyindice	      "0"
       Pbase		      "100e6"
       ErrMax		      "1e-4"
       Iterations	      "50"
       UnitsV		      "kV"
       UnitsW		      "MW"
-      buscounter	      "0"
+      FunctionMessages	      off
+      echomessages	      off
+      HookPort		      off
+      EnableUseOfTLC	      off
+      x0status		      "blocks"
       RestoreLinks	      "warning"
       ResistiveCurrentMeasurement off
       Frange		      "[0:2:500]"
@@ -2496,7 +2721,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  ShowName		  off
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Ground"
 	  SourceType		  "Ground"
 	  LConnTagsString	  "a"
@@ -2508,14 +2733,14 @@ Model {
 	  Ports			  [0, 0, 0, 0, 0, 1, 1]
 	  Position		  [395, 208, 480, 242]
 	  ZOrder		  1
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.0029165"
-	  Inductance		  "4.9e-06"
+	  Resistance		  "0.0042854"
+	  Inductance		  "4.8e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
 	  Capacitance		  "1e-6"
@@ -2533,7 +2758,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  NamePlacement		  "alternate"
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
@@ -2543,7 +2768,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.025676"
+	  Capacitance		  "0.025152"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
@@ -2608,7 +2833,7 @@ Model {
       Name		      "tube2_water"
       SID		      "277"
       Ports		      [0, 0, 0, 0, 0, 1, 1]
-      Position		      [789, 765, 821, 870]
+      Position		      [1014, 765, 1046, 870]
       ZOrder		      71
       BlockRotation	      270
       RequestExecContextInheritance off
@@ -2637,7 +2862,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  ShowName		  off
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Ground"
 	  SourceType		  "Ground"
 	  LConnTagsString	  "a"
@@ -2649,14 +2874,14 @@ Model {
 	  Ports			  [0, 0, 0, 0, 0, 1, 1]
 	  Position		  [395, 208, 480, 242]
 	  ZOrder		  1
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.0029165"
-	  Inductance		  "4.9e-06"
+	  Resistance		  "0.0042854"
+	  Inductance		  "4.8e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
 	  Capacitance		  "1e-6"
@@ -2674,7 +2899,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  NamePlacement		  "alternate"
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
@@ -2684,7 +2909,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.025676"
+	  Capacitance		  "0.025152"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
@@ -2778,7 +3003,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  ShowName		  off
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Ground"
 	  SourceType		  "Ground"
 	  LConnTagsString	  "a"
@@ -2790,14 +3015,14 @@ Model {
 	  Ports			  [0, 0, 0, 0, 0, 1, 1]
 	  Position		  [395, 208, 480, 242]
 	  ZOrder		  1
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.015603"
-	  Inductance		  "4.7187e-06"
+	  Resistance		  "0.022927"
+	  Inductance		  "4.6224e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
 	  Capacitance		  "1e-6"
@@ -2815,7 +3040,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  NamePlacement		  "alternate"
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
@@ -2825,7 +3050,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.063959"
+	  Capacitance		  "0.062653"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
@@ -2891,7 +3116,7 @@ Model {
       Name		      "tube4_oil"
       SID		      "319"
       Ports		      [0, 0, 0, 0, 0, 1, 1]
-      Position		      [1040, 479, 1145, 511]
+      Position		      [1265, 479, 1370, 511]
       ZOrder		      76
       BlockMirror	      on
       NamePlacement	      "alternate"
@@ -2921,7 +3146,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  ShowName		  off
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Ground"
 	  SourceType		  "Ground"
 	  LConnTagsString	  "a"
@@ -2933,14 +3158,14 @@ Model {
 	  Ports			  [0, 0, 0, 0, 0, 1, 1]
 	  Position		  [395, 208, 480, 242]
 	  ZOrder		  1
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.015603"
-	  Inductance		  "4.7187e-06"
+	  Resistance		  "0.022927"
+	  Inductance		  "4.6224e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
 	  Capacitance		  "1e-6"
@@ -2958,7 +3183,7 @@ Model {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  NamePlacement		  "alternate"
-	  LibraryVersion	  "1.2564"
+	  LibraryVersion	  "1.2446"
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
 	  SourceType		  "Series RLC Branch"
 	  LConnTagsString	  "__new0"
@@ -2968,7 +3193,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.063959"
+	  Capacitance		  "0.062653"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
@@ -3097,26 +3322,26 @@ Model {
     }
     Line {
       LineType		      "Connection"
-      ZOrder		      86
-      SrcBlock		      "ch3_oil"
+      ZOrder		      87
+      SrcBlock		      "ch1_water"
       SrcPort		      RConn1
-      Points		      [55, 0]
-      Branch {
-	ConnectType		"DEST_DEST"
-	SrcBlock		"ch1_water"
-	SrcPort			RConn1
-	Points			[0, -100]
-      }
+      Points		      [0, -100]
       Branch {
 	ConnectType		"DEST_SRC"
-	DstBlock		"ch5_oil"
-	DstPort			LConn1
+	DstBlock		"ch3_oil"
+	DstPort			RConn1
+      }
+      Branch {
+	ConnectType		"DEST_DEST"
+	SrcBlock		"ch5_oil"
+	SrcPort			RConn1
+	Points			[-100, 0]
       }
     }
     Line {
       LineType		      "Connection"
       ZOrder		      89
-      SrcBlock		      "ch5_oil"
+      SrcBlock		      "ch6_oil"
       SrcPort		      RConn1
       Points		      [50, 0]
       Branch {
@@ -3130,6 +3355,14 @@ Model {
 	DstBlock		"ch4_oil"
 	DstPort			RConn1
       }
+    }
+    Line {
+      LineType		      "Connection"
+      ZOrder		      92
+      SrcBlock		      "ch5_oil"
+      SrcPort		      LConn1
+      DstBlock		      "ch6_oil"
+      DstPort		      LConn1
     }
   }
 }

@@ -1,5 +1,5 @@
 Model {
-  Name			  "model_i3_c3_f2_short"
+  Name			  "model_i3_c3_f2_100s"
   Version		  8.4
   MdlSubVersion		  0
   SavedCharacterEncoding  "windows-1252"
@@ -7,7 +7,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.158"
+    ComputedModelVersion    "1.159"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -69,9 +69,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "yh3wong"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Fri Sep 09 17:02:24 2016"
-  RTWModifiedTimeStamp	  394217136
-  ModelVersionFormat	  "1.%<AutoIncrement:158>"
+  LastModifiedDate	  "Wed Oct 19 19:09:08 2016"
+  RTWModifiedTimeStamp	  398804935
+  ModelVersionFormat	  "1.%<AutoIncrement:159>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -893,7 +893,7 @@ Model {
     }
   }
   System {
-    Name		    "model_i3_c3_f2_short"
+    Name		    "model_i3_c3_f2_100s"
     Location		    [1376, 126, 2016, 1038]
     Open		    on
     ModelBrowserVisibility  off
@@ -1008,7 +1008,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.0016128"
+	  Resistance		  "0.0009072"
 	  Inductance		  "7e-08"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1037,7 +1037,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.00032693"
+	  Capacitance		  "0.00033568"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
@@ -1212,8 +1212,8 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.077656"
-	  Inductance		  "6.741e-08"
+	  Resistance		  "0.074883"
+	  Inductance		  "1.1556e-07"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
 	  Capacitance		  "1e-6"
@@ -1241,7 +1241,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.00057786"
+	  Capacitance		  "0.0010056"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
@@ -1416,8 +1416,8 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.13313"
-	  Inductance		  "1.1556e-07"
+	  Resistance		  "0.043682"
+	  Inductance		  "6.741e-08"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
 	  Capacitance		  "1e-6"
@@ -1445,7 +1445,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.00099061"
+	  Capacitance		  "0.00058661"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
@@ -1996,8 +1996,8 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.0043747"
-	  Inductance		  "4.9e-06"
+	  Resistance		  "0.0042854"
+	  Inductance		  "4.8e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
 	  Capacitance		  "1e-6"
@@ -2025,7 +2025,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.025676"
+	  Capacitance		  "0.025152"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
@@ -2136,8 +2136,8 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.023405"
-	  Inductance		  "4.7187e-06"
+	  Resistance		  "0.022927"
+	  Inductance		  "4.6224e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
 	  Capacitance		  "1e-6"
@@ -2165,7 +2165,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.063959"
+	  Capacitance		  "0.062653"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
@@ -2277,8 +2277,8 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.023405"
-	  Inductance		  "4.7187e-06"
+	  Resistance		  "0.022927"
+	  Inductance		  "4.6224e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
 	  Capacitance		  "1e-6"
@@ -2306,7 +2306,7 @@ Model {
 	  Inductance		  "1e-3"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
-	  Capacitance		  "0.063959"
+	  Capacitance		  "0.062653"
 	  Setx0			  off
 	  InitialVoltage	  "0"
 	  Measurements		  "None"
