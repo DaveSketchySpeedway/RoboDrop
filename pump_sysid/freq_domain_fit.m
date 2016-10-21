@@ -94,9 +94,10 @@ clear f c t y
 clear sys*
 order = 2;
 Ts = 0.1;
+delay = 0.05;
 pole_real = 8;
 k = pole_real;
-sys = tf([-1 2/Ts],[1 2/Ts]) * k * tf(1,[1 pole_real]);
+sys = tf([-delay/2 1],[delay/2 1]) * k * tf(1,[1 pole_real]);
 sys_d = c2d(sys,Ts,'zoh');
 clear pole* k
 
@@ -133,10 +134,11 @@ grid on
 [mag_c,phase_c] = bode(sys,omega);
 mag_c = squeeze(mag_c); % not dB
 phase_c = squeeze(phase_c);
-phase_c = phase_c - 360; % pade is -ve starts at 360
+% phase_c = phase_c - 360; % pade is -ve starts at 360
 [mag_d,phase_d] = bode(sys_d,omega);
 mag_d = squeeze(mag_d); % not dB
 phase_d = squeeze(phase_d);
+% phase_d = phase_d - 360; % pade is -ve starts at 360
 
 mag_exp = read_amp./write_amp; % not dB
 phase_exp = read_phase - write_phase; % radians
