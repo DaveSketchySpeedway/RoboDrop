@@ -249,58 +249,111 @@ xlim(all_axes(1), [min(vali.t), max(vali.t)]);
 clear i all_axes 
 
 % open loop simulation
+% figure
+% for i = 1:size(vali.r,1)
+%     subplot(size(vali.r,1),3, (i-1)*3+1)
+%     plot(vali.t, vali.r(i,:), 'r')
+%     hold on
+%     plot(vali.t, vali.y(i,:), 'b')
+%     plot(vali.t, vali.yo(i,:), 'g.')
+%     if (i==1)
+% %         title('r(red) vs y(blue) vs yo(cyan)')
+%         title('Displacement')
+%     end
+%     if (i==size(vali.r,1))
+%         xlabel('Time [s]')
+%     end
+%     ylabel('Position [um]')
+%     grid minor
+%     legend('Reference','Experiment','Simulation');
+%     
+%     subplot(size(vali.r,1),3,(i-1)*3+2)
+%     plot(vali.t, vali.v(i,:), 'b')
+%     hold on
+%     plot(vali.t, vali.vo(i,:), 'g.')
+%     if (i == 1)
+% %         title('v(red) vs vo(dots)')
+%         title('Velocity')
+%     end
+%     if (i == size(vali.r,1))
+%         xlabel('Time [s]')
+%     end
+%     ylabel('Velocity [um/s]')
+%     grid minor
+%     legend('Experiment', 'Simulation');
+%     
+%     if i <= size(vali.ud)
+%         subplot(size(vali.r,1),3,3*i)  
+%         plot(vali.t, vali.ud(i,:), 'k.')
+%         if (i == 1)
+%             title('Input [u* = u - mean(d*)]')
+%         end
+%         if (i == size(vali.r,1))
+%             xlabel('Time [s]')
+%         end
+%         ylabel('Pressure [mbar]')
+%         grid minor
+%     end
+% end
+% all_axes = findobj(gcf, 'type', 'axes');
+% linkaxes(all_axes, 'x');
+% xlim(all_axes(1), [min(vali.t), max(vali.t)]);
+% clear i all_axes 
+
+close all
 figure
 for i = 1:size(vali.r,1)
-    subplot(size(vali.r,1),3, (i-1)*3+1)
+    subplot(size(vali.r,1),1,i)
     plot(vali.t, vali.r(i,:), 'r')
     hold on
-    plot(vali.t, vali.y(i,:), 'b.')
-    plot(vali.t, vali.yo(i,:), 'c.')
-    if (i==1)
-%         title('r(red) vs y(blue) vs yo(cyan)')
-        title('Displacement')
-    end
+    plot(vali.t, vali.y(i,:), 'b')
+    plot(vali.t, vali.yo(i,:), 'g.')
+    title(['Channel ' num2str(i) ' Displacement'])
     if (i==size(vali.r,1))
-        xlabel('time [s]')
+        xlabel('Time [s]')
     end
-    ylabel('position [um]')
+    ylabel('Position [um]')
     grid minor
-    legend('reference','simulation','experiment');
+    legend('Reference','Experiment','Simulation');
+    xlim([0,125])
+end
+clear i
     
-    subplot(size(vali.r,1),3,(i-1)*3+2)
-    plot(vali.t, vali.v(i,:), 'r')
+figure
+for i = 1:size(vali.r,1)
+    subplot(size(vali.r,1),1,i)
+    plot(vali.t, vali.v(i,:), 'b')
     hold on
-    plot(vali.t, vali.vo(i,:), 'm.')
-    if (i == 1)
-%         title('v(red) vs vo(dots)')
-        title('Velocity')
-    end
+    plot(vali.t, vali.vo(i,:), 'g.')
+    title(['Channel ' num2str(i) ' Velocity'])
     if (i == size(vali.r,1))
-        xlabel('time [s]')
+        xlabel('Time [s]')
     end
-    ylabel('velocity [um/s]')
+    ylabel('Velocity [um/s]')
     grid minor
-    legend('experiment', 'simulation');
-    
+    legend('Experiment', 'Simulation');
+    xlim([0,125])
+end
+clear i
+
+figure
+for i = 1:size(vali.r,1)
     if i <= size(vali.ud)
-        subplot(size(vali.r,1),3,3*i)  
+        subplot(size(vali.r,1),1,i)
+        plot(vali.t, vali.u(i,:), 'Color', [0.9,0.8,0])
+        hold on
         plot(vali.t, vali.ud(i,:), 'k.')
-        if (i == 1)
-            title('u - d')
-        end
+        title(['Channel ' num2str(i) ' Command'])
         if (i == size(vali.r,1))
-            xlabel('time [s]')
+            xlabel('Time [s]')
         end
-        ylabel('pressure [mbar]')
+        ylabel('Pressure [mbar]')
         grid minor
+        legend('u','u* = u - mean(d*)')
+        xlim([0,125])
     end
 end
-all_axes = findobj(gcf, 'type', 'axes');
-linkaxes(all_axes, 'x');
-xlim(all_axes(1), [min(vali.t), max(vali.t)]);
-clear i all_axes 
-    
-    
+clear i
     
     
 

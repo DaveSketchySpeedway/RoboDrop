@@ -7,7 +7,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.101"
+    ComputedModelVersion    "1.104"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -69,9 +69,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "yh3wong"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Fri Sep 09 16:06:13 2016"
-  RTWModifiedTimeStamp	  395337971
-  ModelVersionFormat	  "1.%<AutoIncrement:101>"
+  LastModifiedDate	  "Wed Nov 02 18:42:05 2016"
+  RTWModifiedTimeStamp	  400012925
+  ModelVersionFormat	  "1.%<AutoIncrement:104>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -1008,7 +1008,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.003328"
+	  Resistance		  "0.00384"
 	  Inductance		  "2e-07"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1212,7 +1212,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.096146"
+	  Resistance		  "0.11094"
 	  Inductance		  "1.1556e-07"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1416,7 +1416,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.056085"
+	  Resistance		  "0.064714"
 	  Inductance		  "6.741e-08"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1996,7 +1996,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.0031595"
+	  Resistance		  "0.0036456"
 	  Inductance		  "4.9e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -2136,7 +2136,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.016903"
+	  Resistance		  "0.019504"
 	  Inductance		  "4.7187e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -2277,7 +2277,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.016903"
+	  Resistance		  "0.019504"
 	  Inductance		  "4.7187e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
