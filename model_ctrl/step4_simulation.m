@@ -44,13 +44,13 @@ CORRECTION_MBAR_PER_S = 0.1; % don't go higher than 0.5
 PLANT = model.combo;
 % PLANT = model.chip;
 
-CTRL = ctrl_d(5);
+CTRL = ctrl_d(15);
 
-PERTURBATION = 0.2;    
+PERTURBATION = 0;    
 REFERENCE_STEP_DURATION = 10;
 REFERENCE_STEP_HEIGHT = 500;
 NOISE_STEP_HEIGHT = 0;
-DISTURBANCE_STEP_HEIGHT = 20;
+DISTURBANCE_STEP_HEIGHT = -50;
 
 RESET_TIME = REFERENCE_STEP_DURATION*(1 + length(CTRL.output));
 %% SIGNAL GENERATION
@@ -67,14 +67,9 @@ clear j start_idx
 % disturbance
 disturbance = zeros(length(time), length(PLANT.input));
 for j = 1:length(PLANT.input)
-    half_step_length = floor( length(time)/(1+length(CTRL.output))/2 );
-    start_idx = (2*(j-1)+1)*half_step_length;
-    disturbance(start_idx:end,j) = DISTURBANCE_STEP_HEIGHT;
+    disturbance(:,j) = ones(length(time), 1) * (2*rand-1) * DISTURBANCE_STEP_HEIGHT;
 end
-disturbance(:,1) = ones(length(time), 1) * DISTURBANCE_STEP_HEIGHT;
-disturbance(:,2) = ones(length(time),1) * 0;
-disturbance(:,3) = ones(length(time),1) * -0.5 * DISTURBANCE_STEP_HEIGHT;
-clear j start_idx half_step_length
+clear j
 
 % noise
 noise = zeros(length(time), length(PLANT.output));
@@ -153,120 +148,162 @@ clear ans
 
 clear d n r tout u y ym yp xe z de 
 %% PLOT
-close all
-figure
-
-i = 1;
-for c = 1:size(simu.y,2)
-    
-    subplot(size(simu.y,2),2,(c-1)*2+1)
-    plot(simu.ty, simu.y(:,c), 'b')
-    hold on
-    if (find(CTRL.channel_idx == c))
-        plot(simu.tr, simu.r(:,i), 'r')
-        plot(simu.tym, simu.ym(:,i), 'b.')
-        plot(simu.typ, simu.yp(:,i), 'c.')
-        i = i + 1;
-    end    
-    if (c == 1)
-        title('R(red) Ym(blue) Yp(cyan)')
-    end
-    if (c == size(simu.y,2))
-        xlabel('time [s]')
-    end
-    ylabel('position [um]')
-    grid minor
-        
-    subplot(size(simu.y,2),2,c*2)
-    if (c <= size(simu.u,2))
-        plot(simu.td, simu.d(:,c), 'r')
-        hold on
-        plot(simu.tu, simu.u(:,c), 'k.')
-    end 
-    if (c == 1)
-        title('D(red) K(black)')
-    end
-    if (c == size(simu.y,2))
-        xlabel('time [s]')
-    end
-    ylabel('pressure [mbar]')
-    grid minor
-end
-all_axes = findobj(gcf, 'type', 'axes');
-linkaxes(all_axes, 'x');
-xlim(all_axes(1), [min(simu.tr), max(simu.tr)]);
-clear i c all_axes 
-
-
-figure
-
-i = 1;
-for c = 1:size(simu.y,2)
-    
-    subplot(size(simu.y,2),3,(c-1)*3+1)
-    plot(simu.ty, simu.y(:,c), 'b')
-    hold on
-    if (find(CTRL.channel_idx == c))
-        plot(simu.tr, simu.r(:,i), 'r')
-        plot(simu.txe, simu.xe(:,i), 'g.')
-        plot(simu.typ, simu.yp(:,i), 'c.')
+% close all
+% 
+% figure
+% i = 1;
+% for c = 1:size(simu.y,2)
+%     
+%     subplot(size(simu.y,2),2,(c-1)*2+1)
+%     plot(simu.ty, simu.y(:,c), 'b')
+%     hold on
+%     if (find(CTRL.channel_idx == c))
+%         plot(simu.tr, simu.r(:,i), 'r')
+%         plot(simu.tym, simu.ym(:,i), 'b.')
+%         plot(simu.typ, simu.yp(:,i), 'c.')
 %         i = i + 1;
-    end    
-    if (c == 1)
-%         title('R(red) Yp(cyan) Xe(green)')
-        title('Displacement')
+%     end    
+%     if (c == 1)
+%         title('R(red) Ym(blue) Yp(cyan)')
+%     end
+%     if (c == size(simu.y,2))
+%         xlabel('time [s]')
+%     end
+%     ylabel('position [um]')
+%     grid minor
+%         
+%     subplot(size(simu.y,2),2,c*2)
+%     if (c <= size(simu.u,2))
+%         plot(simu.td, simu.d(:,c), 'r')
+%         hold on
+%         plot(simu.tu, simu.u(:,c), 'k.')
+%     end 
+%     if (c == 1)
+%         title('D(red) K(black)')
+%     end
+%     if (c == size(simu.y,2))
+%         xlabel('time [s]')
+%     end
+%     ylabel('pressure [mbar]')
+%     grid minor
+% end
+% all_axes = findobj(gcf, 'type', 'axes');
+% linkaxes(all_axes, 'x');
+% xlim(all_axes(1), [min(simu.tr), max(simu.tr)]);
+% clear i c all_axes 
+% 
+% 
+% figure
+% i = 1;
+% for c = 1:size(simu.y,2)
+%     
+%     subplot(size(simu.y,2),3,(c-1)*3+1)
+%     plot(simu.ty, simu.y(:,c), 'b')
+%     hold on
+%     if (find(CTRL.channel_idx == c))
+%         plot(simu.tr, simu.r(:,i), 'r')
+%         plot(simu.txe, simu.xe(:,i), 'g.')
+%         plot(simu.typ, simu.yp(:,i), 'c.')
+% %         i = i + 1;
+%     end    
+%     if (c == 1)
+% %         title('R(red) Yp(cyan) Xe(green)')
+%         title('Displacement')
+%     end
+%     if (c == size(simu.y,2))
+%         xlabel('time [s]')
+%     end
+%     ylabel('position [um]')
+%     grid minor
+%     legend('measurement','reference','states','prediction')
+%         
+%     subplot(size(simu.y,2),3,(c-1)*3+2)
+%     plot(simu.ty, simu.y(:,c), 'b')
+%     hold on
+%     if (find(CTRL.channel_idx == c))
+%         plot(simu.tr, simu.r(:,i), 'r')
+%         plot(simu.tz, simu.z(:,i), 'm.')
+%         i = i + 1;
+%     end    
+%     if (c == 1)
+% %         title('R(red) Z(magenta)')
+%         title('Integral Feedback')
+%     end
+%     if (c == size(simu.y,2))
+%         xlabel('time [s]')
+%     end
+%     ylabel('position integral [um s]')
+%     grid minor
+%     legend('measurement','reference','integral states');
+%     
+%     subplot(size(simu.y,2),3,c*3)
+%     if (c <= size(simu.u,2))
+%         plot(simu.td, simu.d(:,c), 'r')
+%         hold on
+%         try
+%             plot(simu.tde, simu.de(:,c), 'g.')
+%             plot(simu.tdc, simu.dc(:,c), 'c.')
+%         catch
+%         end
+%     end 
+%     if (c == 1)
+% %         title('D(red) De(green) Dc(cyan)')
+%     title('Disturbance Correction')
+%     end
+%     if (c == size(simu.y,2))
+%         xlabel('time [s]')
+%     end
+%     ylabel('pressure [mbar]')
+%     grid minor
+%     legend('disturbance','estimate','correction')
+% end
+% all_axes = findobj(gcf, 'type', 'axes');
+% linkaxes(all_axes, 'x');
+% xlim(all_axes(1), [min(simu.tr), max(simu.tr)]);
+% clear i c all_axes 
+
+%% PLOT PUBLISH
+close all
+
+figure
+j = 1;
+for i = 1:length(PLANT.output)
+    subplot(length(PLANT.output)/2,2,i)
+    plot(simu.ty, simu.y(:,i), 'b');
+    hold on;
+    legend('y Ouput (Invisible)')
+    if (find(CTRL.outputIdx==i) > 0)
+        plot(simu.tym, simu.ym(:,j), 'g.');
+        plot(simu.tr, simu.r(:,j), 'r');
+        legend('y Output (Invisible)', 'y Output (Visible)', 'r Reference')
+        j = j+1;
     end
-    if (c == size(simu.y,2))
-        xlabel('time [s]')
-    end
-    ylabel('position [um]')
+    title(['ch' num2str(i) ' Displacement']);
+    xlabel('Time [s]');
+    ylabel('Displacement [um]');
     grid minor
-    legend('measurement','reference','states','prediction')
-        
-    subplot(size(simu.y,2),3,(c-1)*3+2)
-    plot(simu.ty, simu.y(:,c), 'b')
-    hold on
-    if (find(CTRL.channel_idx == c))
-        plot(simu.tr, simu.r(:,i), 'r')
-        plot(simu.tz, simu.z(:,i), 'm.')
-        i = i + 1;
-    end    
-    if (c == 1)
-%         title('R(red) Z(magenta)')
-        title('Integral Feedback')
-    end
-    if (c == size(simu.y,2))
-        xlabel('time [s]')
-    end
-    ylabel('position integral [um s]')
-    grid minor
-    legend('measurement','reference','integral states');
-    
-    subplot(size(simu.y,2),3,c*3)
-    if (c <= size(simu.u,2))
-        plot(simu.td, simu.d(:,c), 'r')
-        hold on
-        try
-            plot(simu.tde, simu.de(:,c), 'g.')
-            plot(simu.tdc, simu.dc(:,c), 'c.')
-        catch
-        end
-    end 
-    if (c == 1)
-%         title('D(red) De(green) Dc(cyan)')
-    title('Disturbance Correction')
-    end
-    if (c == size(simu.y,2))
-        xlabel('time [s]')
-    end
-    ylabel('pressure [mbar]')
-    grid minor
-    legend('disturbance','estimate','correction')
 end
-all_axes = findobj(gcf, 'type', 'axes');
-linkaxes(all_axes, 'x');
-xlim(all_axes(1), [min(simu.tr), max(simu.tr)]);
-clear i c all_axes 
+clear i
+
+figure
+for i = 1:length(PLANT.input)
+    subplot(length(PLANT.input)/2,2,i)
+    plot(simu.td, simu.d(:,i), 'r');
+    hold on;
+    plot(simu.tu, simu.u(:,i), 'k.');
+    plot(simu.tde, simu.de(:,i), 'g.');
+    plot(simu.tdc, simu.dc(:,i), 'b.');
+    legend('d Disturbance (Static Offset)','u Command',...
+        'd* Disturbance (Kalman Estimate)','dc Correction {Accumulative}');
+    title(['in' num2str(i) ' Pressure']);
+    xlabel('Time [s]');
+    ylabel('Pressure [mbar]');
+    grid minor
+end
+clear i
+
+
+
 
 
 

@@ -209,46 +209,46 @@ end
 
 clear deleteme
 
-%% PLOT SIMULATION RESULTS
-% kalman estimations
-figure
-for i = 1:size(vali.r,1)
-    
-    subplot(size(vali.r,1),2,(i-1)*2+1)
-    plot(vali.t, vali.r(i,:), 'r')
-    hold on
-    plot(vali.t, vali.y(i,:), 'b.')
-    plot(vali.t, vali.yp(i,:), 'c.')
-    if (i == 1)
-        title('r(red) vs y(blue) vs yp(cyan)')
-    end
-    if (i == size(vali.r,1))
-        xlabel('time [s]')
-    end
-    ylabel('position [um]')
-    grid minor
-        
-    if i <= size(vali.u)
-        subplot(size(vali.r,1),2,i*2)
-        plot(vali.t, vali.u(i,:), 'k.')
-        hold on
-        plot(vali.t, vali.de(i,:), 'g.')
-        if (i == 1)
-            title('u(black) and de(green)')
-        end
-        if (i == size(vali.r,1))
-            xlabel('time [s]')
-        end
-        ylabel('pressure [mbar]')
-        grid minor
-    end    
-end
-all_axes = findobj(gcf, 'type', 'axes');
-linkaxes(all_axes, 'x');
-xlim(all_axes(1), [min(vali.t), max(vali.t)]);
-clear i all_axes 
-
-% open loop simulation
+%% PLOT
+% % kalman estimations
+% figure
+% for i = 1:size(vali.r,1)
+%     
+%     subplot(size(vali.r,1),2,(i-1)*2+1)
+%     plot(vali.t, vali.r(i,:), 'r')
+%     hold on
+%     plot(vali.t, vali.y(i,:), 'b.')
+%     plot(vali.t, vali.yp(i,:), 'c.')
+%     if (i == 1)
+%         title('r(red) vs y(blue) vs yp(cyan)')
+%     end
+%     if (i == size(vali.r,1))
+%         xlabel('time [s]')
+%     end
+%     ylabel('position [um]')
+%     grid minor
+%         
+%     if i <= size(vali.u)
+%         subplot(size(vali.r,1),2,i*2)
+%         plot(vali.t, vali.u(i,:), 'k.')
+%         hold on
+%         plot(vali.t, vali.de(i,:), 'g.')
+%         if (i == 1)
+%             title('u(black) and de(green)')
+%         end
+%         if (i == size(vali.r,1))
+%             xlabel('time [s]')
+%         end
+%         ylabel('pressure [mbar]')
+%         grid minor
+%     end    
+% end
+% all_axes = findobj(gcf, 'type', 'axes');
+% linkaxes(all_axes, 'x');
+% xlim(all_axes(1), [min(vali.t), max(vali.t)]);
+% clear i all_axes 
+% 
+% % open loop simulation
 % figure
 % for i = 1:size(vali.r,1)
 %     subplot(size(vali.r,1),3, (i-1)*3+1)
@@ -300,6 +300,8 @@ clear i all_axes
 % xlim(all_axes(1), [min(vali.t), max(vali.t)]);
 % clear i all_axes 
 
+
+%% PLOT PUBLISH
 close all
 figure
 for i = 1:size(vali.r,1)

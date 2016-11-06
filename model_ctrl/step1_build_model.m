@@ -44,13 +44,13 @@ load('pump_fit_tf_avg_freq.mat')
 % MODEL_FROM_SCRATCH = true; 
 MODEL_FROM_SCRATCH = false;
 
-MODEL = 'model_i3_c3_f2_valid'; 
+% MODEL = 'model_i3_c3_f2_valid'; 
 % MODEL = 'model_i3_c3_f2_50';
 % MODEL = 'model_i3_c3_f2_50s';
 % MODEL = 'model_i3_c3_f2_50l';
 % MODEL = 'model_i3_c3_f2_100s';
 % MODEL = 'model_i3_c3_f2_100l';
-% MODEL = 'model_i4_c5_f3_50a';
+MODEL = 'model_i4_c5_f3_50a';
 % MODEL = 'model_i4_c5_f3_ea';
 
 

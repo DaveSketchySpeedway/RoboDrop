@@ -7,7 +7,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.109"
+    ComputedModelVersion    "1.110"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -55,8 +55,8 @@ Model {
 	ViewObjType		"SimulinkTopLevel"
 	LoadSaveID		"0"
 	Extents			[910.0, 878.0]
-	ZoomFactor		[1.0]
-	Offset			[252.60486050975351, 319.63186396732954]
+	ZoomFactor		[0.6]
+	Offset			[93.138193843086825, -138.5014693660039]
       }
     }
   }
@@ -69,9 +69,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "yh3wong"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Wed Oct 19 19:13:41 2016"
-  RTWModifiedTimeStamp	  398805213
-  ModelVersionFormat	  "1.%<AutoIncrement:109>"
+  LastModifiedDate	  "Sun Nov 06 16:55:52 2016"
+  RTWModifiedTimeStamp	  400259163
+  ModelVersionFormat	  "1.%<AutoIncrement:110>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -906,7 +906,7 @@ Model {
     TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
     TiledPageScale	    1
     ShowPageBoundaries	    off
-    ZoomFactor		    "100"
+    ZoomFactor		    "60"
     ReportName		    "simulink-default.rpt"
     SIDHighWatermark	    "360"
     Block {
@@ -1009,7 +1009,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.0027648"
+	  Resistance		  "0.002304"
 	  Inductance		  "1.2e-07"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1214,7 +1214,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.0027648"
+	  Resistance		  "0.002304"
 	  Inductance		  "1.2e-07"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1418,7 +1418,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.077656"
+	  Resistance		  "0.064714"
 	  Inductance		  "6.741e-08"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1624,7 +1624,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.077656"
+	  Resistance		  "0.064714"
 	  Inductance		  "6.741e-08"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -1830,7 +1830,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.0083203"
+	  Resistance		  "0.0069336"
 	  Inductance		  "7.2225e-09"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -2034,7 +2034,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.0083203"
+	  Resistance		  "0.0069336"
 	  Inductance		  "7.2225e-09"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -2739,7 +2739,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.0042854"
+	  Resistance		  "0.0035712"
 	  Inductance		  "4.8e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -2880,7 +2880,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.0042854"
+	  Resistance		  "0.0035712"
 	  Inductance		  "4.8e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -3021,7 +3021,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.022927"
+	  Resistance		  "0.019106"
 	  Inductance		  "4.6224e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
@@ -3164,7 +3164,7 @@ Model {
 	  LConnTagsString	  "__new0"
 	  RConnTagsString	  "__new0"
 	  BranchType		  "RL"
-	  Resistance		  "0.022927"
+	  Resistance		  "0.019106"
 	  Inductance		  "4.6224e-06"
 	  SetiL0		  off
 	  InitialCurrent	  "0"
