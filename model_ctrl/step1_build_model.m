@@ -34,7 +34,7 @@ clc
 clear 
 
 TS = 0.1;
-viscosity_tweak = 1.5;
+viscosity_tweak = 1.8;
 density_tweak = 1;
 stiffness_tweak = 1;
 
@@ -50,8 +50,8 @@ MODEL_FROM_SCRATCH = false;
 % MODEL = 'model_i3_c3_f2_50l';
 % MODEL = 'model_i3_c3_f2_100s';
 % MODEL = 'model_i3_c3_f2_100l';
-MODEL = 'model_i4_c5_f3_50a';
-% MODEL = 'model_i4_c5_f3_ea';
+% MODEL = 'model_i4_c5_f3_50a';
+MODEL = 'model_i4_c5_f3_ea';
 
 
 
