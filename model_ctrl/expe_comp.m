@@ -7,12 +7,14 @@ clearvars -except model ctrl_c ctrl_d
 % ENDTIME = 145;
 % CTRL = ctrl_d(15);
 % PERTURBATION = 0;  
+% RESET_TIME = 0;
 
 % EXP = 'ueva_data_2016_09_08_18_18_30.csv';
 % STARTTIME = 0;
 % ENDTIME = 42;
 % CTRL = ctrl_d(15);
 % PERTURBATION = 0.2;  
+% RESET_TIME = 0;
 
 % use me
 EXP = 'ueva_data_2016_09_08_18_18_30.csv';
@@ -20,12 +22,14 @@ STARTTIME = 45;
 ENDTIME = 80;
 CTRL = ctrl_d(19);
 PERTURBATION = 0;  
+RESET_TIME = 0;
 
 % EXP = 'ueva_data_2016_09_08_18_22_59.csv';
 % STARTTIME = 110;
 % ENDTIME = 160;
 % CTRL = ctrl_d(7);
 % PERTURBATION = 0;  
+% RESET_TIME = 0;
 
 % % use me
 % EXP = 'ueva_data_2016_09_08_18_22_59.csv';
@@ -33,6 +37,7 @@ PERTURBATION = 0;
 % ENDTIME = 40;
 % CTRL = ctrl_d(7);
 % PERTURBATION = 0.2;  
+% RESET_TIME = 0;
 
 PLANT = model.combo;
 % PLANT = model.chip;
@@ -91,8 +96,6 @@ DOUBT_SENSOR = 3; % from sensor resolution
 DOUBT_MODEL = 0.01; % fast ctrl need small doubt
 DOUBT_DISTURBANCE = 1e-5; % ~DOUBT_MODEL/1000
 CORRECTION_MBAR_PER_S = 0.1; % don't go higher than 0.5
-
-RESET_TIME = 0;
 
 time = expe.t;
 reference = expe.r(:,CTRL.channel_idx);
@@ -181,7 +184,7 @@ for i = 1:length(PLANT.output)
         legend('Reference', 'Experiment', 'Simulation')
         j = j+1;
     end
-    title(['ch' num2str(i) ' Displacement']);
+    title(['ch' num2str(i-1) ' Displacement']);
     xlabel('Time [s]');
     ylabel('Displacement [um]');
     grid minor
