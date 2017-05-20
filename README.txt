@@ -2,7 +2,6 @@ Project uEVA (microfluidics Enhanced Vision-based Automation)
 Copyright 2016 David Wong
 
 RoboDrop: https://www.youtube.com/watch?v=VtfMz4Gftpk
-uEVA: https://github.com/DaveSketchySpeedway/uEva
 email: yh3wong@uwaterloo.ca
 
 
@@ -22,9 +21,6 @@ CONTENT
 		matlab script for modelling and designing controllers
 	pump_sysid
 		system identification with linear regression
-
-
-
 
 
 
