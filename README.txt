@@ -1,7 +1,6 @@
-Project uEVA (microfluidics Enhanced Vision-based Automation)
+RoboDrop -- a program for controlling microfludics droplets
 Copyright 2016 David Wong
-
-RoboDrop: https://www.youtube.com/watch?v=VtfMz4Gftpk
+Demo: https://www.youtube.com/watch?v=VtfMz4Gftpk
 email: yh3wong@uwaterloo.ca
 
 
@@ -14,9 +13,9 @@ CONTENT
 	RoboDrop00 
 		proof of concept, NOT INCLUDED
 	RoboDrop01
-		pre-prototype version, lots of problems
+		pre-prototype version, outdated algorithms
 	RoboDrop02
-		Successful prototype
+		working prototype
 	model_ctrl
 		matlab script for modelling and designing controllers
 	pump_sysid
