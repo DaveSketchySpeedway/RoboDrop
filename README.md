@@ -1,13 +1,12 @@
 # RoboDrop
 a program for controlling microfludics droplets
 
-Copyright 2016 David Wong
+Copyright 2016 David Wong yh3wong@uwaterloo.ca
 
 [Demo](https://www.youtube.com/watch?v=VtfMz4Gftpk)
 
 [Documentation](https://uwspace.uwaterloo.ca/handle/10012/11124)
 
-[Contact](yh3wong@uwaterloo.ca)
 
 
 
