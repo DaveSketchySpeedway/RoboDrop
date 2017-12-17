@@ -29,9 +29,9 @@ clearvars -except model ctrl_c ctrl_d
 clc
 
 
-% PLANT = model.chip;
-PLANT = model.combo;
-CTRL_INDEX = 6;
+PLANT = model.chip;
+% PLANT = model.combo;
+CTRL_INDEX = 1;
 
 PLOT_FMIN = -1;
 PLOT_FMAX = 5;
@@ -40,43 +40,64 @@ PLOT_RESOLUTION = 1000;
 SIM_STEP_DURATION = 10;
 SIM_STEP_HEIGHT = 100;
 
-%% OPEN LOOP FREQUENCY RESPONSE
-% figure
-% plot_coupling(PLANT.Ac, PLANT.Bc, PLANT.Cc, PLANT.Dc,...
-%     PLANT.input, PLANT.output,...
-%     0, PLOT_FMIN, PLOT_FMAX, PLOT_RESOLUTION);
+%% OPEN LOOP
+clc
+close all
 
+% frequency response
+figure
+plot_coupling(PLANT.Ac, PLANT.Bc, PLANT.Cc, PLANT.Dc,...
+    PLANT.input, PLANT.output,...
+    0, PLOT_FMIN, PLOT_FMAX, PLOT_RESOLUTION);
 
-%% CLOSE LOOP FREQUENCY RESPONSE
-% cllp = ctrl_c(CTRL_INDEX);
-% figure
-% plot_coupling(cllp.Acl,cllp.Bcl,cllp.Ccl,cllp.Dcl,...
-%     cllp.output, cllp.output,...
-%     1, PLOT_FMIN, PLOT_FMAX, PLOT_RESOLUTION);
-% clear cllp
+% poles
+ol_poles_d = eig(PLANT.Ad)
+ol_poles_c = eig(PLANT.Ac)
+ol_check = ol_poles_d - exp(PLANT.Ts.*ol_poles_c)
+
+ol_settling_time = -4./real(ol_poles_c)
+
+%% CLOSE LOOP
+clc
+close all
+
+% frequency response
+cllp_d = ctrl_d(CTRL_INDEX);
+cllp_c = ctrl_c(CTRL_INDEX);
+figure
+plot_coupling(cllp_c.Acl,cllp_c.Bcl,cllp_c.Ccl,cllp_c.Dcl,...
+    cllp_c.output, cllp_c.output,...
+    1, PLOT_FMIN, PLOT_FMAX, PLOT_RESOLUTION);
+clear cllp
+
+% poles
+cl_poles_d = eig(cllp_d.Acl)
+cl_poles_c = 1/cllp_d.Ts.*log(cl_poles_d)
+
+cl_settling_time = -4./real(cl_poles_c)
 
 %% CLOSE LOOP CONTINUOUS SIMULATION
-% cllp = ctrl_c(CTRL_INDEX);
-% t = 0:cllp.Ts:(length(cllp.output)+1)*SIM_STEP_DURATION;
-% r = zeros(length(t), length(cllp.output));
-% for j = 1:length(cllp.output)
-%     start_idx = 1 + j*floor( length(t)/(1+length(cllp.output)) );
-%     r(start_idx:end,j) = j*SIM_STEP_HEIGHT;
-% end
-% clear j start_idx
-% sys = ss(cllp.Acl, cllp.Bcl, cllp.Ccl, cllp.Dcl);
-% y = lsim(sys, r, t);
-% clear cllp
-% 
-% figure
-% plot(t, r, 'r--')
-% hold on
-% plot(t,y,'.');
-% title(['Continuous Response: Closed Loop Combination ' num2str(CTRL_INDEX)])
-% xlabel('Time s')
-% ylabel('Position um')
-% grid minor
-% clear t r y sys
+cllp = ctrl_c(CTRL_INDEX);
+t = 0:cllp.Ts:(length(cllp.output)+1)*SIM_STEP_DURATION;
+r = zeros(length(t), length(cllp.output));
+for j = 1:length(cllp.output)
+    start_idx = 1 + j*floor( length(t)/(1+length(cllp.output)) );
+    r(start_idx:end,j) = j*SIM_STEP_HEIGHT;
+end
+clear j start_idx
+sys = ss(cllp.Acl, cllp.Bcl, cllp.Ccl, cllp.Dcl);
+y = lsim(sys, r, t);
+clear cllp
+
+figure
+plot(t, r, 'r--')
+hold on
+plot(t,y,'.');
+title(['Continuous Response: Closed Loop Combination ' num2str(CTRL_INDEX)])
+xlabel('Time s')
+ylabel('Position um')
+grid minor
+clear t r y sys
 
 
 %% CLOSE LOOP DISCRETE SIMULATION
