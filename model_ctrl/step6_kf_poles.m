@@ -89,7 +89,7 @@ B = ctrl_d(3).Bd;
 W = ctrl_d(3).Wd;
 C = ctrl_d(3).Cd;
 Rm = 10;
-Rd = 1e-5;
+Rd = 1e-2;
 Rw = [Rm*eye(n,n), zeros(n,m); zeros(m,n), Rd*eye(m,m)];
 Rv = (expe.um_per_pix ^ 2) / 12 * eye(p,p);
 t = expe.t;
@@ -100,6 +100,7 @@ y = expe.y(:,1:2)';
     estimation_covariance, prediction_covariance, kalman] =...
     run_kalman(A,B,W,C,Rw,Rv,t,u,y);
 
+% position estimation
 figure
 hold on
 plot(t, y, 'r')
@@ -107,6 +108,16 @@ plot(t, state_estimation(1:2,:), 'b')
 title('position')
 legend('exp data','exp data','offline kf','offline kf')
 
+% input disturbance
+figure
+hold on
+plot(t, u, 'k')
+plot(t, state_estimation(end-2:end,:), 'b')
+title('input disturbance')
+
+
+
+% kalman gain
 figure
 for ii = 1:size(kalman,1)
     subplot(2,1,1)
@@ -117,14 +128,16 @@ for ii = 1:size(kalman,1)
     plot(t, squeeze(kalman(ii,2,:)))
 end
 
-
 K = kalman(:,:,end);
 Akf = A - K*C*A;
 kf_poles_d = eig(Akf);
 kf_poles_c = 1/ctrl_d(cidx).Ts.*log(kf_poles_d)
-
-kf_settling_time =[ -4./real(kf_poles_c(1:2)); % displacement states 
-    -4./real(kf_poles_c(end-2:end))]%  disturbance states
+ctrl_d(cidx).state_d
+kf_settling_time = [ -4./real(kf_poles_c)];
+kf_settling_time(6)=666;
+kf_settling_time
+% kf_settling_time = [ -4./real(kf_poles_c(1:2)); % displacement states 
+%     -4./real(kf_poles_c(end-2:end))]%  disturbance states
 
 
 

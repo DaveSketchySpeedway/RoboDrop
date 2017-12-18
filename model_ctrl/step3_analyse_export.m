@@ -31,7 +31,7 @@ clc
 
 PLANT = model.chip;
 % PLANT = model.combo;
-CTRL_INDEX = 1;
+CTRL_INDEX = 3;
 
 PLOT_FMIN = -1;
 PLOT_FMAX = 5;
@@ -54,7 +54,6 @@ plot_coupling(PLANT.Ac, PLANT.Bc, PLANT.Cc, PLANT.Dc,...
 ol_poles_d = eig(PLANT.Ad)
 ol_poles_c = eig(PLANT.Ac)
 ol_check = ol_poles_d - exp(PLANT.Ts.*ol_poles_c)
-
 ol_settling_time = -4./real(ol_poles_c)
 
 %% CLOSE LOOP
@@ -73,7 +72,7 @@ clear cllp
 % poles
 cl_poles_d = eig(cllp_d.Acl)
 cl_poles_c = 1/cllp_d.Ts.*log(cl_poles_d)
-
+cllp_d.state_cl
 cl_settling_time = -4./real(cl_poles_c)
 
 %% CLOSE LOOP CONTINUOUS SIMULATION
